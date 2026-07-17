@@ -13,7 +13,8 @@ The product should complement clinical care. It must not diagnose a flare, chang
 3. **Understand change:** A timeline and trend view compare recent data with the patient's baseline and highlight which observations contributed to a change.
 4. **Get supported:** A context-aware assistant answers questions from the patient's data, explains uncertainty, cites the source records it used, and routes safety-sensitive questions to appropriate care.
 5. **Take an agreed action:** When a clinically reviewed rule indicates possible deterioration, the app follows the patient's care plan, suggests contacting their IBD team, and may offer an eligible faecal calprotectin test order with explicit patient confirmation.
-6. **Learn carefully:** When stable, the patient can run one-at-a-time diet experiments and review the results without treating correlation as proof.
+6. **Recover safely:** After a flare, a focused recovery mode helps the patient follow their prescribed steroid course or taper, monitor symptoms and side effects, and stay connected to their care team.
+7. **Learn carefully:** When stable, the patient can run one-at-a-time diet experiments and review the results without treating correlation as proof.
 
 ## Feature areas
 
@@ -51,6 +52,16 @@ The product should complement clinical care. It must not diagnose a flare, chang
 - The app tracks fulfilment, guides sample collection, records the result, and helps share it with the care team.
 - LLM output or image analysis alone must never trigger an order or determine clinical urgency.
 
+### Steroid-course adherence after a flare
+
+- Turn the clinician's prescription into a clear day-by-day course or taper that the patient verifies before starting.
+- Show today's exact prescribed dose, progress through the course, and upcoming dose changes without making the patient calculate them.
+- Use adaptive, discreet reminders with one-tap confirmation, a short snooze, and progressively stronger follow-up for an unconfirmed dose.
+- Ask about symptoms, sleep, mood, infection concerns, and other relevant side effects at a low-burden cadence, then route concerning answers according to a clinically approved pathway.
+- Provide medicine-specific missed-dose guidance from an approved source and a direct route to the patient's pharmacist or IBD team when the correct action is uncertain.
+- Reconcile adherence, symptoms, and side effects into an editable recovery summary for the patient and care team.
+- Never let the assistant create, accelerate, pause, or otherwise change a steroid dose or taper; any change must come from an authorised clinician.
+
 ### Diet experiments
 
 - Suggest candidate experiments from patient goals, diary patterns, burden, nutritional risk, and clinical suitability.
@@ -66,6 +77,7 @@ The product should complement clinical care. It must not diagnose a flare, chang
 
 - Adult onboarding, consent, baseline, care plan, and clinical contacts.
 - Bowel, symptom, food, wellbeing, and medication tracking.
+- Prescribed steroid-course and taper adherence with safety check-ins.
 - Timeline, trends, and editable clinician summary.
 - Grounded assistant for record retrieval and general education.
 - Red-flag escalation, audit trail, data export, and deletion.
@@ -97,6 +109,7 @@ The product should complement clinical care. It must not diagnose a flare, chang
 
 - Patients can complete a routine entry in under 30 seconds.
 - Strong week-four tracking retention without excessive reminders.
+- High completion of prescribed steroid courses and dose confirmations, without encouraging unsafe self-adjustment.
 - Patients and clinicians judge exported summaries useful and accurate.
 - High completion rate from eligible test suggestion to usable result.
 - Safety performance is measured explicitly: missed escalations, false alerts, inappropriate reassurance, and alert fatigue.
@@ -115,6 +128,7 @@ The product should complement clinical care. It must not diagnose a flare, chang
 
 - [Crohn's & Colitis UK: Flare-ups](https://www.crohnsandcolitis.org.uk/info-support/information-about-crohns-and-colitis/all-information-about-crohns-and-colitis/symptoms/flare-ups) - flare signs vary between people; patients should follow their personalised plan or contact their IBD team or GP.
 - [Crohn's & Colitis UK: Food and Crohn's or Colitis](https://www.crohnsandcolitis.org.uk/info-support/information-about-crohns-and-colitis/all-information-about-crohns-and-colitis/living-with-crohns-or-colitis/food) - food diaries may reveal possible symptom triggers, but major exclusions should be discussed with an IBD team or dietitian.
+- [Crohn's & Colitis UK: Steroids](https://crohnsandcolitis.org.uk/info-support/information-about-crohns-and-colitis/all-information-about-crohns-and-colitis/treatments/steroids) - oral steroid doses should not be missed or stopped suddenly, and prescribed courses or tapers should be completed as directed.
+- [NICE QS81: Monitoring drug treatment](https://www.nice.org.uk/guidance/qs81/chapter/quality-statement-4-monitoring-drug-treatment) - IBD drug treatment should be monitored for adverse effects using documented safety procedures.
 - [NICE HTG320: Faecal calprotectin diagnostic tests](https://www.nice.org.uk/guidance/htg320/chapter/1-recommendations) - testing should sit within appropriate quality assurance and locally agreed care pathways.
 - [ICO: What is special category data?](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/lawful-basis/special-category-data/what-is-special-category-data/) - health data and health inferences receive additional protection under UK data protection law.
-
