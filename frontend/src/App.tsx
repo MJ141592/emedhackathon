@@ -1,51 +1,98 @@
-import { useEffect, useState } from "react";
-
-type HealthResponse = {
-  status: string;
-  service: string;
-};
+import { useCallback, useRef, useState } from "react";
+import type { ChatMessage, JournalEntry, PhaseId } from "./types";
+import { INITIAL_CHAT, INITIAL_TODAY_ENTRIES, PHASE_LABELS, TODAY } from "./data";
+import { TodayHeader } from "./components/TodayHeader";
+import { PennyChat, parseUtterance } from "./components/PennyChat";
+import { JournalPanel } from "./components/JournalPanel";
 
 function App() {
-  const [health, setHealth] = useState<HealthResponse | null>(null);
-  const [error, setError] = useState(false);
+  const [phase, setPhase] = useState<PhaseId>("watch");
+  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_CHAT);
+  const [entries, setEntries] = useState<JournalEntry[]>(INITIAL_TODAY_ENTRIES);
+  const [toast, setToast] = useState<string | null>(null);
+  const idRef = useRef(100);
+  const nextId = useCallback(() => ++idRef.current, []);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    fetch("/api/health", { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error("Backend health check failed");
-        return response.json() as Promise<HealthResponse>;
-      })
-      .then(setHealth)
-      .catch((requestError: unknown) => {
-        if (requestError instanceof DOMException && requestError.name === "AbortError") return;
-        setError(true);
-      });
-
-    return () => controller.abort();
+  const notify = useCallback((message: string) => {
+    setToast(message);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 3400);
   }, []);
 
+  const addEntry = useCallback(
+    (entry: Omit<JournalEntry, "id" | "time">) => {
+      const now = new Date();
+      const time = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+      setEntries((current) => [...current, { ...entry, id: nextId(), time }]);
+    },
+    [nextId],
+  );
+
+  const sendChat = useCallback(
+    (text: string) => {
+      const mine: ChatMessage = { id: nextId(), from: "me", text };
+      const { reply, entries: parsed } = parseUtterance(text, nextId);
+      setMessages((current) => [...current, mine, reply]);
+      parsed.forEach(addEntry);
+    },
+    [addEntry, nextId],
+  );
+
+  const content = TODAY[phase];
+
   return (
-    <main>
-      <section aria-labelledby="page-title">
-        <p className="eyebrow">eMed Hackathon</p>
-        <h1 id="page-title">Full-stack workspace ready.</h1>
-        <p className="summary">
-          React and TypeScript are connected to a Python FastAPI backend.
-        </p>
-        <div className="status" role="status">
-          <span className={error ? "status-dot error" : "status-dot"} aria-hidden="true" />
-          {error
-            ? "Backend unavailable"
-            : health
-              ? `${health.service} is ${health.status}`
-              : "Checking backend connection"}
+    <div className="shell">
+      <header className="topbar">
+        <div className="brand">
+          <span className="name">MeMed</span>
+          <span className="tag">IBD companion</span>
         </div>
-      </section>
-    </main>
+        <div className="demo">
+          <span>Demo</span>
+          {PHASE_LABELS.map((candidate) => (
+            <button
+              key={candidate.id}
+              className={candidate.id === phase ? "demo-btn selected" : "demo-btn"}
+              onClick={() => setPhase(candidate.id)}
+            >
+              {candidate.label}
+            </button>
+          ))}
+        </div>
+        <button className="urgent" onClick={() => notify("Urgent help: 111, or 999 / A&E if severe. Your IBD advice line: 020 7946 0000.")}>
+          Urgent help
+        </button>
+        <div className="me">
+          <div className="avatar">AO</div>
+          <div>
+            <b>Amara O.</b>
+            <small>Crohn's · azathioprine</small>
+          </div>
+        </div>
+      </header>
+
+      <div className="cols">
+        <main className="left">
+          <TodayHeader content={content} />
+          <PennyChat
+            messages={messages}
+            suggestions={content.suggestions}
+            suggestionsNote={content.suggestionsNote}
+            onSend={sendChat}
+            notify={notify}
+          />
+        </main>
+        <JournalPanel entries={entries} addEntry={addEntry} notify={notify} />
+      </div>
+
+      {toast && (
+        <div className="toast" role="status">
+          {toast}
+        </div>
+      )}
+    </div>
   );
 }
 
 export default App;
-

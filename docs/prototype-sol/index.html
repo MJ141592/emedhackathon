@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Today — Sol</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="nav">
+    <div class="brand"><span class="name">Sol</span><span class="tag">IBD companion</span></div>
+    <a class="item active" href="index.html"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>Today</a>
+    <a class="item" href="chat.html"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>Sol</a>
+    <a class="item" href="journal.html"><svg viewBox="0 0 24 24"><path d="M5 4h13a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5z"/><path d="M5 4v16"/><path d="M9 9h6M9 13h6"/></svg>Journal</a>
+    <a class="item" href="care.html"><svg viewBox="0 0 24 24"><path d="M8 3v5a4 4 0 0 0 8 0V3"/><path d="M12 12v3a4 4 0 0 0 4 4h1"/><circle cx="19" cy="19" r="2"/></svg>Care</a>
+    <div class="spacer"></div>
+    <a class="urgent" href="care.html#urgent">Urgent help</a>
+    <div class="me"><div class="avatar">AO</div><div><b style="font-size:13.5px">Amara O.</b><small>Crohn's · azathioprine</small></div></div>
+  </aside>
+
+  <main>
+    <div class="pagehead">
+      <span class="pill watch">Watchful — symptoms rising</span>
+      <h1 style="margin-top:12px">Good morning, Amara</h1>
+      <p class="sub">Friday 17 July · here's what your week is saying</p>
+    </div>
+
+    <div class="gauge" role="img" aria-label="Flare gauge: currently in the watchful zone, between remission and flare">
+      <div class="track"><div class="dot" style="left:62%"></div></div>
+      <div class="labels"><span>Remission</span><span class="now">Watchful</span><span>Flare</span></div>
+    </div>
+
+    <div class="grid metrics">
+      <div class="card metric"><div class="k">Bowel movements / day</div><div class="v">5.1</div><div class="d up">↑ from 2.8 baseline</div></div>
+      <div class="card metric"><div class="k">Average pain</div><div class="v">4<span style="font-size:14px;color:var(--ink-faint)">/10</span></div><div class="d up">↑ from 2</div></div>
+      <div class="card metric"><div class="k">Resting heart rate</div><div class="v">64<span style="font-size:14px;color:var(--ink-faint)"> bpm</span></div><div class="d warn">↑ 6 above baseline</div></div>
+      <div class="card metric"><div class="k">Fatigue</div><div class="v">High</div><div class="d flat">4 of the last 7 days</div></div>
+    </div>
+
+    <div class="card">
+      <div class="chart-legend">
+        <span><i style="background:var(--flare)"></i>Symptom score</span>
+        <span><i style="background:#4A7FA5"></i>Resting heart rate</span>
+      </div>
+      <svg viewBox="0 0 650 190" width="100%" role="img" aria-label="Fourteen day chart: symptom score climbs from 2 to 8 while resting heart rate rises from 58 to 64, both turning upward after a life event on 13 July">
+        <g stroke="#EEEFE8" stroke-width="1">
+          <line x1="20" y1="42" x2="630" y2="42"/><line x1="20" y1="74" x2="630" y2="74"/>
+          <line x1="20" y1="106" x2="630" y2="106"/><line x1="20" y1="138" x2="630" y2="138"/>
+          <line x1="20" y1="170" x2="630" y2="170"/>
+        </g>
+        <line x1="434" y1="30" x2="434" y2="170" stroke="#B26E20" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <circle cx="434" cy="24" r="4" fill="#B26E20"/>
+        <polyline points="20,119 66,119 112,125 158,112 204,119 250,119 296,112 342,119 388,112 434,100 480,87 526,80 572,80 618,80" fill="none" stroke="#4A7FA5" stroke-width="2.5" stroke-linejoin="round"/>
+        <polyline points="20,138 66,138 112,122 158,138 204,138 250,122 296,138 342,122 388,122 434,106 480,74 526,58 572,58 618,42" fill="none" stroke="#AC3E2B" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="618" cy="42" r="4.5" fill="#AC3E2B"/>
+        <g font-family="'Spline Sans Mono', monospace" font-size="10.5" fill="#8F948A">
+          <text x="20" y="186">4 Jul</text><text x="296" y="186">10 Jul</text><text x="600" y="186">17 Jul</text>
+          <text x="2" y="46">8</text><text x="2" y="110">4</text><text x="2" y="174">0</text>
+        </g>
+      </svg>
+      <p class="note"><span class="dot-ev"></span>Life event, 13 July — night out with alcohol. Both lines turn upward from here.</p>
+    </div>
+
+    <h2 class="sect">Suggested by Sol</h2>
+    <div class="card">
+      <div class="action">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M9 3h6"/><path d="M10 3v6l-4 8a3 3 0 0 0 3 4h6a3 3 0 0 0 3-4l-4-8V3"/><path d="M7.5 15h9"/></svg></div>
+        <div class="tx"><b>Order a calprotectin home test</b><span>Six days of rising symptoms — a stool test would confirm whether inflammation is driving this.</span></div>
+        <a class="btn primary" href="care.html">Order kit</a>
+      </div>
+      <div class="action">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg></div>
+        <div class="tx"><b>Share this week with your IBD team</b><span>Sends your trends and flagged entries to the St Mary's IBD nurses for review.</span></div>
+        <a class="btn" href="care.html">Review &amp; send</a>
+      </div>
+    </div>
+    <p class="note">Sol suggests — you decide. Tests and messages are only sent after you confirm, and prescriptions are always approved by a clinician.</p>
+  </main>
+</div>
+</body>
+</html>

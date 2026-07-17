@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Journal — Sol</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="nav">
+    <div class="brand"><span class="name">Sol</span><span class="tag">IBD companion</span></div>
+    <a class="item" href="index.html"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>Today</a>
+    <a class="item" href="chat.html"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>Sol</a>
+    <a class="item active" href="journal.html"><svg viewBox="0 0 24 24"><path d="M5 4h13a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5z"/><path d="M5 4v16"/><path d="M9 9h6M9 13h6"/></svg>Journal</a>
+    <a class="item" href="care.html"><svg viewBox="0 0 24 24"><path d="M8 3v5a4 4 0 0 0 8 0V3"/><path d="M12 12v3a4 4 0 0 0 4 4h1"/><circle cx="19" cy="19" r="2"/></svg>Care</a>
+    <div class="spacer"></div>
+    <a class="urgent" href="care.html#urgent">Urgent help</a>
+    <div class="me"><div class="avatar">AO</div><div><b style="font-size:13.5px">Amara O.</b><small>Crohn's · azathioprine</small></div></div>
+  </aside>
+
+  <main>
+    <div class="pagehead">
+      <h1>Journal</h1>
+      <p class="sub">Everything in one stream — symptoms, meals, sleep, life. This is what Sol reads.</p>
+    </div>
+
+    <p class="day">Today · Friday 17 July</p>
+    <div class="tl">
+      <div class="entry flagged">
+        <p class="meta">07:40 · BOWEL MOVEMENT</p>
+        <p class="body">Bristol type 6, urgency, small amount of blood &nbsp;<span class="pill flag">Flagged</span></p>
+      </div>
+      <div class="entry">
+        <p class="meta">08:00 · FROM YOUR WATCH</p>
+        <p class="body">Resting HR 64 bpm · sleep 5 h 10 m — both outside your usual range</p>
+      </div>
+      <div class="entry sol-note">
+        <p class="meta">Sol noticed</p>
+        <p class="body">Blood this morning, a rising heart rate, and six days of looser stools fit an early flare pattern. Worth confirming with a calprotectin test before anything else.</p>
+        <div class="acts">
+          <a class="btn primary" href="care.html">Order test kit</a>
+          <a class="btn" href="care.html">Tell my IBD team</a>
+        </div>
+      </div>
+    </div>
+
+    <p class="day">Yesterday · Thursday 16 July</p>
+    <div class="tl">
+      <div class="entry">
+        <p class="meta">19:30 · MEAL</p>
+        <div class="mealrow">
+          <div class="thumb" role="img" aria-label="Photo of dinner"></div>
+          <p class="body">Lamb madras, naan, two beers — out with friends</p>
+        </div>
+      </div>
+      <div class="entry">
+        <p class="meta">22:15 · PAIN</p>
+        <p class="body">Cramping, lower right, 5/10 · fatigue high</p>
+      </div>
+    </div>
+
+    <p class="day">Sunday 13 July</p>
+    <div class="tl">
+      <div class="entry">
+        <p class="meta">23:50 · LIFE EVENT</p>
+        <p class="body">Night out — around six drinks, late night, takeaway on the way home &nbsp;<span class="pill watch">Possible trigger</span></p>
+      </div>
+      <div class="entry sol-note">
+        <p class="meta">Sol noticed</p>
+        <p class="body">No judgement — nights out are part of life. I'll just watch the next few days a little more closely, since alcohol has preceded two of your last three rough patches.</p>
+      </div>
+    </div>
+
+    <button class="btn primary addentry">+ Add entry</button>
+  </main>
+</div>
+</body>
+</html>
