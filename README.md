@@ -2,6 +2,8 @@
 
 Full-stack monorepo with a React/TypeScript frontend and a FastAPI/Python backend.
 
+See the [high-level product plan](docs/PRODUCT_PLAN.md) for the proposed IBD companion experience and delivery phases.
+
 ## Prerequisites
 
 - Node.js 22+
@@ -43,4 +45,3 @@ npm run build
 frontend/  React, TypeScript, and Vite
 backend/   FastAPI application and Python tests
 ```
-
