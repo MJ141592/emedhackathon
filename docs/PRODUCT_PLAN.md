@@ -1,5 +1,7 @@
 # IBD Companion: High-Level Product Plan
 
+> See also [Effortless Tracking, Patient Context, and the Background Health Agent](EFFORTLESS_TRACKING_AND_BACKGROUND_AGENT.md), which develops the past medical history context, fire-and-forget capture, wearable signals, and closed-loop clinical actions in more detail.
+
 ## Product goal
 
 Help adults living with inflammatory bowel disease (IBD), including Crohn's disease and ulcerative colitis, understand their day-to-day health, notice meaningful changes early, and take the next action agreed with their care team.

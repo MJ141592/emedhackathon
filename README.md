@@ -2,7 +2,7 @@
 
 Full-stack monorepo with a React/TypeScript frontend and a FastAPI/Python backend.
 
-See the [high-level product plan](docs/PRODUCT_PLAN.md) for the proposed IBD companion experience and delivery phases.
+See the [high-level product plan](docs/PRODUCT_PLAN.md) for the proposed IBD companion experience and delivery phases, and [Effortless Tracking, Patient Context, and the Background Health Agent](docs/EFFORTLESS_TRACKING_AND_BACKGROUND_AGENT.md) for the low-effort capture, patient-context, and background-agent design.
 
 ## Prerequisites
 
