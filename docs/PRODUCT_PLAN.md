@@ -115,6 +115,23 @@ The product should complement clinical care. It must not diagnose a flare, chang
 - Safety performance is measured explicitly: missed escalations, false alerts, inappropriate reassurance, and alert fatigue.
 - Users can identify and correct the data behind an assistant answer or alert.
 
+## GPT's notes: AI-native adherence ideas
+
+These are exploratory product ideas rather than committed scope.
+
+- **One adaptive home screen:** Show the single most relevant action now, based on whether the patient is stable, deteriorating, flaring, or recovering.
+- **Conversational capture:** Let patients log meals, symptoms, medication, and bowel movements through natural language or voice; AI structures the entry and asks only for missing details.
+- **Minimal check-ins:** Start with a one-tap "better, same, or worse?" response and expand only when needed.
+- **Closed-loop actions:** Move from detection to confirmation to action to outcome, such as spotting deterioration, confirming symptoms, ordering a test, and interpreting the result within the care pathway.
+- **Adherence without punitive streaks:** Recognise continuity and recovery after missed entries rather than resetting streaks or creating guilt.
+- **Adaptive notification budget:** Learn useful times and suppress low-value reminders, especially during fatigue or active symptoms.
+- **Appointment preparation:** Automatically draft an editable summary of changes, questions, medication adherence, experiments, and test results.
+- **Trusted supporter mode:** Allow optional, tightly permissioned support from a family member or carer.
+- **Personal evidence ledger:** Every AI observation should show its source entries and let the patient correct them.
+- **Proactive but bounded agent:** AI can prepare a test order, clinician message, or diary experiment, but the patient must review consequential actions before submission.
+
+The strongest initial combination may be conversational capture, the adaptive home screen, and appointment preparation. Together, these make AI central to the experience while directly reducing the effort required to keep using the product.
+
 ## Key open decisions
 
 - Is the first release a self-management product, a provider-prescribed service, or both?
