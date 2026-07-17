@@ -11,7 +11,7 @@ The product should complement clinical care. It must not diagnose a flare, chang
 ## Core patient journey
 
 1. **Set a baseline:** The patient records their diagnosis, usual symptoms, medications, dietary needs, personal care plan, clinical contacts, and what “normal” looks like for them.
-2. **Track with low effort:** Quick logging captures bowel movements, symptoms, food, wellbeing, medication adherence, and optional toilet photos.
+2. **Track with low effort:** Quick logging captures bowel movements, symptoms, food, wellbeing, medication adherence, and optional meal or toilet photos.
 3. **Understand change:** A timeline and trend view compare recent data with the patient's baseline and highlight which observations contributed to a change.
 4. **Get supported:** A context-aware assistant answers questions from the patient's data, explains uncertainty, cites the source records it used, and routes safety-sensitive questions to appropriate care.
 5. **Take an agreed action:** When a clinically reviewed rule indicates possible deterioration, the app follows the patient's care plan, suggests contacting their IBD team, and may offer an eligible faecal calprotectin test order with explicit patient confirmation.
@@ -23,7 +23,8 @@ The product should complement clinical care. It must not diagnose a flare, chang
 ### Daily tracking
 
 - Fast bowel movement entry: time, Bristol Stool Scale type, urgency, blood, mucus, pain, and night waking.
-- Food diary with meals, ingredients, portions, hydration, and optional barcode or photo-assisted entry.
+- Food diary with meals, ingredients, portions, hydration, and meal photos as a first-class low-effort logging option.
+- AI may suggest a neutral meal description or likely ingredients from a photo for the patient to edit and confirm. It must not estimate or display calories, macros, diet scores, or judgement about the meal.
 - Lightweight scheduled check-ins for pain, fatigue, mood, appetite, sleep, weight, and general wellbeing.
 - Medication reminders and adherence history.
 - Optional toilet photos with clear consent, discreet storage, retention controls, and manual correction of any image-derived observation.
@@ -78,7 +79,7 @@ The product should complement clinical care. It must not diagnose a flare, chang
 ### Phase 1: Safe tracking MVP
 
 - Adult onboarding, consent, baseline, care plan, and clinical contacts.
-- Bowel, symptom, food, wellbeing, and medication tracking.
+- Bowel, symptom, food, wellbeing, and medication tracking, including neutral meal-photo logging.
 - Prescribed steroid-course and taper adherence with safety check-ins.
 - Timeline, trends, and editable clinician summary.
 - Grounded assistant for record retrieval and general education.
