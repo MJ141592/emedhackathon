@@ -1,0 +1,27 @@
+[project]
+name = "emed-backend"
+version = "0.1.0"
+description = "FastAPI backend for the eMed Hackathon project"
+requires-python = ">=3.9"
+dependencies = [
+    "fastapi>=0.115.0,<1.0.0",
+    "uvicorn[standard]>=0.34.0,<1.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.0.0,<3.0.0",
+    "pytest>=8.3.0,<9.0.0",
+    "ruff>=0.11.0,<1.0.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]

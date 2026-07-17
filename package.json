@@ -1,0 +1,25 @@
+{
+  "name": "emed-hackathon",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently --kill-others --names backend,frontend --prefix-colors blue,green \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "uv run --project backend uvicorn app.main:app --app-dir backend --reload --host 0.0.0.0 --port ${BACKEND_PORT:-8000}",
+    "dev:frontend": "npm run dev --workspace frontend -- --host 0.0.0.0 --port ${FRONTEND_PORT:-5173}",
+    "build": "npm run build --workspace frontend",
+    "check": "npm run check:frontend && npm run check:backend",
+    "check:frontend": "npm run check --workspace frontend",
+    "check:backend": "uv run --project backend ruff check backend && uv run --project backend pytest backend",
+    "test": "npm run test --workspace frontend -- --run && uv run --project backend pytest backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
+

@@ -1,0 +1,2 @@
+"""eMed backend application."""
+
