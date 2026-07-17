@@ -2,9 +2,12 @@
 name = "emed-backend"
 version = "0.1.0"
 description = "FastAPI backend for the eMed Hackathon project"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115.0,<1.0.0",
+    "python-dotenv>=1.2.2",
+    "python-multipart>=0.0.32",
+    "runware-sdk>=1.6.5",
     "uvicorn[standard]>=0.34.0,<1.0.0",
 ]
 
@@ -21,7 +24,7 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py39"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
