@@ -1150,6 +1150,102 @@ def test_chat_uses_a_varied_provider_reply_for_an_ordinary_question(
     assert "Watchful demo scenario" in context["grounded_context"]
 
 
+def test_chat_persists_only_the_active_scenario_thread(
+    domain_client: tuple[TestClient, SQLiteDemoStore], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    client, store = domain_client
+
+    def prepare_flare_scenario(state: dict[str, Any]) -> None:
+        state["phase"] = "flare"
+        state["messages"] = []
+        state["profileProposals"] = []
+        state["chatHistories"]["flare"] = []
+        state["profileProposalsByPhase"]["flare"] = []
+
+    store.mutate(prepare_flare_scenario, "Prepared independent flare chat", actor="test")
+    stable_before = [
+        message.model_dump(mode="json", by_alias=True)
+        for message in store.get().chatHistories["stable"]
+    ]
+
+    async def varied_reply(*_args: object, **_kwargs: object) -> str:
+        return "Let’s take this one step at a time."
+
+    monkeypatch.setattr(domain_routes, "_varied_chat_reply", varied_reply)
+    response = client.post("/api/chat", json={"text": "Can we talk about today?"})
+
+    assert response.status_code == 200
+    saved = store.get()
+    assert [
+        message.model_dump(mode="json", by_alias=True) for message in saved.chatHistories["stable"]
+    ] == stable_before
+    assert len(saved.chatHistories["flare"]) == 2
+    assert [message.id for message in saved.messages] == [
+        message.id for message in saved.chatHistories["flare"]
+    ]
+
+
+def test_snapshot_switch_restores_each_saved_scenario_chat(
+    domain_client: tuple[TestClient, SQLiteDemoStore],
+) -> None:
+    client, _ = domain_client
+    state, etag = _bootstrap(client)
+    watch_messages = list(state["messages"])
+    stable_messages = list(state["chatHistories"]["stable"])
+
+    state.update({"phase": "stable", "pendingPhase": None, "phaseConfirmed": False})
+    state["chatHistories"]["watch"] = watch_messages
+    state["profileProposalsByPhase"]["watch"] = list(state["profileProposals"])
+    state["messages"] = stable_messages
+    state["profileProposals"] = list(
+        state["profileProposalsByPhase"].get("stable", [])
+    )
+
+    opened_stable = client.put("/api/demo", headers={"If-Match": etag}, json=state)
+
+    assert opened_stable.status_code == 200, opened_stable.text
+    stable_state = opened_stable.json()
+    assert stable_state["phase"] == "stable"
+    assert stable_state["messages"] == stable_messages
+    assert stable_state["chatHistories"]["stable"] == stable_messages
+    assert stable_state["chatHistories"]["watch"] == watch_messages
+
+    stable_state.update({"phase": "watch", "pendingPhase": None, "phaseConfirmed": False})
+    stable_state["chatHistories"]["stable"] = list(stable_state["messages"])
+    stable_state["profileProposalsByPhase"]["stable"] = list(
+        stable_state["profileProposals"]
+    )
+    stable_state["messages"] = list(stable_state["chatHistories"]["watch"])
+    stable_state["profileProposals"] = list(
+        stable_state["profileProposalsByPhase"].get("watch", [])
+    )
+
+    reopened_watch = client.put(
+        "/api/demo",
+        headers={"If-Match": opened_stable.headers["etag"]},
+        json=stable_state,
+    )
+
+    assert reopened_watch.status_code == 200, reopened_watch.text
+    assert reopened_watch.json()["phase"] == "watch"
+    assert reopened_watch.json()["messages"] == watch_messages
+    assert reopened_watch.json()["chatHistories"]["stable"] == stable_messages
+    assert reopened_watch.json()["chatHistories"]["watch"] == watch_messages
+
+
+def test_snapshot_cannot_rewrite_an_inactive_scenario_chat(
+    domain_client: tuple[TestClient, SQLiteDemoStore],
+) -> None:
+    client, _ = domain_client
+    state, etag = _bootstrap(client)
+    state["chatHistories"]["stable"][0]["text"] = "Forged inactive conversation"
+
+    rejected = client.put("/api/demo", headers={"If-Match": etag}, json=state)
+
+    assert rejected.status_code == 409
+    assert "inactive demo conversations" in rejected.json()["detail"].lower()
+
+
 def test_chat_uses_highest_safety_level_across_all_parsed_entries(
     domain_client: tuple[TestClient, SQLiteDemoStore],
 ) -> None:

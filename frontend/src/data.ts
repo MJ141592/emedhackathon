@@ -127,11 +127,9 @@ export const ONBOARDING_TODAY: PhaseContent = {
   trend: [],
 };
 
-export const INITIAL_CHAT: ChatMessage[] = [];
-
-// The demo conversation unfolds in chapters, one per lifecycle phase. Switching demo
-// mode shows every chapter up to that phase, so the story reads as one continuous thread.
-const PHASE_CHAT: Record<PhaseId, ChatMessage[]> = {
+// Each lifecycle phase has its own short, self-contained demo conversation. Patient messages
+// stay in that phase rather than becoming context for another clinical scenario.
+export const INITIAL_CHAT_BY_PHASE: Record<PhaseId, ChatMessage[]> = {
   stable: [
     { id: 9101, from: "penny", createdAt: "2026-07-10T08:30:00.000Z", text: "Morning, Matthew. Nothing unusual in your logs this week — how are you feeling today?" },
     { id: 9102, from: "me", createdAt: "2026-07-10T08:42:00.000Z", text: "Feeling good. Porridge and a coffee for breakfast." },
@@ -162,11 +160,11 @@ const PHASE_CHAT: Record<PhaseId, ChatMessage[]> = {
   ],
 };
 
-const PHASE_ORDER: PhaseId[] = ["stable", "watch", "flare", "recovery"];
-
 export function storyChat(phase: PhaseId): ChatMessage[] {
-  return PHASE_ORDER.slice(0, PHASE_ORDER.indexOf(phase) + 1).flatMap((chapter) => PHASE_CHAT[chapter]);
+  return INITIAL_CHAT_BY_PHASE[phase];
 }
+
+export const INITIAL_CHAT = INITIAL_CHAT_BY_PHASE.watch;
 
 function experimentHistory(): JournalEntry[] {
   return Array.from({ length: 9 }, (_, index) => {
@@ -212,6 +210,8 @@ export const INITIAL_STATE: DemoState = {
   phaseConfirmed: false,
   messages: INITIAL_CHAT,
   profileProposals: [],
+  chatHistories: INITIAL_CHAT_BY_PHASE,
+  profileProposalsByPhase: {},
   entries: INITIAL_ENTRIES,
   profile: {
     name: "Matthew Johnson", timeZone: "Europe/London", dateOfBirth: "1992-03-18", diagnosis: "Crohn’s disease", subtype: "Ileocolonic", diagnosedYear: "2016", extent: "Terminal ileum and colon", surgeries: "Ileocecal resection, 2019", conditions: "Osteopenia; anxiety", allergies: "Penicillin — rash", immunosuppressed: true, familyHistory: "Maternal aunt with Crohn’s", usualBowel: "2–3 formed bowel movements/day (2.8 average)", usualPain: "1–2/10", usualHeartRate: "58 bpm resting", usualSleep: "7 hours", dietaryNeeds: "No formal exclusions; prefers oat milk", currentMedicines: "Azathioprine 100 mg daily", pastMedicines: "Mesalazine — stopped 2018, limited response", carePlan: "Contact St Mary’s IBD advice line if symptoms rise for 3 days, blood increases, or night waking begins.", address: "24 Marikina Road, London", postcode: "W2 1NY", adultEligibilityConfirmed: true, healthDataConsent: true, consentVersion: "demo-v1", consentRecordedAt: "2026-07-01T09:00:00.000Z", onboardingComplete: true,

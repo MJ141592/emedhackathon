@@ -43,6 +43,7 @@ import type {
   SafetyAlert,
   SupporterView,
 } from "../types";
+import { INITIAL_CHAT_BY_PHASE } from "../data";
 
 const DemoStoreContext = createContext<DemoStore | null>(null);
 let lastGeneratedId = Date.now() * 1000;
@@ -501,18 +502,25 @@ export function DemoStoreProvider({ children, initialState }: { children: ReactN
     setDemoPhase(phase: PhaseId) {
       setState((current) => {
         const changedScenario = phase !== current.phase;
+        const chatHistories = { ...current.chatHistories, [current.phase]: current.messages };
+        const profileProposalsByPhase = {
+          ...current.profileProposalsByPhase,
+          [current.phase]: current.profileProposals,
+        };
         return {
           ...current,
           phase,
           pendingPhase: undefined,
           phaseConfirmed: false,
-          // Demo scenarios are separate conversations: never carry a patient message or a
-          // pending conversation-derived proposal from one clinical context into another.
-          messages: changedScenario ? [] : current.messages,
-          profileProposals: changedScenario ? [] : current.profileProposals,
+          // Demo scenarios retain their own private conversation and its reviewable proposal
+          // drafts; none of that context is carried into another clinical scenario.
+          chatHistories,
+          profileProposalsByPhase,
+          messages: changedScenario ? structuredClone(chatHistories[phase] ?? INITIAL_CHAT_BY_PHASE[phase]) : current.messages,
+          profileProposals: changedScenario ? profileProposalsByPhase[phase] ?? [] : current.profileProposals,
           experiment: phase === "stable" ? current.experiment : { ...current.experiment, status: current.experiment.status === "active" ? "paused" : current.experiment.status },
           audit: audit(current, changedScenario
-            ? `Demo state changed to ${phase}; Penny conversation history was cleared for the separate scenario.`
+            ? `Demo state changed to ${phase}; Penny opened that scenario's separate conversation.`
             : `Demo state changed to ${phase}; this explicit demo control is not a clinical decision.`),
         };
       });
@@ -1592,7 +1600,7 @@ export function DemoStoreProvider({ children, initialState }: { children: ReactN
       }));
     },
     clearConversation() {
-      setState((current) => ({ ...current, messages: [], profileProposals: [], audit: audit(current, "Conversation history and its PMH proposal drafts were deleted; accepted profile fields were retained.") }));
+      setState((current) => ({ ...current, messages: [], profileProposals: [], chatHistories: { ...current.chatHistories, [current.phase]: [] }, profileProposalsByPhase: { ...current.profileProposalsByPhase, [current.phase]: [] }, audit: audit(current, "Conversation history and its PMH proposal drafts were deleted; accepted profile fields were retained.") }));
     },
     async clearSafetyAlert() {
       const generation = beginExplicitMutation();

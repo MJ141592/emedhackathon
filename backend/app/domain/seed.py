@@ -24,10 +24,80 @@ def _taper_days() -> list[dict[str, Any]]:
     return days
 
 
+def _phase_chat(
+    first_id: int, opening: str, patient_reply: str, follow_up: str
+) -> list[dict[str, Any]]:
+    return [
+        {
+            "id": first_id,
+            "from": "penny",
+            "createdAt": "2026-07-17T08:00:00.000Z",
+            "category": "general information",
+            "text": opening,
+        },
+        {
+            "id": first_id + 1,
+            "from": "me",
+            "createdAt": "2026-07-17T08:01:00.000Z",
+            "text": patient_reply,
+        },
+        {
+            "id": first_id + 2,
+            "from": "penny",
+            "createdAt": "2026-07-17T08:02:00.000Z",
+            "category": "general information",
+            "text": follow_up,
+        },
+        {
+            "id": first_id + 3,
+            "from": "me",
+            "createdAt": "2026-07-17T08:03:00.000Z",
+            "text": "Thanks — I’ll keep this updated if anything changes.",
+        },
+    ]
+
+
+def _demo_chat_histories() -> dict[str, list[dict[str, Any]]]:
+    return {
+        "stable": _phase_chat(
+            101,
+            "This Steady demo is a quiet check-in. What would you like to keep track of "
+            "while things feel usual?",
+            "I feel pretty normal and want to keep a simple baseline.",
+            "That makes sense. Record only what is useful to you; a normal day is useful "
+            "context too.",
+        ),
+        "watch": _phase_chat(
+            201,
+            "This Watchful demo has a few changes from your recorded baseline. How are you "
+            "feeling today?",
+            "I’ve had more urgency and a rough night, but I’m not sure what it means.",
+            "I can help you review the editable records and prepare questions for your IBD "
+            "team. A pattern is not a diagnosis.",
+        ),
+        "flare": _phase_chat(
+            301,
+            "This Flare demo focuses on getting the right support. Are any symptoms becoming "
+            "urgent or difficult to manage?",
+            "I’m more uncomfortable and want to make sure my team has a clear update.",
+            "I can help structure what you report. Heavy bleeding, severe pain, faintness or "
+            "fever need urgent help rather than a chat reply.",
+        ),
+        "recovery": _phase_chat(
+            401,
+            "This Recovery demo focuses on how you are settling after a difficult period. "
+            "What would you like to record today?",
+            "Symptoms are easing and I want to follow the plan carefully.",
+            "I can help track recovery observations and show the clinician-authored plan, "
+            "but I cannot change treatment or doses.",
+        ),
+    }
+
+
 def build_demo_state() -> DemoState:
     """Return the canonical v2 Matthew fixture shared with the frontend."""
 
-    return DemoState.model_validate(
+    state = DemoState.model_validate(
         {
             "version": 2,
             "phase": "watch",
@@ -319,7 +389,8 @@ def build_demo_state() -> DemoState:
                 "notificationBudget": "balanced",
             },
             "clinicianSummary": (
-                "Matthew has two included bowel records across 16–17 July; both record Bristol type "
+                "Matthew has two included bowel records across 16–17 July; both record "
+                "Bristol type "
                 "6 with urgency, and one records a small amount of blood and night waking. A "
                 "separate record notes pain up to 5/10 with high fatigue. The latest included "
                 "watch record is resting heart rate 64 bpm versus a recorded 58 bpm baseline, "
@@ -343,6 +414,10 @@ def build_demo_state() -> DemoState:
             ],
         }
     )
+    histories = _demo_chat_histories()
+    snapshot = state.model_dump(mode="json", by_alias=True)
+    snapshot.update({"messages": histories["watch"], "chatHistories": histories})
+    return DemoState.model_validate(snapshot)
 
 
 def build_empty_state() -> DemoState:
@@ -353,6 +428,8 @@ def build_empty_state() -> DemoState:
     state["phaseConfirmed"] = False
     state["messages"] = []
     state["profileProposals"] = []
+    state["chatHistories"] = {}
+    state["profileProposalsByPhase"] = {}
     state["entries"] = []
     state["audit"] = [
         {

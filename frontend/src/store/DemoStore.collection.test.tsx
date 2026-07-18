@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { expect, test } from "vitest";
-import { INITIAL_STATE } from "../data";
+import { INITIAL_CHAT_BY_PHASE, INITIAL_STATE } from "../data";
 import type { DemoState } from "../types";
 import { DemoStoreProvider, useDemoStore } from "./DemoStore";
 import { addCalendarDays, dateInTimeZone } from "./patientTime";
@@ -17,6 +17,7 @@ function PhaseChatHarness() {
   const { state, setDemoPhase } = useDemoStore();
   return <>
     <button onClick={() => setDemoPhase("flare")}>Open flare scenario</button>
+    <button onClick={() => setDemoPhase("watch")}>Open watch scenario</button>
     <output data-testid="phase-chat-state">{JSON.stringify(state)}</output>
   </>;
 }
@@ -54,13 +55,30 @@ test("collection reanchors the unchanged taper and clears unissued adherence for
   expect(collected.audit[0].action).toMatch(/anchored to collection day/i);
 });
 
-test("switching demo scenarios starts a separate empty Penny conversation", () => {
+test("switching demo scenarios restores that scenario's separate Penny conversation", () => {
   render(<DemoStoreProvider initialState={INITIAL_STATE}><PhaseChatHarness /></DemoStoreProvider>);
 
   fireEvent.click(screen.getByRole("button", { name: "Open flare scenario" }));
 
   const switched = JSON.parse(screen.getByTestId("phase-chat-state").textContent ?? "{}") as DemoState;
   expect(switched.phase).toBe("flare");
-  expect(switched.messages).toEqual([]);
+  expect(switched.messages).toEqual(INITIAL_CHAT_BY_PHASE.flare);
   expect(switched.profileProposals).toEqual([]);
+});
+
+test("each scenario retains its own conversation when changing away and back", () => {
+  const initial = structuredClone(INITIAL_STATE);
+  initial.messages = [{
+    id: 999,
+    from: "me",
+    text: "Keep this only in the watchful chat.",
+    createdAt: "2026-07-17T09:00:00.000Z",
+  }];
+
+  render(<DemoStoreProvider initialState={initial}><PhaseChatHarness /></DemoStoreProvider>);
+  fireEvent.click(screen.getByRole("button", { name: "Open flare scenario" }));
+  fireEvent.click(screen.getByRole("button", { name: "Open watch scenario" }));
+
+  const returned = JSON.parse(screen.getByTestId("phase-chat-state").textContent ?? "{}") as DemoState;
+  expect(returned.messages).toEqual(initial.messages);
 });

@@ -62,6 +62,10 @@ export function applyPhotoRetention(state: DemoState, now: Date | number = new D
   if (!expired) return state;
   return {
     ...state,
+    chatHistories: state.chatHistories ?? { [state.phase]: state.messages },
+    profileProposalsByPhase: state.profileProposalsByPhase ?? {
+      [state.phase]: state.profileProposals,
+    },
     entries,
     audit: [{ id: Date.now() * 1000 + 1, at: "On load", action: `${expired} expired photo${expired === 1 ? " was" : "s were"} removed under the patient’s retention setting; non-image records were preserved.` }, ...state.audit],
   };
@@ -329,6 +333,8 @@ export function emptyDemoState(): DemoState {
   state.phaseConfirmed = false;
   state.messages = [];
   state.profileProposals = [];
+  state.chatHistories = {};
+  state.profileProposalsByPhase = {};
   state.entries = [];
   state.audit = [{ id: Date.now() * 1000, at: "Just now", action: "All local demo data was deleted by the patient." }];
   state.profile = {
