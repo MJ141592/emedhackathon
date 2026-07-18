@@ -1352,7 +1352,7 @@ def build_clinician_summary(state: DemoState) -> str:
         (
             entry
             for entry in state.entries
-            if not entry.excluded and entry.kind != "Remi noticed"
+            if not entry.excluded and entry.kind != "Penny noticed"
         ),
         key=lambda entry: (entry.date, entry.time, entry.id),
         reverse=True,

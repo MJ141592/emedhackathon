@@ -207,7 +207,7 @@ function withAddedEntry(current: DemoState, entry: JournalEntry): DemoState {
           current.profile,
           [entry.id],
           [],
-          "This manual entry matched the app’s deterministic safety screen. This was not decided by Remi or AI.",
+          "This manual entry matched the app’s deterministic safety screen. This was not decided by Penny or AI.",
         )
       : current.safetyAlert,
     audit: audit(
@@ -770,7 +770,7 @@ export function DemoStoreProvider({ children, initialState }: { children: ReactN
             createdAt: timestamp,
             category: urgentTriggers.length ? "general information" as const : "recorded fact" as const,
             text: urgentTriggers.length
-              ? `${label[0].toUpperCase()}${label.slice(1)} is now recorded. The separate rules-based screen says ${safetyLevelForTriggers(urgentTriggers) === "emergency" ? "to use urgent care now" : "to contact your IBD team or GP today"}; do not wait for Remi or a team message.`
+              ? `${label[0].toUpperCase()}${label.slice(1)} is now recorded. The separate rules-based screen says ${safetyLevelForTriggers(urgentTriggers) === "emergency" ? "to use urgent care now" : "to contact your IBD team or GP today"}; do not wait for Penny or a team message.`
               : `Thanks — I updated the original bowel record to say ${label}. You can still correct or exclude it from the journal.`,
             sources: [{ entryId: corrected.id, label: corrected.kind, date: `${corrected.date}, ${corrected.time}`, detail: corrected.body, type: "fact" as const }],
           };
@@ -796,8 +796,8 @@ export function DemoStoreProvider({ children, initialState }: { children: ReactN
           category: "general information" as const,
           sources: [],
           text: journalWriteBlocked
-            ? "Remi’s journal access is off, so I did not read or add to your journal. You can still use the manual quick-entry buttons. The separate urgent-wording screen remains active for safety."
-            : "Remi’s profile access is off, so I did not create a medical-history proposal or change your PMH. You can add the wording manually under Profile.",
+            ? "Penny’s journal access is off, so I did not read or add to your journal. You can still use the manual quick-entry buttons. The separate urgent-wording screen remains active for safety."
+            : "Penny’s profile access is off, so I did not create a medical-history proposal or change your PMH. You can add the wording manually under Profile.",
         };
         const nextEntries = [...savedEntries, ...current.entries];
         const safetySourceEntryIds = savedEntries
@@ -821,12 +821,12 @@ export function DemoStoreProvider({ children, initialState }: { children: ReactN
           audit: audit(current, result.safetyAlert
             ? `Deterministic safety screen matched: ${result.safetyAlert.triggers.join(", ")}.`
             : profileWriteBlocked
-              ? "Remi respected disabled profile access; no PMH proposal or profile change was created."
+              ? "Penny respected disabled profile access; no PMH proposal or profile change was created."
               : savedProfileProposals.length
                 ? `Chat capture prepared ${savedProfileProposals.length} patient-reviewable PMH proposal${savedProfileProposals.length === 1 ? "" : "s"}; the profile was not changed.`
                 : journalAllowed
                   ? `Chat capture produced ${savedEntries.length} structured journal entries.${evidenceChanged ? proposalAuditSuffix(next) : ""}`
-                  : "Remi respected disabled journal access; no journal record was read or created."),
+                  : "Penny respected disabled journal access; no journal record was read or created."),
         };
       });
     },

@@ -247,7 +247,7 @@ export function extractProfileProposals(text: string): ProfileProposalDraft[] {
   return proposals;
 }
 
-/** Deterministic red-flag screening for manual/structured capture, kept outside Remi. */
+/** Deterministic red-flag screening for manual/structured capture, kept outside Penny. */
 export function screenStructuredEntry(
   entry: JournalDraft,
   profile?: { immunosuppressed: boolean },
@@ -423,7 +423,7 @@ export function structureUtterance(text: string, profile?: { immunosuppressed: b
           from: "penny",
           category: "general information",
           text: level === "emergency"
-            ? "I saved an editable draft, but the separate safety screen found wording that needs urgent care now. Do not wait for Remi or a team message."
+            ? "I saved an editable draft, but the separate safety screen found wording that needs urgent care now. Do not wait for Penny or a team message."
             : "I saved an editable draft and the separate safety screen found a reason for same-day clinical advice. Contact your IBD team or GP today; use urgent care if symptoms become severe or you cannot safely wait.",
         },
         safetyAlert: {

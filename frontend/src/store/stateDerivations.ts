@@ -181,7 +181,7 @@ export function deriveEntryFlagged(entry: JournalEntry, profile?: DemoState["pro
 
 export function buildClinicianSummary(state: DemoState, entries = state.entries): string {
   const allIncluded = entries
-    .filter((entry) => !entry.excluded && entry.kind !== "Remi noticed")
+    .filter((entry) => !entry.excluded && entry.kind !== "Penny noticed")
     .sort((a, b) => `${b.date}T${b.time}`.localeCompare(`${a.date}T${a.time}`));
   const included = allIncluded.slice(0, 10);
   const patient = state.profile.name.trim() || "The patient";

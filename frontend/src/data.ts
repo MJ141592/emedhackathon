@@ -26,7 +26,7 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
   stable: {
     pill: { label: "Steady — at your baseline", className: "pill ok" },
     sub: "Friday 17 July · a quiet week, in a good way",
-    gauge: { percent: 14, label: "Remission" },
+    gauge: { percent: 14, label: "Pennyssion" },
     metrics: [
       { k: "Bowel movements / day", v: "2.8", d: "at your 2–3 baseline", dClass: "ok" },
       { k: "Average pain", v: "1", unit: "/10", d: "usual for you", dClass: "flat" },
@@ -37,7 +37,7 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
       { kind: "experiment", icon: "note", title: "Oat milk experiment — day 9 of 14", desc: "No clear change so far — an observation, not proof.", cta: "Open experiment" },
       { kind: "summary", icon: "message", title: "Prepare your August clinic summary", desc: "Drafted from your journal — you edit before sharing.", cta: "Preview summary" },
     ],
-    suggestionsNote: "When things are steady, Remi stays out of the way.",
+    suggestionsNote: "When things are steady, Penny stays out of the way.",
     trend: trend([2, 2, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1], [58, 57, 58, 58, 57, 58, 58, 57, 58, 58, 57, 58, 58, 58], [2, 2, 1, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2]),
   },
   watch: {
@@ -71,7 +71,7 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
       { kind: "urgent", icon: "phone", title: "Run today’s safety check", desc: "Heavy bleeding, severe pain, fever or faintness need urgent care.", cta: "Check symptoms" },
       { kind: "prescription", icon: "message", title: "Clinician-owned rescue pathway", desc: "Prepared only under your documented plan; Dr Ferreira must approve.", cta: "View prescription flow" },
     ],
-    suggestionsNote: "Remi never prescribes or changes medicine. Contact your team first.",
+    suggestionsNote: "Penny never prescribes or changes medicine. Contact your team first.",
     trend: trend([3, 3, 4, 4, 5, 5, 6, 7, 7, 8, 8, 9, 8, 8], [59, 60, 60, 61, 62, 62, 64, 65, 66, 67, 67, 68, 67, 67], [3, 3, 4, 4, 5, 5, 6, 6, 7, 8, 8, 8, 7, 7]),
   },
   recovery: {
@@ -104,7 +104,7 @@ export const ONBOARDING_TODAY: PhaseContent = {
     { k: "Sleep & fatigue", v: "—", d: "Not recorded", dClass: "flat" },
   ],
   suggestions: [],
-  suggestionsNote: "Remi and health tracking remain off until onboarding and consent are complete.",
+  suggestionsNote: "Penny and health tracking remain off until onboarding and consent are complete.",
   trend: [],
 };
 
@@ -141,7 +141,7 @@ function experimentHistory(): JournalEntry[] {
 export const INITIAL_ENTRIES: JournalEntry[] = [
   { id: 1, date: TODAY_DATE, time: "07:40", kind: "BOWEL MOVEMENT", body: "Bristol type 6, urgency, small amount of blood", source: "manual", flagged: true, structured: { bristol: 6, urgency: true, blood: "small", mucus: false, nightWaking: true, pain: 4 } },
   { id: 2, date: TODAY_DATE, time: "08:00", kind: "FROM YOUR WATCH", body: "Resting HR 64 bpm · HRV 38 ms · sleep 5 h 10 m — supporting context only", source: "wearable", structured: { restingHeartRate: 64, heartRateVariabilityMs: 38, sleepHours: 5.17, softSignal: true } },
-  { id: 3, date: TODAY_DATE, time: "08:05", kind: "Remi noticed", body: "Several included records across 16–17 July differ from baseline: two Bristol type 6 bowel logs with urgency, one with a small amount of blood, pain up to 5/10 with high fatigue, and a resting heart rate of 64 bpm. Confirm the source records before acting.", source: "penny" },
+  { id: 3, date: TODAY_DATE, time: "08:05", kind: "Penny noticed", body: "Several included records across 16–17 July differ from baseline: two Bristol type 6 bowel logs with urgency, one with a small amount of blood, pain up to 5/10 with high fatigue, and a resting heart rate of 64 bpm. Confirm the source records before acting.", source: "penny" },
   { id: 4, date: "2026-07-16", time: "19:30", kind: "MEAL", body: "Lamb madras, naan, two beers — out with friends", source: "manual", structured: { portion: "usual", hydration: "two beers" } },
   { id: 5, date: "2026-07-16", time: "22:15", kind: "PAIN", body: "Cramping, lower right, 5/10 · fatigue high", source: "manual", structured: { pain: 5, site: "lower right", fatigue: "high" } },
   { id: 6, date: "2026-07-16", time: "21:10", kind: "BOWEL MOVEMENT", body: "Bristol type 6 with urgency", source: "chat", structured: { bristol: 6, urgency: true } },
@@ -188,7 +188,7 @@ export const INITIAL_STATE: DemoState = {
   clinicianSummary: "Matthew has two included bowel records across 16–17 July; both record Bristol type 6 with urgency, and one records a small amount of blood and night waking. A separate record notes pain up to 5/10 with high fatigue. The latest included watch record is resting heart rate 64 bpm versus a recorded 58 bpm baseline, with 5 h 10 m sleep versus a recorded usual 7 hours. These records do not establish total daily bowel frequency. A home calprotectin test has been prepared but requires Matthew’s confirmation. Current treatment: azathioprine 100 mg daily. The prepared prednisolone schedule has no doses marked taken or missed. No medication change has been made by Gutsy.",
   clinicianSummaryEdited: false,
   clinicianSummaryStale: false,
-  audit: [{ id: 1, at: "17 Jul, 08:05", action: "Remi surfaced several included records across two recorded days for patient review." }],
+  audit: [{ id: 1, at: "17 Jul, 08:05", action: "Penny surfaced several included records across two recorded days for patient review." }],
 };
 
 export const CHAT_CHIPS = [

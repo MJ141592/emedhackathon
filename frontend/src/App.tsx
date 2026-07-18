@@ -164,7 +164,7 @@ function App() {
       ? {
           ...suggestion,
           title: `Home-test workflow: ${state.testOrder.status}`,
-          desc: "Remi used only the Care record you permitted. Open Care to review the workflow; symptom evidence remains private.",
+          desc: "Penny used only the Care record you permitted. Open Care to review the workflow; symptom evidence remains private.",
           cta: "Open Care",
         }
       : suggestion;

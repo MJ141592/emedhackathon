@@ -980,7 +980,7 @@ def _team_message_source_fingerprint(state: DemoState) -> dict[str, Any]:
                 "structured": entry.structured,
             }
             for entry in state.entries
-            if entry.kind != "Remi noticed"
+            if entry.kind != "Penny noticed"
         },
         "profile": state.profile.model_dump(mode="json"),
         "testOrder": state.testOrder.model_dump(mode="json"),
@@ -1314,7 +1314,7 @@ def _validate_snapshot_transition(current: DemoState, incoming: DemoState) -> No
         raise HTTPException(
             status_code=409,
             detail=(
-                "New patient messages, deterministic captures and Remi replies must be "
+                "New patient messages, deterministic captures and Penny replies must be "
                 "server-authored through the explicit chat endpoint."
             ),
         )
@@ -4153,7 +4153,7 @@ async def send_chat(payload: ChatInput, store: Store, services: AI) -> dict[str,
         category = "general information"
     elif capture.entries and not journal_access:
         reply_text = (
-            "Remi’s journal access is off, so I did not add a health record. The separate "
+            "Penny’s journal access is off, so I did not add a health record. The separate "
             "deterministic safety screen still ran. You can use manual quick entry or change "
             "that permission in Privacy."
         )
@@ -4166,7 +4166,7 @@ async def send_chat(payload: ChatInput, store: Store, services: AI) -> dict[str,
     elif conversation_question and not current.privacy.assistantConversationAccess:
         reply_text = (
             "Earlier-conversation access is off, so I cannot retrieve what you previously "
-            "told Remi. You can review the conversation yourself or enable that permission."
+            "told Penny. You can review the conversation yourself or enable that permission."
         )
         category = "general information"
     elif conversation_question:
@@ -4192,7 +4192,7 @@ async def send_chat(payload: ChatInput, store: Store, services: AI) -> dict[str,
         category = "recorded fact"
     elif capture.profileProposals and not current.privacy.assistantProfileAccess:
         reply_text = (
-            "Remi’s profile access is off, so I did not create a medical-history proposal or "
+            "Penny’s profile access is off, so I did not create a medical-history proposal or "
             "change your PMH. You can add the wording manually under Profile."
         )
         category = "general information"
@@ -4228,7 +4228,7 @@ async def send_chat(payload: ChatInput, store: Store, services: AI) -> dict[str,
             "MEDICATION": "the medication",
             "FROM YOUR WATCH": "the wearable observation",
             "TEST RESULT": "the test result",
-            "Remi noticed": "the observation",
+            "Penny noticed": "the observation",
         }
         labels = [capture_labels[entry.kind] for entry in new_entries]
         joined_labels = (
@@ -4393,7 +4393,7 @@ def correct_patient_chat_message(
     if original.from_ != "me":
         raise HTTPException(
             status_code=409,
-            detail="Remi replies cannot be rewritten. Delete the individual reply instead.",
+            detail="Penny replies cannot be rewritten. Delete the individual reply instead.",
         )
 
     def apply(state: dict[str, Any]) -> None:
@@ -4466,7 +4466,7 @@ def delete_chat_message(message_id: int, response: Response, store: Store) -> No
     _, _, revision = store.mutate_with_revision(
         apply,
         (
-            f"Deleted individual {'patient message' if original.from_ == 'me' else 'Remi reply'} "
+            f"Deleted individual {'patient message' if original.from_ == 'me' else 'Penny reply'} "
             f"{message_id} and retracted dependent conversation provenance"
         ),
         actor="patient",
@@ -5226,7 +5226,7 @@ def approve_prescription(store: Store) -> PrescriptionFlow:
 
     state, _ = store.mutate(
         apply,
-        "Simulation: Dr Rui Ferreira authorised the prescription; Remi made no dose decision",
+        "Simulation: Dr Rui Ferreira authorised the prescription; Penny made no dose decision",
         actor="prescriber-simulation",
     )
     return state.prescription
