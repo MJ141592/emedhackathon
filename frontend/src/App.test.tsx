@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { afterEach, expect, test } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
 import App from "./App";
 import { INITIAL_STATE } from "./data";
 import { DemoStoreProvider } from "./store/DemoStore";
@@ -126,12 +126,30 @@ test("shows save progress and a queued-error explanation inside an open locked d
 
   expect(await within(drawer).findByRole("status")).toHaveTextContent(/Saving securely.*Controls resume/i);
   expect(drawer.querySelector(".drawer-body")).toHaveAttribute("inert");
-  expect(screen.getByText(/Other changes pause until this one is confirmed/)).toBeInTheDocument();
+  expect(screen.queryByText(/Other changes pause until this one is confirmed/)).not.toBeInTheDocument();
 
   await act(async () => pendingSync.reject(new Error("simulated API outage")));
   expect(await within(drawer).findByRole("alert")).toHaveTextContent(/queued but not saved.*Close this panel/i);
   expect(screen.getByRole("button", { name: "Retry change" })).toBeInTheDocument();
   expect(drawer.querySelector(".drawer-body")).toHaveAttribute("inert");
+});
+
+test("keeps background demo saves out of the top screen chrome", async () => {
+  const remote = structuredClone(INITIAL_STATE);
+  const pendingHydration = deferred<DemoState | null>();
+  const pendingSync = deferred<DemoState>();
+  const sync = vi.fn((_candidate: DemoState) => pendingSync.promise);
+  configureDemoSyncAdapter({ hydrate: () => pendingHydration.promise, sync });
+  renderApp(remote);
+  await act(async () => pendingHydration.resolve(remote));
+
+  fireEvent.click(screen.getByRole("button", { name: "Steady" }));
+  await waitFor(() => expect(sync).toHaveBeenCalled());
+
+  expect(screen.queryByText(/Other changes pause until this one is confirmed/)).not.toBeInTheDocument();
+  expect(screen.queryByText("Saving securely…")).not.toBeInTheDocument();
+
+  await act(async () => pendingSync.resolve(sync.mock.calls[0][0]));
 });
 
 test("renders the canonical Gutsy home with Penny, trends and journal", () => {

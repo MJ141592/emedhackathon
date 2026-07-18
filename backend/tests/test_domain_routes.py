@@ -1185,6 +1185,27 @@ def test_chat_persists_only_the_active_scenario_thread(
     ]
 
 
+def test_bootstrap_uses_robs_independent_default_chats(
+    domain_client: tuple[TestClient, SQLiteDemoStore],
+) -> None:
+    client, _ = domain_client
+    state, _ = _bootstrap(client)
+
+    assert {
+        phase: [message["id"] for message in messages]
+        for phase, messages in state["chatHistories"].items()
+    } == {
+        "stable": [9101, 9102, 9103, 9104, 9105],
+        "watch": [9201, 9202, 9203, 9204, 9205],
+        "flare": [9301, 9302, 9303, 9304, 9305],
+        "recovery": [9401, 9402, 9403, 9404, 9405],
+    }
+    assert state["messages"] == state["chatHistories"]["watch"]
+    assert "Royal Mail" in state["chatHistories"]["watch"][-1]["text"]
+    assert "Wellfield Pharmacy" in state["chatHistories"]["flare"][-2]["text"]
+    assert "finishes on 16 August" in state["chatHistories"]["recovery"][-1]["text"]
+
+
 def test_snapshot_switch_restores_each_saved_scenario_chat(
     domain_client: tuple[TestClient, SQLiteDemoStore],
 ) -> None:
