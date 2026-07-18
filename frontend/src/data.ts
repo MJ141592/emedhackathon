@@ -26,7 +26,7 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
   stable: {
     pill: { label: "Steady — at your baseline", className: "pill ok" },
     sub: "Friday 17 July · a quiet week, in a good way",
-    gauge: { percent: 14, label: "Pennyssion" },
+    gauge: { percent: 14, label: "Remission" },
     metrics: [
       { k: "Bowel movements / day", v: "2.8", d: "at your 2–3 baseline", dClass: "ok" },
       { k: "Average pain", v: "0", unit: "/10", d: "usual for you", dClass: "flat" },

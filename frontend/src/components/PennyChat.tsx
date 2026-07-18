@@ -93,7 +93,7 @@ export function PennyChat({ messages, timeZone, trackingEnabled, onSend, notify 
     try {
       const status = await aiClient.status();
       if (status.configured) {
-        const greeting = await aiClient.synthesize("Hi Matthew, it's Remi. How are you feeling today?", "eve", "en-GB");
+        const greeting = await aiClient.synthesize("Hi Matthew, it's Penny. How are you feeling today?", "eve", "en-GB");
         const audio = new Audio(greeting.audio_url);
         callAudioRef.current = audio;
         void audio.play().catch(() => undefined);
@@ -131,17 +131,17 @@ export function PennyChat({ messages, timeZone, trackingEnabled, onSend, notify 
       <form className="composer" aria-busy={sendBusy} onSubmit={(event) => { event.preventDefault(); void send(input); }}>
         <input ref={composerRef} value={input} disabled={!trackingEnabled} readOnly={sendBusy} aria-disabled={!trackingEnabled || undefined} onChange={(event) => setInput(event.target.value)} placeholder={trackingEnabled ? "Message Penny" : "Tracking paused — re-enable consent in Profile"} aria-label="Message Penny" />
         <button className="send" type="submit" disabled={!trackingEnabled || sendBusy} aria-label={sendBusy ? "Sending message…" : "Send message"} aria-describedby={sendBusy ? "remi-send-status" : undefined}><Send aria-hidden="true" /></button>
-        <button className="tool" type="button" onClick={() => void startCall()} aria-label="Start a voice call with Remi"><Phone aria-hidden="true" /></button>
+        <button className="tool" type="button" onClick={() => void startCall()} aria-label="Start a voice call with Penny"><Phone aria-hidden="true" /></button>
         <button className="tool" type="button" onClick={() => photoInputRef.current?.click()} aria-label="Take or add a photo"><Camera aria-hidden="true" /></button>
         <input ref={photoInputRef} type="file" accept="image/*" capture="environment" className="sr-only" tabIndex={-1} aria-hidden="true" onChange={attachPhoto} />
         <span id="remi-send-status" className="sr-only" role="status" aria-live="polite">{sendBusy ? "Sending message…" : ""}</span>
       </form>
 
       {call && (
-        <div className="modal-layer call-layer" role="dialog" aria-modal="true" aria-label="Voice call with Remi">
+        <div className="modal-layer call-layer" role="dialog" aria-modal="true" aria-label="Voice call with Penny">
           <section className="call-dialog">
             <div className={call === "connecting" ? "call-avatar pulsing" : "call-avatar"} aria-hidden="true"><Sparkles /></div>
-            <h2>Remi</h2>
+            <h2>Penny</h2>
             <p className="call-status" role="status">{call === "connecting" ? "Calling…" : `${String(Math.floor(callSeconds / 60)).padStart(2, "0")}:${String(callSeconds % 60).padStart(2, "0")}`}</p>
             <button className="call-end" onClick={endCall} aria-label="End call"><PhoneOff aria-hidden="true" /></button>
           </section>
