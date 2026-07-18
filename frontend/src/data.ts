@@ -108,25 +108,46 @@ export const ONBOARDING_TODAY: PhaseContent = {
   trend: [],
 };
 
-export const INITIAL_CHAT: ChatMessage[] = [
-  { id: 1, from: "penny", createdAt: "2026-07-17T08:12:00.000Z", category: "recorded fact", text: "Morning, Matthew. You logged more urgency than usual yesterday, and your watch shows your resting heart rate was up overnight. How are you feeling this morning?", sources: [
-    { entryId: 2, label: "Watch sync", date: "17 Jul, 08:00", detail: "Resting heart rate 64 bpm", type: "fact" },
-    { entryId: 6, label: "Bowel log", date: "16 Jul, 21:10", detail: "Urgency recorded", type: "fact" },
-  ] },
-  { id: 2, from: "me", createdAt: "2026-07-17T08:14:00.000Z", text: "Rough night honestly. Crampy, and I was up twice." },
-  { id: 3, from: "penny", createdAt: "2026-07-17T08:14:30.000Z", category: "possible pattern", text: "I’m sorry it was a rough night. Several included records across two recorded days differ from your baseline, but they do not diagnose a flare. I’ve linked each source in Trends & evidence so you can correct it.", sources: [
-    { entryId: 1, label: "Bowel log", date: "17 Jul, 07:40", detail: "Bristol type 6, urgency and a small amount of blood", type: "fact" },
-    { entryId: 5, label: "Pain log", date: "16 Jul, 22:15", detail: "Pain 5/10 and high fatigue", type: "fact" },
-    { entryId: 6, label: "Bowel log", date: "16 Jul, 21:10", detail: "Bristol type 6 with urgency", type: "fact" },
-    { entryId: 2, label: "Watch sync", date: "17 Jul, 08:00", detail: "Resting heart rate 64 bpm and sleep 5 h 10 m", type: "fact" },
-  ] },
-  { id: 4, from: "me", createdAt: "2026-07-17T08:15:30.000Z", text: "There was a bit of blood again this morning. Should I be worried?" },
-  { id: 5, from: "penny", createdAt: "2026-07-17T08:16:00.000Z", category: "general information", text: "A small amount of blood alongside looser stools is common during a bump like this, and on its own it isn’t an emergency. If bleeding becomes heavy or continuous, or you feel faint or feverish, that needs urgent care today. Given two days of change, this is exactly what your calprotectin home test is for — I’ve prepared the order for you to review." },
-  { id: 6, from: "me", createdAt: "2026-07-17T08:18:00.000Z", text: "Ok, I’ll do the test. Anything else I should do today?" },
-  { id: 7, from: "penny", createdAt: "2026-07-17T08:18:40.000Z", category: "general information", text: "Keep it gentle today: plenty of fluids, smaller and simpler meals, and log anything you notice — it all sharpens the picture. I’ve also drafted a short summary of your week for Jade, your IBD nurse. Nothing is sent until you’ve read and approved every word." },
-  { id: 8, from: "me", createdAt: "2026-07-17T08:20:00.000Z", text: "Thanks. Porridge and a peppermint tea for breakfast, by the way." },
-  { id: 9, from: "penny", createdAt: "2026-07-17T08:20:20.000Z", category: "recorded fact", text: "Logged: porridge and peppermint tea, 17 July. That’s a kind choice on a crampy morning. I’ll check in with you this evening — and if anything changes before then, just message me." },
-];
+export const INITIAL_CHAT: ChatMessage[] = [];
+
+// The demo conversation unfolds in chapters, one per lifecycle phase. Switching demo
+// mode shows every chapter up to that phase, so the story reads as one continuous thread.
+const PHASE_CHAT: Record<PhaseId, ChatMessage[]> = {
+  stable: [
+    { id: 9101, from: "penny", createdAt: "2026-07-10T08:30:00.000Z", text: "Morning, Matthew. Nothing unusual in your logs this week — how are you feeling today?" },
+    { id: 9102, from: "me", createdAt: "2026-07-10T08:42:00.000Z", text: "Feeling good. Porridge and a coffee for breakfast." },
+    { id: 9103, from: "penny", createdAt: "2026-07-10T08:42:20.000Z", category: "recorded fact", text: "Logged: porridge and coffee, 10 July. Have a good day — I’ll stay out of your way." },
+    { id: 9104, from: "me", createdAt: "2026-07-12T13:05:00.000Z", text: "Chicken salad for lunch, and I managed a 5k run this morning." },
+    { id: 9105, from: "penny", createdAt: "2026-07-12T13:06:00.000Z", category: "recorded fact", text: "Both logged. Your resting heart rate is right on your 58 bpm baseline and sleep is averaging 8h 30m — everything looks steady. Keep doing what you’re doing." },
+  ],
+  watch: [
+    { id: 9201, from: "penny", createdAt: "2026-07-16T08:05:00.000Z", category: "possible pattern", text: "Morning, Matthew. Your watch showed a raised overnight heart rate, and yesterday you logged looser stools than usual. Any cramping or urgency this morning?" },
+    { id: 9202, from: "me", createdAt: "2026-07-16T08:20:00.000Z", text: "A bit crampy actually, and I’ve had to rush to the loo twice already." },
+    { id: 9203, from: "penny", createdAt: "2026-07-16T08:21:00.000Z", text: "Thanks for telling me — I’ve recorded both. Two more questions: how would you rate the pain out of 10, and have you noticed any blood?" },
+    { id: 9204, from: "me", createdAt: "2026-07-16T08:24:00.000Z", text: "Pain’s about a 4. And yes, a small amount of blood this morning." },
+    { id: 9205, from: "penny", createdAt: "2026-07-17T08:30:00.000Z", category: "recorded fact", text: "You’ve now had two days of change from your baseline, so under your care plan I’ve ordered a calprotectin home test. It’s being delivered by Royal Mail and should arrive tomorrow — post the sample back in the prepaid envelope and I’ll share the result as soon as it’s in." },
+  ],
+  flare: [
+    { id: 9301, from: "penny", createdAt: "2026-07-18T09:10:00.000Z", category: "recorded fact", text: "Your calprotectin result has come back raised at 410 µg/g, and your symptoms haven’t settled. I’ve shared this week’s picture with your IBD team at St Mary’s and asked them to review it today." },
+    { id: 9302, from: "me", createdAt: "2026-07-18T09:25:00.000Z", text: "Ok. What happens now?" },
+    { id: 9303, from: "penny", createdAt: "2026-07-18T11:40:00.000Z", category: "recorded fact", text: "Jade from your IBD team has reviewed everything with Dr Ferreira. He’s prescribed a course of prednisolone (a steroid) to settle things down, following the rescue plan you agreed with him." },
+    { id: 9304, from: "penny", createdAt: "2026-07-18T15:20:00.000Z", category: "recorded fact", text: "Your prescription is ready to collect at Wellfield Pharmacy on Marikina Road — they’re open until 6pm today. Start with 30 mg (6 × 5 mg tablets) with breakfast tomorrow; I’ll remind you each morning." },
+    { id: 9305, from: "me", createdAt: "2026-07-18T17:05:00.000Z", text: "Picked them up, thanks." },
+  ],
+  recovery: [
+    { id: 9401, from: "penny", createdAt: "2026-07-29T08:00:00.000Z", category: "recorded fact", text: "Morning, Matthew — taper day 12. Today’s dose steps down to 25 mg (5 × 5 mg with breakfast). Next step: 20 mg on Monday." },
+    { id: 9402, from: "me", createdAt: "2026-07-29T08:15:00.000Z", text: "Done. Is it normal to feel a bit wired on these?" },
+    { id: 9403, from: "penny", createdAt: "2026-07-29T08:16:00.000Z", category: "general information", text: "Yes — restlessness and lighter sleep are common on steroids, and they usually ease as the dose steps down. Don’t stop suddenly, even on a good day. The encouraging part: your bowel logs are back near baseline at 3 a day and pain is down to 2/10." },
+    { id: 9404, from: "me", createdAt: "2026-07-29T08:18:00.000Z", text: "When will I be off them completely?" },
+    { id: 9405, from: "penny", createdAt: "2026-07-29T08:19:00.000Z", category: "general information", text: "Your prescribed schedule steps down 5 mg each week and finishes on 16 August — about two and a half weeks to go. If symptoms come back at any step, tell me straight away and I’ll flag it to your team." },
+  ],
+};
+
+const PHASE_ORDER: PhaseId[] = ["stable", "watch", "flare", "recovery"];
+
+export function storyChat(phase: PhaseId): ChatMessage[] {
+  return PHASE_ORDER.slice(0, PHASE_ORDER.indexOf(phase) + 1).flatMap((chapter) => PHASE_CHAT[chapter]);
+}
 
 function experimentHistory(): JournalEntry[] {
   return Array.from({ length: 9 }, (_, index) => {

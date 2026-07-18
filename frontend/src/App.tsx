@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Activity, LockKeyhole, Menu, NotebookPen, Phone, UserRound } from "lucide-react";
 import type { EvidenceSource, SuggestionKind } from "./types";
-import { ONBOARDING_TODAY, PHASE_LABELS } from "./data";
+import { ONBOARDING_TODAY, PHASE_LABELS, storyChat } from "./data";
 import { useDemoStore } from "./store/DemoStore";
 import { deriveDashboard } from "./store/dashboardDerivations";
 import { TodayHeader } from "./components/TodayHeader";
@@ -242,7 +242,7 @@ function App() {
         <main className="left">
           {!trackingActive && <section className="tracking-paused" role="status"><LockKeyhole /><div><b>Health-data tracking is paused</b><span>Existing records stay viewable and correctable. Re-enable consent in Profile to add new ones.</span></div><button className="btn" onClick={() => openPanel("profile")}>Review consent</button></section>}
           <TodayHeader content={content} phase={state.phase} pendingPhase={state.pendingPhase} phaseConfirmed={state.phaseConfirmed} firstName={displayName} onReviewEvidence={() => openPanel("trends")} treatmentFocus={treatmentFocus} onOpenTreatment={() => handleSuggestion("taper")} />
-          <PennyChat messages={state.messages} suggestions={pennySuggestions} suggestionsNote={content.suggestionsNote} timeZone={state.profile.timeZone} trackingEnabled={trackingActive} journalInferenceEnabled={trackingActive && state.privacy.assistantJournalAccess} onSend={store.sendChat} onCorrectMessage={store.correctChatMessage} onDeleteMessage={store.deleteChatMessage} onSuggestion={handleSuggestion} onSourceTarget={(target) => openPanel(target === "care" ? "care" : target === "profile" ? "profile" : target === "privacy" ? "privacy" : "trends")} notify={notify} />
+          <PennyChat messages={[...storyChat(state.phase), ...state.messages]} suggestions={pennySuggestions} suggestionsNote={content.suggestionsNote} timeZone={state.profile.timeZone} trackingEnabled={trackingActive} journalInferenceEnabled={trackingActive && state.privacy.assistantJournalAccess} onSend={store.sendChat} onCorrectMessage={store.correctChatMessage} onDeleteMessage={store.deleteChatMessage} onSuggestion={handleSuggestion} onSourceTarget={(target) => openPanel(target === "care" ? "care" : target === "profile" ? "profile" : target === "privacy" ? "privacy" : "trends")} notify={notify} />
         </main>
         {journalOpen && <JournalPanel notify={notify} onClose={() => setJournalOpen(false)} onOpenCare={(focus = "taper") => handleSuggestion(focus)} onOpenSafetyCheck={() => { setCareFocus("urgent"); openPanel("care"); }} trackingEnabled={trackingActive} />}
       </div> : <main className="onboarding-gate" id="main-content" inert={Boolean(panel || urgentOpen || store.mutationsBlocked)} aria-hidden={panel || urgentOpen ? true : undefined}>
