@@ -1050,6 +1050,93 @@ def _snapshot_message_protected_shape(message: ChatMessage) -> dict[str, Any]:
     return payload
 
 
+def _snapshot_conversation_baseline(
+    current: DemoState, incoming: DemoState
+) -> tuple[list[ChatMessage], list[ProfileProposal]]:
+    """Return the server-owned thread projected by an incoming demo scenario.
+
+    ``messages`` and ``profileProposals`` are the active projection used by the chat
+    routes. When the browser changes presentation scenario, the protected comparison
+    must use the already-persisted target thread rather than treating the projection
+    change as deletion from the previously active conversation.
+    """
+
+    if incoming.phase == current.phase or incoming.phaseConfirmed:
+        return current.messages, current.profileProposals
+    return (
+        current.chatHistories.get(incoming.phase, []),
+        current.profileProposalsByPhase.get(incoming.phase, []),
+    )
+
+
+def _validate_snapshot_scenario_conversations(
+    current: DemoState, incoming: DemoState
+) -> None:
+    """Protect inactive scenario threads while allowing a projection-only switch."""
+
+    if incoming.phase != current.phase and incoming.phaseConfirmed:
+        if (
+            incoming.chatHistories != current.chatHistories
+            or incoming.profileProposalsByPhase != current.profileProposalsByPhase
+        ):
+            raise HTTPException(
+                status_code=409,
+                detail="Lifecycle confirmation cannot rewrite demo conversations.",
+            )
+        return
+
+    if incoming.phase == current.phase:
+        current_inactive = {
+            phase: messages
+            for phase, messages in current.chatHistories.items()
+            if phase != current.phase
+        }
+        incoming_inactive = {
+            phase: messages
+            for phase, messages in incoming.chatHistories.items()
+            if phase != current.phase
+        }
+        current_inactive_proposals = {
+            phase: proposals
+            for phase, proposals in current.profileProposalsByPhase.items()
+            if phase != current.phase
+        }
+        incoming_inactive_proposals = {
+            phase: proposals
+            for phase, proposals in incoming.profileProposalsByPhase.items()
+            if phase != current.phase
+        }
+        if (
+            incoming_inactive != current_inactive
+            or incoming_inactive_proposals != current_inactive_proposals
+        ):
+            raise HTTPException(
+                status_code=409,
+                detail="Inactive demo conversations cannot be changed through snapshot sync.",
+            )
+        return
+
+    expected_histories = dict(current.chatHistories)
+    expected_histories[current.phase] = current.messages
+    expected_proposals = dict(current.profileProposalsByPhase)
+    expected_proposals[current.phase] = current.profileProposals
+    target_messages = expected_histories.get(incoming.phase, [])
+    target_proposals = expected_proposals.get(incoming.phase, [])
+    if (
+        incoming.chatHistories != expected_histories
+        or incoming.profileProposalsByPhase != expected_proposals
+        or incoming.messages != target_messages
+        or incoming.profileProposals != target_proposals
+    ):
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                "Changing demo scenario must restore the server-saved conversation for that "
+                "scenario without altering any thread."
+            ),
+        )
+
+
 def _server_authored_snapshot_conversation(
     current: DemoState, incoming: DemoState
 ) -> DemoState:
@@ -1062,8 +1149,9 @@ def _server_authored_snapshot_conversation(
 
     current_entries = {entry.id: entry for entry in current.entries}
     incoming_entries = {entry.id: entry for entry in incoming.entries}
+    baseline_messages, _ = _snapshot_conversation_baseline(current, incoming)
     canonical_messages: list[ChatMessage] = []
-    for message in current.messages:
+    for message in baseline_messages:
         reply_context_retracted = any(
             source.messageId is not None
             and source.label == "Original patient wording"
@@ -1109,6 +1197,8 @@ def _server_authored_snapshot_conversation(
 
 
 def _validate_snapshot_transition(current: DemoState, incoming: DemoState) -> None:
+    _validate_snapshot_scenario_conversations(current, incoming)
+    current_messages, current_profile_proposals = _snapshot_conversation_baseline(current, incoming)
     supporter_access_changed = (
         incoming.trustedSupporter.accessCode != current.trustedSupporter.accessCode
         or incoming.trustedSupporter.accessCreatedAt
@@ -1146,7 +1236,7 @@ def _validate_snapshot_transition(current: DemoState, incoming: DemoState) -> No
                 ),
             )
         current_entry_ids = {entry.id for entry in current.entries}
-        current_message_ids = {message.id for message in current.messages}
+        current_message_ids = {message.id for message in current_messages}
         if any(entry.id not in current_entry_ids for entry in incoming.entries) or any(
             message.id not in current_message_ids for message in incoming.messages
         ):
@@ -1184,9 +1274,9 @@ def _validate_snapshot_transition(current: DemoState, incoming: DemoState) -> No
                     "deleted."
                 ),
             )
-    current_proposals = {proposal.id: proposal for proposal in current.profileProposals}
+    current_proposals = {proposal.id: proposal for proposal in current_profile_proposals}
     incoming_proposals = {proposal.id: proposal for proposal in incoming.profileProposals}
-    current_message_ids = {message.id for message in current.messages}
+    current_message_ids = {message.id for message in current_messages}
     incoming_messages = {message.id: message for message in incoming.messages}
     for proposal_id, proposal in current_proposals.items():
         candidate = incoming_proposals.get(proposal_id)
@@ -1284,7 +1374,7 @@ def _validate_snapshot_transition(current: DemoState, incoming: DemoState) -> No
                     ),
                 )
 
-    current_messages_by_id = {message.id: message for message in current.messages}
+    current_messages_by_id = {message.id: message for message in current_messages}
     incoming_messages_by_id = {message.id: message for message in incoming.messages}
     changed_existing_messages = [
         message_id
