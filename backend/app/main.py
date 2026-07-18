@@ -77,7 +77,7 @@ async def lifespan(application: FastAPI):
             await background_worker
 
 
-app = FastAPI(title="MeMed API", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="Gutsy API", version="0.1.0", lifespan=lifespan)
 
 
 @app.middleware("http")
@@ -121,4 +121,4 @@ async def handle_ai_service_error(_request: Request, error: AIServiceError) -> J
 
 @app.get("/api/health", tags=["system"])
 async def health() -> dict[str, str]:
-    return {"status": "healthy", "service": "MeMed API"}
+    return {"status": "healthy", "service": "Gutsy API"}

@@ -1,1 +1,1 @@
-"""Persisted demo domain for the MeMed patient journey."""
+"""Persisted demo domain for the Gutsy patient journey."""

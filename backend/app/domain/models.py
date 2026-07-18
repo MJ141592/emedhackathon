@@ -21,7 +21,7 @@ EntryKind = Literal[
     "MEDICATION",
     "FROM YOUR WATCH",
     "TEST RESULT",
-    "Penny noticed",
+    "Remi noticed",
 ]
 
 
@@ -258,7 +258,7 @@ class Profile(StrictModel):
         today = patient_calendar_date(self.timeZone)
         age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
         if age < 18:
-            raise ValueError("MeMed onboarding is currently for adults aged 18 or over.")
+            raise ValueError("Gutsy onboarding is currently for adults aged 18 or over.")
         return self
 
 

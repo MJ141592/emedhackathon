@@ -37,7 +37,7 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
       { kind: "experiment", icon: "note", title: "Oat milk experiment — day 9 of 14", desc: "No clear change so far — an observation, not proof.", cta: "Open experiment" },
       { kind: "summary", icon: "message", title: "Prepare your August clinic summary", desc: "Drafted from your journal — you edit before sharing.", cta: "Preview summary" },
     ],
-    suggestionsNote: "When things are steady, Penny stays out of the way.",
+    suggestionsNote: "When things are steady, Remi stays out of the way.",
     trend: trend([2, 2, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1], [58, 57, 58, 58, 57, 58, 58, 57, 58, 58, 57, 58, 58, 58], [2, 2, 1, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2]),
   },
   watch: {
@@ -71,7 +71,7 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
       { kind: "urgent", icon: "phone", title: "Run today’s safety check", desc: "Heavy bleeding, severe pain, fever or faintness need urgent care.", cta: "Check symptoms" },
       { kind: "prescription", icon: "message", title: "Clinician-owned rescue pathway", desc: "Prepared only under your documented plan; Dr Ferreira must approve.", cta: "View prescription flow" },
     ],
-    suggestionsNote: "Penny never prescribes or changes medicine. Contact your team first.",
+    suggestionsNote: "Remi never prescribes or changes medicine. Contact your team first.",
     trend: trend([3, 3, 4, 4, 5, 5, 6, 7, 7, 8, 8, 9, 8, 8], [59, 60, 60, 61, 62, 62, 64, 65, 66, 67, 67, 68, 67, 67], [3, 3, 4, 4, 5, 5, 6, 6, 7, 8, 8, 8, 7, 7]),
   },
   recovery: {
@@ -88,7 +88,7 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
       { kind: "taper", icon: "note", title: "Today’s prescribed dose: 25 mg", desc: "5 × 5 mg prednisolone with breakfast. Next step: 20 mg on Monday.", cta: "Open taper" },
       { kind: "summary", icon: "message", title: "Preview your recovery summary", desc: "An editable follow-up draft from your records.", cta: "Preview summary" },
     ],
-    suggestionsNote: "MeMed shows the verified prescription and cannot change it.",
+    suggestionsNote: "Gutsy shows the verified prescription and cannot change it.",
     trend: trend([8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 3, 2], [67, 66, 66, 65, 64, 64, 63, 62, 62, 61, 61, 60, 60, 60], [7, 7, 6, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 3]),
   },
 };
@@ -104,12 +104,12 @@ export const ONBOARDING_TODAY: PhaseContent = {
     { k: "Sleep & fatigue", v: "—", d: "Not recorded", dClass: "flat" },
   ],
   suggestions: [],
-  suggestionsNote: "Penny and health tracking remain off until onboarding and consent are complete.",
+  suggestionsNote: "Remi and health tracking remain off until onboarding and consent are complete.",
   trend: [],
 };
 
 export const INITIAL_CHAT: ChatMessage[] = [
-  { id: 1, from: "penny", createdAt: "2026-07-17T08:12:00.000Z", category: "recorded fact", text: "Morning, Amara. You logged more urgency than usual yesterday, and your watch shows your resting heart rate was up overnight. How are you feeling this morning?", sources: [
+  { id: 1, from: "penny", createdAt: "2026-07-17T08:12:00.000Z", category: "recorded fact", text: "Morning, Matthew. You logged more urgency than usual yesterday, and your watch shows your resting heart rate was up overnight. How are you feeling this morning?", sources: [
     { entryId: 2, label: "Watch sync", date: "17 Jul, 08:00", detail: "Resting heart rate 64 bpm", type: "fact" },
     { entryId: 6, label: "Bowel log", date: "16 Jul, 21:10", detail: "Urgency recorded", type: "fact" },
   ] },
@@ -141,7 +141,7 @@ function experimentHistory(): JournalEntry[] {
 export const INITIAL_ENTRIES: JournalEntry[] = [
   { id: 1, date: TODAY_DATE, time: "07:40", kind: "BOWEL MOVEMENT", body: "Bristol type 6, urgency, small amount of blood", source: "manual", flagged: true, structured: { bristol: 6, urgency: true, blood: "small", mucus: false, nightWaking: true, pain: 4 } },
   { id: 2, date: TODAY_DATE, time: "08:00", kind: "FROM YOUR WATCH", body: "Resting HR 64 bpm · HRV 38 ms · sleep 5 h 10 m — supporting context only", source: "wearable", structured: { restingHeartRate: 64, heartRateVariabilityMs: 38, sleepHours: 5.17, softSignal: true } },
-  { id: 3, date: TODAY_DATE, time: "08:05", kind: "Penny noticed", body: "Several included records across 16–17 July differ from baseline: two Bristol type 6 bowel logs with urgency, one with a small amount of blood, pain up to 5/10 with high fatigue, and a resting heart rate of 64 bpm. Confirm the source records before acting.", source: "penny" },
+  { id: 3, date: TODAY_DATE, time: "08:05", kind: "Remi noticed", body: "Several included records across 16–17 July differ from baseline: two Bristol type 6 bowel logs with urgency, one with a small amount of blood, pain up to 5/10 with high fatigue, and a resting heart rate of 64 bpm. Confirm the source records before acting.", source: "penny" },
   { id: 4, date: "2026-07-16", time: "19:30", kind: "MEAL", body: "Lamb madras, naan, two beers — out with friends", source: "manual", structured: { portion: "usual", hydration: "two beers" } },
   { id: 5, date: "2026-07-16", time: "22:15", kind: "PAIN", body: "Cramping, lower right, 5/10 · fatigue high", source: "manual", structured: { pain: 5, site: "lower right", fatigue: "high" } },
   { id: 6, date: "2026-07-16", time: "21:10", kind: "BOWEL MOVEMENT", body: "Bristol type 6 with urgency", source: "chat", structured: { bristol: 6, urgency: true } },
@@ -168,7 +168,7 @@ export const INITIAL_STATE: DemoState = {
   profileProposals: [],
   entries: INITIAL_ENTRIES,
   profile: {
-    name: "Amara Okafor", timeZone: "Europe/London", dateOfBirth: "1992-03-18", diagnosis: "Crohn’s disease", subtype: "Ileocolonic", diagnosedYear: "2016", extent: "Terminal ileum and colon", surgeries: "Ileocecal resection, 2019", conditions: "Osteopenia; anxiety", allergies: "Penicillin — rash", immunosuppressed: true, familyHistory: "Maternal aunt with Crohn’s", usualBowel: "2–3 formed bowel movements/day (2.8 average)", usualPain: "1–2/10", usualHeartRate: "58 bpm resting", usualSleep: "7 hours", dietaryNeeds: "No formal exclusions; prefers oat milk", currentMedicines: "Azathioprine 100 mg daily", pastMedicines: "Mesalazine — stopped 2018, limited response", carePlan: "Contact St Mary’s IBD advice line if symptoms rise for 3 days, blood increases, or night waking begins.", address: "24 Marikina Road, London", postcode: "W2 1NY", adultEligibilityConfirmed: true, healthDataConsent: true, consentVersion: "demo-v1", consentRecordedAt: "2026-07-01T09:00:00.000Z", onboardingComplete: true,
+    name: "Matthew Johnson", timeZone: "Europe/London", dateOfBirth: "1992-03-18", diagnosis: "Crohn’s disease", subtype: "Ileocolonic", diagnosedYear: "2016", extent: "Terminal ileum and colon", surgeries: "Ileocecal resection, 2019", conditions: "Osteopenia; anxiety", allergies: "Penicillin — rash", immunosuppressed: true, familyHistory: "Maternal aunt with Crohn’s", usualBowel: "2–3 formed bowel movements/day (2.8 average)", usualPain: "1–2/10", usualHeartRate: "58 bpm resting", usualSleep: "7 hours", dietaryNeeds: "No formal exclusions; prefers oat milk", currentMedicines: "Azathioprine 100 mg daily", pastMedicines: "Mesalazine — stopped 2018, limited response", carePlan: "Contact St Mary’s IBD advice line if symptoms rise for 3 days, blood increases, or night waking begins.", address: "24 Marikina Road, London", postcode: "W2 1NY", adultEligibilityConfirmed: true, healthDataConsent: true, consentVersion: "demo-v1", consentRecordedAt: "2026-07-01T09:00:00.000Z", onboardingComplete: true,
   },
   contacts: [
     { id: "jade", initials: "JO", name: "Jade Okafor", role: "IBD Clinical Nurse Specialist", organisation: "St Mary’s IBD service", phone: "020 7946 0000" },
@@ -177,7 +177,7 @@ export const INITIAL_STATE: DemoState = {
   ],
   trustedSupporter: { enabled: false, name: "", relationship: "", canViewSummary: false, canSeeReminders: false, canHelpLog: false },
   testOrder: { id: "FC-2481", status: "prepared", clinicalOwner: "St Mary’s IBD service (simulated clinical owner)", eligibilityRule: "IBD-WATCH-CALPROTECTIN-DEMO-v1", eligibilityReason: "Configured sustained-change rule: at least two current included clinical signals across recorded days after patient evidence review; never an LLM- or image-only decision.", statusUpdatedAt: "2026-07-17T08:05:00.000Z", addressConfirmed: false, consent: false },
-  teamMessage: { id: "MSG-104", subject: "Recent recorded symptoms for Amara Okafor", body: "Amara has two included bowel records across 16–17 July; both record Bristol type 6 with urgency, and one records a small amount of blood and night waking. A separate record notes pain up to 5/10 with high fatigue. The latest included watch record is resting heart rate 64 bpm versus a recorded 58 bpm baseline, with 5 h 10 m sleep versus a recorded usual 7 hours. These records do not establish total daily bowel frequency. A home calprotectin test is prepared but not yet ordered. Please review the attached entries and advise on the agreed pathway.", status: "draft", statusUpdatedAt: "2026-07-17T08:05:00.000Z", clinicalOwner: "St Mary’s IBD service (simulated clinical owner)", notificationRule: "IBD-CHANGE-NOTIFY-DEMO-v1", notificationReason: "Patient-reviewed sustained-change evidence prepared a contact-first draft; nothing is sent until the patient reviews and approves every word.", expectedResponse: "Within one working day" },
+  teamMessage: { id: "MSG-104", subject: "Recent recorded symptoms for Matthew Johnson", body: "Matthew has two included bowel records across 16–17 July; both record Bristol type 6 with urgency, and one records a small amount of blood and night waking. A separate record notes pain up to 5/10 with high fatigue. The latest included watch record is resting heart rate 64 bpm versus a recorded 58 bpm baseline, with 5 h 10 m sleep versus a recorded usual 7 hours. These records do not establish total daily bowel frequency. A home calprotectin test is prepared but not yet ordered. Please review the attached entries and advise on the agreed pathway.", status: "draft", statusUpdatedAt: "2026-07-17T08:05:00.000Z", clinicalOwner: "St Mary’s IBD service (simulated clinical owner)", notificationRule: "IBD-CHANGE-NOTIFY-DEMO-v1", notificationReason: "Patient-reviewed sustained-change evidence prepared a contact-first draft; nothing is sent until the patient reviews and approves every word.", expectedResponse: "Within one working day" },
   teamMessageHistory: [],
   teamMessageStale: false,
   prescription: { status: "prepared", medicine: "Prednisolone course — dose set by prescriber", prescriber: "Dr Rui Ferreira", pharmacy: "Wellfield Pharmacy", clinicalOwner: "Dr Rui Ferreira (simulated prescribing owner)", eligibilityRule: "IBD-RESCUE-PRED-DEMO-v1", eligibilityReason: "A documented rescue pathway still requires confirmed Flare support, an included raised objective result and explicit prescriber authorisation.", rescuePlanEligible: true, reviewAfterHours: 24 },
@@ -185,10 +185,10 @@ export const INITIAL_STATE: DemoState = {
   experiment: { id: "EXP-12", title: "Oat milk instead of dairy milk", variable: "Milk choice only", goal: "See whether morning urgency changes", baseline: "Morning urgency score 3/10 before day 1 (patient-entered)", outcome: "Morning urgency score", startDate: "2026-07-08", durationDays: 14, day: 9, status: "paused", observations: Array.from({ length: 9 }, (_, index) => `Day ${index + 1}: Personal morning-urgency observation recorded.`), reviewRequired: false },
   wearable: { provider: "Apple Health", connected: true, heartRate: true, hrv: true, sleep: true, activity: true, lastSync: "Today, 08:00" },
   privacy: { photoRetentionDays: 30, toiletPhotoConsent: false, assistantProfileAccess: true, assistantJournalAccess: true, assistantCareAccess: true, assistantConversationAccess: true, secondaryUseConsent: false, discreetNotifications: true, notificationBudget: "balanced" },
-  clinicianSummary: "Amara has two included bowel records across 16–17 July; both record Bristol type 6 with urgency, and one records a small amount of blood and night waking. A separate record notes pain up to 5/10 with high fatigue. The latest included watch record is resting heart rate 64 bpm versus a recorded 58 bpm baseline, with 5 h 10 m sleep versus a recorded usual 7 hours. These records do not establish total daily bowel frequency. A home calprotectin test has been prepared but requires Amara’s confirmation. Current treatment: azathioprine 100 mg daily. The prepared prednisolone schedule has no doses marked taken or missed. No medication change has been made by MeMed.",
+  clinicianSummary: "Matthew has two included bowel records across 16–17 July; both record Bristol type 6 with urgency, and one records a small amount of blood and night waking. A separate record notes pain up to 5/10 with high fatigue. The latest included watch record is resting heart rate 64 bpm versus a recorded 58 bpm baseline, with 5 h 10 m sleep versus a recorded usual 7 hours. These records do not establish total daily bowel frequency. A home calprotectin test has been prepared but requires Matthew’s confirmation. Current treatment: azathioprine 100 mg daily. The prepared prednisolone schedule has no doses marked taken or missed. No medication change has been made by Gutsy.",
   clinicianSummaryEdited: false,
   clinicianSummaryStale: false,
-  audit: [{ id: 1, at: "17 Jul, 08:05", action: "Penny surfaced several included records across two recorded days for patient review." }],
+  audit: [{ id: 1, at: "17 Jul, 08:05", action: "Remi surfaced several included records across two recorded days for patient review." }],
 };
 
 export const CHAT_CHIPS = [

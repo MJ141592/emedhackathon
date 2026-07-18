@@ -25,7 +25,7 @@ function cacheStorage(): CacheStorage | null {
   return typeof caches === "undefined" ? null : caches;
 }
 
-function isMeMedReminder(notification: Notification): boolean {
+function isGutsyReminder(notification: Notification): boolean {
   return notification.tag === PERIODIC_TAG || notification.tag.startsWith(`${PERIODIC_TAG}:`);
 }
 
@@ -126,7 +126,7 @@ export async function suspendPersistentReminders(): Promise<"suppressed"> {
   }
   try {
     const notifications = await registration.getNotifications();
-    notifications.filter(isMeMedReminder).forEach((notification) => notification.close());
+    notifications.filter(isGutsyReminder).forEach((notification) => notification.close());
   } catch {
     // Installed/PWA notification enumeration varies; the worker repeats the same cleanup.
   }

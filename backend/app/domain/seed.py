@@ -25,7 +25,7 @@ def _taper_days() -> list[dict[str, Any]]:
 
 
 def build_demo_state() -> DemoState:
-    """Return the canonical v2 Amara fixture shared with the frontend."""
+    """Return the canonical v2 Matthew fixture shared with the frontend."""
 
     return DemoState.model_validate(
         {
@@ -39,7 +39,7 @@ def build_demo_state() -> DemoState:
                     "createdAt": "2026-07-17T08:12:00.000Z",
                     "category": "recorded fact",
                     "text": (
-                        "Morning, Amara. You logged more urgency than usual yesterday, and your "
+                        "Morning, Matthew. You logged more urgency than usual yesterday, and your "
                         "watch shows your resting heart rate was up overnight. How are you feeling "
                         "this morning?"
                     ),
@@ -148,7 +148,7 @@ def build_demo_state() -> DemoState:
                     "id": 3,
                     "date": "2026-07-17",
                     "time": "08:05",
-                    "kind": "Penny noticed",
+                    "kind": "Remi noticed",
                     "body": (
                         "Several included records across 16–17 July differ from baseline: two "
                         "Bristol type 6 bowel logs with urgency, one with a small amount of blood, "
@@ -226,7 +226,7 @@ def build_demo_state() -> DemoState:
                 ],
             ],
             "profile": {
-                "name": "Amara Okafor",
+                "name": "Matthew Johnson",
                 "dateOfBirth": "1992-03-18",
                 "diagnosis": "Crohn’s disease",
                 "subtype": "Ileocolonic",
@@ -307,9 +307,9 @@ def build_demo_state() -> DemoState:
             },
             "teamMessage": {
                 "id": "MSG-104",
-                "subject": "Recent recorded symptoms for Amara Okafor",
+                "subject": "Recent recorded symptoms for Matthew Johnson",
                 "body": (
-                    "Amara has two included bowel records across 16–17 July; both record Bristol "
+                    "Matthew has two included bowel records across 16–17 July; both record Bristol "
                     "type 6 with urgency, and one records a small amount of blood and night "
                     "waking. A separate record notes pain up to 5/10 with high fatigue. The "
                     "latest included watch record is resting heart rate 64 bpm versus a recorded "
@@ -394,15 +394,15 @@ def build_demo_state() -> DemoState:
                 "notificationBudget": "balanced",
             },
             "clinicianSummary": (
-                "Amara has two included bowel records across 16–17 July; both record Bristol type "
+                "Matthew has two included bowel records across 16–17 July; both record Bristol type "
                 "6 with urgency, and one records a small amount of blood and night waking. A "
                 "separate record notes pain up to 5/10 with high fatigue. The latest included "
                 "watch record is resting heart rate 64 bpm versus a recorded 58 bpm baseline, "
                 "with 5 h 10 m sleep versus a recorded usual 7 hours. These records do not "
                 "establish total daily bowel frequency. A home calprotectin test has been "
-                "prepared but requires Amara’s confirmation. Current treatment: azathioprine "
+                "prepared but requires Matthew’s confirmation. Current treatment: azathioprine "
                 "100 mg daily. The prepared prednisolone schedule has no doses marked taken or "
-                "missed. No medication change has been made by MeMed."
+                "missed. No medication change has been made by Gutsy."
             ),
             "clinicianSummaryEdited": False,
             "clinicianSummaryStale": False,
@@ -411,7 +411,7 @@ def build_demo_state() -> DemoState:
                     "id": 1,
                     "at": "17 Jul, 08:05",
                     "action": (
-                        "Penny surfaced several included records across two recorded days for "
+                        "Remi surfaced several included records across two recorded days for "
                         "patient review."
                     ),
                 }

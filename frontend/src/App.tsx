@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Activity, Beaker, ChevronDown, HeartHandshake, LockKeyhole, NotebookPen, Settings, UserRound } from "lucide-react";
+import { Activity, LockKeyhole, Menu, NotebookPen, Phone, UserRound } from "lucide-react";
 import type { EvidenceSource, SuggestionKind } from "./types";
 import { ONBOARDING_TODAY, PHASE_LABELS } from "./data";
 import { useDemoStore } from "./store/DemoStore";
@@ -14,13 +14,15 @@ import { CarePanel } from "./components/panels/CarePanel";
 import { ExperimentsPanel } from "./components/panels/ExperimentsPanel";
 import { ProfilePanel } from "./components/panels/ProfilePanel";
 import { PrivacyPanel } from "./components/panels/PrivacyPanel";
+import { ContactTeamPanel } from "./components/panels/ContactTeamPanel";
 import { dateInTimeZone, formatDateInTimeZone } from "./store/patientTime";
 
-type PanelId = "trends" | "care" | "experiments" | "profile" | "privacy" | null;
+type PanelId = "trends" | "care" | "team" | "experiments" | "profile" | "privacy" | null;
 
 const PANEL_LABELS: Record<Exclude<PanelId, null>, { title: string; eyebrow: string }> = {
   trends: { title: "Trends & evidence", eyebrow: "Your personal evidence ledger" },
   care: { title: "Care", eyebrow: "Tests, team and prescribed treatment" },
+  team: { title: "Contact my team", eyebrow: "Your IBD care team" },
   experiments: { title: "Experiments", eyebrow: "Careful personal learning" },
   profile: { title: "Profile & past medical history", eyebrow: "Baseline and onboarding" },
   privacy: { title: "Privacy & settings", eyebrow: "Permissions, connections and data rights" },
@@ -162,7 +164,7 @@ function App() {
       ? {
           ...suggestion,
           title: `Home-test workflow: ${state.testOrder.status}`,
-          desc: "Penny used only the Care record you permitted. Open Care to review the workflow; symptom evidence remains private.",
+          desc: "Remi used only the Care record you permitted. Open Care to review the workflow; symptom evidence remains private.",
           cta: "Open Care",
         }
       : suggestion;
@@ -184,13 +186,13 @@ function App() {
       ? {
           eyebrow: `Clinician-authored treatment · taper day ${flareTreatmentDay.day}`,
           title: `Today: ${flareTreatmentDay.doseMg} mg ${state.taper.medicine}`,
-          detail: `Verified against the label from ${state.taper.prescribedBy}. MeMed displays this exact prescribed dose and cannot change it.`,
+          detail: `Verified against the label from ${state.taper.prescribedBy}. Gutsy displays this exact prescribed dose and cannot change it.`,
           status: flareTreatmentDay.taken ? "Recorded as taken" : "Not yet confirmed taken",
         }
       : {
           eyebrow: "Clinician-authored treatment collected",
           title: "Verify the prescription schedule before dose support",
-          detail: "Compare the imported schedule with the dispensing label in Care. MeMed will not calculate or expose a dose until that review is complete.",
+          detail: "Compare the imported schedule with the dispensing label in Care. Gutsy will not calculate or expose a dose until that review is complete.",
           status: "Verification needed",
         }
     : undefined;
@@ -199,8 +201,7 @@ function App() {
     return <div className="shell" aria-busy="true">
       <a href="#main-content" className="skip-link">Skip to loading status</a>
       <header className="topbar">
-        <span className="brand"><span className="name">MeMed</span><span className="tag">IBD companion</span></span>
-        <button className="urgent" onClick={openUrgent}>Urgent help</button>
+        <span className="brand"><span className="name">Gutsy</span></span>
       </header>
       <main className="hydration-screen" id="main-content" role="status" aria-live="polite" aria-atomic="true">
         <LockKeyhole aria-hidden="true" />
@@ -226,18 +227,14 @@ function App() {
             : <span className="sync-next-step">Return to the open form and try again.</span>}
       </div>}
       <header className="topbar" inert={Boolean(panel || urgentOpen)} aria-hidden={panel || urgentOpen ? true : undefined}>
-        <button className="brand" onClick={() => setPanel(null)} aria-label="MeMed home"><span className="name">MeMed</span><span className="tag">IBD companion</span></button>
-        <nav ref={featureNavRef} className={mobileMenu ? "feature-nav open" : "feature-nav"} aria-label="MeMed features">
+        <button className="brand" onClick={() => setPanel(null)} aria-label="Gutsy home"><span className="name">Gutsy</span></button>
+        <nav ref={featureNavRef} className={mobileMenu ? "feature-nav open" : "feature-nav"} aria-label="Gutsy menu">
           <button disabled={!hasPatientRecord} onClick={() => openPanel("trends")} aria-expanded={panel === "trends"}><Activity /> Trends &amp; evidence</button>
-          <button disabled={!hasPatientRecord} onClick={() => openPanel("care")} aria-expanded={panel === "care"}><HeartHandshake /> Care</button>
           <button disabled={!hasPatientRecord} onClick={() => { setJournalOpen((value) => !value); setMobileMenu(false); }} aria-pressed={journalOpen}><NotebookPen /> Journal</button>
-          <button disabled={!trackingActive} onClick={() => openPanel("experiments")} aria-expanded={panel === "experiments"}><Beaker /> Experiments</button>
-          <button onClick={() => openPanel("privacy")} aria-expanded={panel === "privacy"}><LockKeyhole /> Privacy</button>
-          <button className="nav-profile" onClick={() => openPanel("profile")} aria-expanded={panel === "profile"}><UserRound /> Profile</button>
+          <button disabled={!hasPatientRecord} onClick={() => openPanel("team")} aria-expanded={panel === "team"}><Phone /> Contact my team</button>
         </nav>
-        <button ref={mobileMenuButtonRef} className="mobile-menu" onClick={() => setMobileMenu((value) => !value)} aria-expanded={mobileMenu} aria-label={`${mobileMenu ? "Close" : "Open"} feature menu`}><Settings /><span>Features</span><ChevronDown /></button>
+        <button ref={mobileMenuButtonRef} className="mobile-menu" onClick={() => setMobileMenu((value) => !value)} aria-expanded={mobileMenu} aria-label={`${mobileMenu ? "Close" : "Open"} menu`}><Menu /></button>
         {trackingActive && <div className="demo" aria-label="Demo lifecycle state"><span>Demo</span>{PHASE_LABELS.map((candidate) => <button key={candidate.id} disabled={store.mutationsBlocked} className={candidate.id === state.phase ? "demo-btn selected" : "demo-btn"} aria-pressed={candidate.id === state.phase} onClick={() => { store.setDemoPhase(candidate.id); notify(`${candidate.label} demo view selected. This changes presentation only; evidence review remains separate.`); }}>{candidate.label}</button>)}</div>}
-        <button className="urgent" onClick={openUrgent}>Urgent help</button>
         <button className="me" onClick={() => openPanel("profile")} aria-label="Profile"><span className="avatar">{state.profile.name ? state.profile.name.split(" ").map((part) => part[0]).slice(0, 2).join("") : <UserRound />}</span><span><b>{state.profile.name || "Set up profile"}</b><small>{state.profile.diagnosis || "Onboarding needed"}</small></span></button>
       </header>
 
@@ -250,12 +247,13 @@ function App() {
         {journalOpen && <JournalPanel notify={notify} onClose={() => setJournalOpen(false)} onOpenCare={(focus = "taper") => handleSuggestion(focus)} onOpenSafetyCheck={() => { setCareFocus("urgent"); openPanel("care"); }} trackingEnabled={trackingActive} />}
       </div> : <main className="onboarding-gate" id="main-content" inert={Boolean(panel || urgentOpen || store.mutationsBlocked)} aria-hidden={panel || urgentOpen ? true : undefined}>
         <TodayHeader content={onboardingToday} phase="stable" phaseConfirmed={false} firstName={displayName} onReviewEvidence={() => undefined} />
-        <section className="feature-card onboarding-callout"><UserRound /><div><p className="eyebrow">Before health tracking starts</p><h2>Complete adult onboarding and choose what MeMed may store</h2><p>Tracking and care workflows stay off until identity, adult eligibility and consent are recorded.</p><div className="button-row"><button className="btn primary" onClick={() => openPanel("profile")}>Start onboarding</button><button className="btn" onClick={() => openPanel("privacy")}>Review privacy controls</button></div></div></section>
+        <section className="feature-card onboarding-callout"><UserRound /><div><p className="eyebrow">Before health tracking starts</p><h2>Complete adult onboarding and choose what Gutsy may store</h2><p>Tracking and care workflows stay off until identity, adult eligibility and consent are recorded.</p><div className="button-row"><button className="btn primary" onClick={() => openPanel("profile")}>Start onboarding</button><button className="btn" onClick={() => openPanel("privacy")}>Review privacy controls</button></div></div></section>
       </main>}
 
       {panel && <Drawer open title={PANEL_LABELS[panel].title} eyebrow={PANEL_LABELS[panel].eyebrow} wide={panel === "care" || panel === "trends" || panel === "profile"} contentInert={store.mutationsBlocked} contentStatus={store.mutationsBlocked ? store.syncStatus === "error" ? { tone: "error", text: "This change is queued but not saved. Close this panel to use Retry change; other controls remain paused." } : { tone: "saving", text: "Saving securely. Controls resume when the API confirms this change." } : undefined} returnFocusRef={panelReturnFocusRef} onClose={() => { setPanel(null); setCareFocus(undefined); }} onUrgent={openUrgentFromDrawer}>
         {panel === "trends" && <TrendsPanel notify={notify} />}
         {panel === "care" && <CarePanel focus={careFocus} notify={notify} openUrgent={openUrgent} />}
+        {panel === "team" && <ContactTeamPanel contacts={state.contacts} notify={notify} />}
         {panel === "experiments" && <ExperimentsPanel notify={notify} />}
         {panel === "profile" && <ProfilePanel notify={notify} />}
         {panel === "privacy" && <PrivacyPanel notify={notify} onClose={() => setPanel(null)} />}

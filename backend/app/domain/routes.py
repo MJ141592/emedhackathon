@@ -975,7 +975,7 @@ def _team_message_source_fingerprint(state: DemoState) -> dict[str, Any]:
                 "structured": entry.structured,
             }
             for entry in state.entries
-            if entry.kind != "Penny noticed"
+            if entry.kind != "Remi noticed"
         },
         "profile": state.profile.model_dump(mode="json"),
         "testOrder": state.testOrder.model_dump(mode="json"),
@@ -1309,7 +1309,7 @@ def _validate_snapshot_transition(current: DemoState, incoming: DemoState) -> No
         raise HTTPException(
             status_code=409,
             detail=(
-                "New patient messages, deterministic captures and Penny replies must be "
+                "New patient messages, deterministic captures and Remi replies must be "
                 "server-authored through the explicit chat endpoint."
             ),
         )
@@ -2869,7 +2869,7 @@ def run_evening_background(
         state["teamMessage"] = {
             "id": local_draft_id,
             "subject": (
-                f"Evening flare update from {state['profile'].get('name') or 'MeMed patient'}"
+                f"Evening flare update from {state['profile'].get('name') or 'Gutsy patient'}"
             ),
             "body": regenerated_body,
             "status": "draft",
@@ -4118,7 +4118,7 @@ def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
         category = "general information"
     elif capture.entries and not journal_access:
         reply_text = (
-            "Penny’s journal access is off, so I did not add a health record. The separate "
+            "Remi’s journal access is off, so I did not add a health record. The separate "
             "deterministic safety screen still ran. You can use manual quick entry or change "
             "that permission in Privacy."
         )
@@ -4130,7 +4130,7 @@ def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
     elif conversation_question and not current.privacy.assistantConversationAccess:
         reply_text = (
             "Earlier-conversation access is off, so I cannot retrieve what you previously "
-            "told Penny. You can review the conversation yourself or enable that permission."
+            "told Remi. You can review the conversation yourself or enable that permission."
         )
         category = "general information"
     elif conversation_question:
@@ -4156,7 +4156,7 @@ def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
         category = "recorded fact"
     elif capture.profileProposals and not current.privacy.assistantProfileAccess:
         reply_text = (
-            "Penny’s profile access is off, so I did not create a medical-history proposal or "
+            "Remi’s profile access is off, so I did not create a medical-history proposal or "
             "change your PMH. You can add the wording manually under Profile."
         )
         category = "general information"
@@ -4192,7 +4192,7 @@ def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
             "MEDICATION": "the medication",
             "FROM YOUR WATCH": "the wearable observation",
             "TEST RESULT": "the test result",
-            "Penny noticed": "the observation",
+            "Remi noticed": "the observation",
         }
         labels = [capture_labels[entry.kind] for entry in new_entries]
         joined_labels = (
@@ -4348,7 +4348,7 @@ def correct_patient_chat_message(
     if original.from_ != "me":
         raise HTTPException(
             status_code=409,
-            detail="Penny replies cannot be rewritten. Delete the individual reply instead.",
+            detail="Remi replies cannot be rewritten. Delete the individual reply instead.",
         )
 
     def apply(state: dict[str, Any]) -> None:
@@ -4421,7 +4421,7 @@ def delete_chat_message(message_id: int, response: Response, store: Store) -> No
     _, _, revision = store.mutate_with_revision(
         apply,
         (
-            f"Deleted individual {'patient message' if original.from_ == 'me' else 'Penny reply'} "
+            f"Deleted individual {'patient message' if original.from_ == 'me' else 'Remi reply'} "
             f"{message_id} and retracted dependent conversation provenance"
         ),
         actor="patient",
@@ -4856,7 +4856,7 @@ def prepare_next_team_message(store: Store) -> TeamMessage:
         previous.update(
             {
                 "id": f"MSG-{created_at}",
-                "subject": f"Follow-up from {state['profile']['name'] or 'MeMed patient'}",
+                "subject": f"Follow-up from {state['profile']['name'] or 'Gutsy patient'}",
                 "body": state["clinicianSummary"] or "Patient follow-up — review before sending",
                 "status": "draft",
                 "sentAt": None,
@@ -5095,7 +5095,7 @@ def simulate_clinician_plan_import(response: Response, store: Store) -> DemoStat
                 {
                     "subject": (
                         f"Patient-reviewed update from "
-                        f"{state['profile'].get('name') or 'MeMed patient'}"
+                        f"{state['profile'].get('name') or 'Gutsy patient'}"
                     ),
                     "body": state["clinicianSummary"] or "Review this draft before sending.",
                     "clinicalOwner": f"{owner} (simulated clinical owner)",
@@ -5181,7 +5181,7 @@ def approve_prescription(store: Store) -> PrescriptionFlow:
 
     state, _ = store.mutate(
         apply,
-        "Simulation: Dr Rui Ferreira authorised the prescription; Penny made no dose decision",
+        "Simulation: Dr Rui Ferreira authorised the prescription; Remi made no dose decision",
         actor="prescriber-simulation",
     )
     return state.prescription
@@ -5608,7 +5608,7 @@ def missed_dose_guidance(store: Store) -> dict[str, str]:
     )
     return {
         "guidance": (
-            "MeMed does not calculate a replacement dose or change a taper. Follow the "
+            "Gutsy does not calculate a replacement dose or change a taper. Follow the "
             "dispensing label and prescriber's plan, and contact your pharmacist or IBD team "
             "for advice specific to this course."
         ),
@@ -6204,7 +6204,7 @@ def export_all_data(store: Store) -> JSONResponse:
     return JSONResponse(
         content={
             "exportedAt": utc_now(),
-            "product": "MeMed persisted demo",
+            "product": "Gutsy persisted demo",
             "schemaVersion": state.version,
             "data": state.model_dump(mode="json", by_alias=True),
             "domainRevisions": store.revisions(),

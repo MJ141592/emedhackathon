@@ -58,7 +58,7 @@ export function ProfilePanel({ notify }: { notify: (message: string) => void }) 
       return;
     }
     if (keepingTrackingActive && !isAdultDate(profile.dateOfBirth, new Date(), profile.timeZone)) {
-      notify("MeMed onboarding is currently for adults aged 18 or older.");
+      notify("Gutsy onboarding is currently for adults aged 18 or older.");
       return;
     }
     if (!isValidTimeZone(profile.timeZone)) {
@@ -91,7 +91,7 @@ export function ProfilePanel({ notify }: { notify: (message: string) => void }) 
     if (profileSaved && withdrawsActiveConsent && contactsChanged) updateContacts(contacts);
     setSaving(false);
     if (!profileSaved) {
-      notify("Those consent changes were not saved. Tracking remains in its previous state; keep MeMed open and try again.");
+      notify("Those consent changes were not saved. Tracking remains in its previous state; keep Gutsy open and try again.");
       return;
     }
     notify(complete
@@ -122,7 +122,7 @@ export function ProfilePanel({ notify }: { notify: (message: string) => void }) 
   };
 
   return <div className="panel-stack profile-panel">
-    <section className="panel-intro"><span className={`pill ${profile.onboardingComplete ? "ok" : "watch"}`}>{profile.onboardingComplete ? "Baseline active" : "Finish onboarding"}</span><h3>Your context, controlled by you</h3><p>Penny uses only the profile areas allowed in Privacy. Past medical history shapes context and safety screening; it never authorises a clinical decision.</p></section>
+    <section className="panel-intro"><span className={`pill ${profile.onboardingComplete ? "ok" : "watch"}`}>{profile.onboardingComplete ? "Baseline active" : "Finish onboarding"}</span><h3>Your context, controlled by you</h3><p>Remi uses only the profile areas allowed in Privacy. Past medical history shapes context and safety screening; it never authorises a clinical decision.</p></section>
 
     <section className="feature-card">
       <div className="section-heading"><div><p className="eyebrow">Step 1 · About you</p><h3>Adult onboarding and consent</h3></div><UserRound /></div>
@@ -155,7 +155,7 @@ export function ProfilePanel({ notify }: { notify: (message: string) => void }) 
           </div> : <span className={`status ${proposal.status === "accepted" ? "ok" : ""}`}>{proposal.status === "accepted" ? "Accepted into profile" : "Dismissed — profile unchanged"}</span>}
         </div>)}
       </div>}
-      <div className="pmh-suggestion"><Plus /><div><b>Penny can propose, never silently add, PMH updates</b><p>Turn a fact noticed in conversation into exact, reviewable wording. Preparing a proposal does not change the profile.</p><div className="field-pair"><label>Profile area<select value={pmhField} onChange={(event) => setPmhField(event.target.value as typeof pmhField)}><option value="conditions">Other condition</option><option value="surgeries">Surgery / stoma history</option><option value="allergies">Allergy / intolerance</option><option value="familyHistory">Family history</option><option value="pastMedicines">Past medicine</option></select></label><label>Exact proposed wording<input value={pmhCandidate} onChange={(event) => setPmhCandidate(event.target.value)} placeholder="For example: ileocecal resection in 2019" /></label></div><button className="btn" disabled={!pmhCandidate.trim()} onClick={() => setPmhProposal({ field: pmhField, value: pmhCandidate.trim() })}>Prepare proposal</button>{pmhProposal && <div className="proposal-review" role="status"><p><b>Proposed {pmhProposal.field} update:</b> {pmhProposal.value}</p><div className="button-row"><button className="btn primary" onClick={acceptPmhProposal}>Accept into profile form</button><button className="btn" onClick={() => { setPmhProposal(undefined); notify("PMH proposal dismissed; the profile was not changed."); }}>Not now</button></div></div>}</div>{!pmhProposal && <span className="status ok"><Check /> Patient review required</span>}</div>
+      <div className="pmh-suggestion"><Plus /><div><b>Remi can propose, never silently add, PMH updates</b><p>Turn a fact noticed in conversation into exact, reviewable wording. Preparing a proposal does not change the profile.</p><div className="field-pair"><label>Profile area<select value={pmhField} onChange={(event) => setPmhField(event.target.value as typeof pmhField)}><option value="conditions">Other condition</option><option value="surgeries">Surgery / stoma history</option><option value="allergies">Allergy / intolerance</option><option value="familyHistory">Family history</option><option value="pastMedicines">Past medicine</option></select></label><label>Exact proposed wording<input value={pmhCandidate} onChange={(event) => setPmhCandidate(event.target.value)} placeholder="For example: ileocecal resection in 2019" /></label></div><button className="btn" disabled={!pmhCandidate.trim()} onClick={() => setPmhProposal({ field: pmhField, value: pmhCandidate.trim() })}>Prepare proposal</button>{pmhProposal && <div className="proposal-review" role="status"><p><b>Proposed {pmhProposal.field} update:</b> {pmhProposal.value}</p><div className="button-row"><button className="btn primary" onClick={acceptPmhProposal}>Accept into profile form</button><button className="btn" onClick={() => { setPmhProposal(undefined); notify("PMH proposal dismissed; the profile was not changed."); }}>Not now</button></div></div>}</div>{!pmhProposal && <span className="status ok"><Check /> Patient review required</span>}</div>
     </section>
 
     <section className="feature-card">

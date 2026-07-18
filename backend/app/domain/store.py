@@ -148,7 +148,7 @@ class SQLiteDemoStore:
                 "SELECT 1 FROM demo_snapshots WHERE patient_id = 'amara'"
             ).fetchone()
             if existing is None:
-                self._insert_state(connection, build_demo_state(), "Seeded Amara demo record")
+                self._insert_state(connection, build_demo_state(), "Seeded Matthew demo record")
             else:
                 # Transparently upgrade pre-encryption development databases. The same row and
                 # revision are retained; only its storage representation changes.
@@ -253,7 +253,7 @@ class SQLiteDemoStore:
             ).fetchone()
         if row is None:
             # A deleted/corrupt fixture is restored only through explicit reset, never silently.
-            raise RuntimeError("The Amara demo snapshot is unavailable. Call /api/demo/reset.")
+            raise RuntimeError("The Matthew demo snapshot is unavailable. Call /api/demo/reset.")
         return self._deserialize(row["state_json"]), int(row["version"])
 
     def revision(self) -> int:
@@ -309,7 +309,7 @@ class SQLiteDemoStore:
                 "SELECT version, state_json FROM demo_snapshots WHERE patient_id = 'amara'"
             ).fetchone()
             if row is None:
-                raise RuntimeError("The Amara demo snapshot is unavailable. Call /api/demo/reset.")
+                raise RuntimeError("The Matthew demo snapshot is unavailable. Call /api/demo/reset.")
             current_version = int(row["version"])
             if expected_version is not None and expected_version != current_version:
                 raise VersionConflictError(
@@ -419,14 +419,14 @@ class SQLiteDemoStore:
     def reset(self) -> DemoState:
         return self.replace(
             build_demo_state(),
-            "Reset Amara demo record",
+            "Reset Matthew demo record",
             clear_history=True,
         )
 
     def reset_with_revision(self) -> tuple[DemoState, int]:
         return self._replace(
             build_demo_state(),
-            "Reset Amara demo record",
+            "Reset Matthew demo record",
             actor="system",
             clear_history=True,
         )

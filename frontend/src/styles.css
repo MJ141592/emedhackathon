@@ -55,12 +55,14 @@ legend span { font-weight: 400; color: var(--ink-faint); }
 .brand { border: 0; background: transparent; display: flex; align-items: baseline; gap: 7px; padding: 5px 2px; white-space: nowrap; }
 .brand .name { font-family: var(--serif); font-size: 24px; font-weight: 500; letter-spacing: -.02em; }
 .brand .tag { font-size: 11px; color: var(--ink-faint); letter-spacing: .04em; }
-.feature-nav { display: flex; align-items: center; gap: 2px; }
+.feature-nav { display: none; position: absolute; top: calc(100% + 1px); left: 16px; z-index: 30; gap: 2px; background: var(--panel); border: 1px solid var(--line); border-radius: 11px; padding: 6px; box-shadow: 0 10px 28px rgba(35,39,31,.14); }
+.feature-nav.open { display: grid; }
 .feature-nav button, .mobile-menu { display: inline-flex; align-items: center; gap: 6px; border: 0; background: transparent; color: var(--ink-soft); padding: 8px 9px; border-radius: 9px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.feature-nav button { justify-content: flex-start; }
 .feature-nav button:hover, .feature-nav button[aria-expanded='true'], .mobile-menu:hover { background: var(--calm-tint); color: var(--calm-deep); }
 .feature-nav .nav-profile { display: none; }
 .feature-nav svg, .mobile-menu svg { width: 16px; height: 16px; }
-.mobile-menu { display: none; }
+.mobile-menu { display: inline-flex; margin-right: auto; }
 .demo { display: flex; align-items: center; gap: 4px; margin-left: auto; font-size: 10.5px; color: var(--ink-faint); white-space: nowrap; }
 .demo-btn { border: 1px solid var(--line-strong); background: var(--panel); border-radius: 99px; padding: 4px 9px; font-size: 11.5px; font-weight: 600; color: var(--ink-soft); }
 .demo-btn:hover { border-color: var(--calm); }
@@ -196,6 +198,15 @@ legend span { font-weight: 400; color: var(--ink-faint); }
 .chip { flex-shrink: 0; border: 1px solid var(--line-strong); background: var(--panel); border-radius: 99px; padding: 6px 10px; color: var(--ink-soft); font-size: 11px; font-weight: 600; }.chip:hover { color: var(--calm-deep); border-color: var(--calm); }
 .composer { display: flex; gap: 8px; border-top: 1px solid var(--line); padding-top: 8px; }.composer input { flex: 1; padding: 9px 12px; font-size: 12.5px; }
 .send { width: 38px; height: 38px; border: 0; border-radius: 10px; background: var(--calm); color: #fff; display: grid; place-items: center; }.send svg { width: 17px; }
+.composer .tool { width: 38px; height: 38px; border: 1px solid var(--calm); border-radius: 10px; background: var(--panel); color: var(--calm-deep); display: grid; place-items: center; flex-shrink: 0; }.composer .tool svg { width: 17px; }.composer .tool:hover { background: var(--calm-tint); }
+
+/* Contact my team */
+.contact-team { display: grid; gap: 10px; }
+.contact-team .urgent-calls { margin: 4px 0 10px; }
+.team-message-form { display: grid; gap: 6px; }
+.team-message-form label { font-size: 11.5px; font-weight: 700; color: var(--ink-soft); }
+.team-message-form textarea { min-height: 96px; }
+.team-message-form .btn { margin-top: 4px; justify-self: start; }
 .composer-safety { color: var(--ink-faint); font-size: 9.5px; text-align: right; margin-top: 2px; }
 .voice-review, .structured-preview { background: var(--amber-tint); border: 1px solid #ead5b5; padding: 8px 10px; border-radius: 10px; margin-top: 7px; display: flex; align-items: center; gap: 8px; }
 .voice-review audio { max-width: 220px; height: 34px; }.voice-review .text-btn { margin-left: auto; }

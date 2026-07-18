@@ -204,7 +204,7 @@ def answer_from_permitted_records(
                 "category": "general information",
                 "text": (
                     "Earlier-conversation access is off, so I cannot retrieve what you "
-                    "previously told Penny. You can review the conversation yourself or enable "
+                    "previously told Remi. You can review the conversation yourself or enable "
                     "that separate permission in Privacy."
                 ),
             }
@@ -532,7 +532,7 @@ def answer_from_permitted_records(
             "text": (
                 "Steroids can be used for a limited clinician-prescribed course to control "
                 "inflammation. A prescribed course or taper should be followed exactly and not "
-                "stopped suddenly. Penny can display a verified schedule, but only the "
+                "stopped suddenly. Remi can display a verified schedule, but only the "
                 "authorised prescriber can start, stop or change it."
             ),
             "sources": [_guidance_source("steroids")],
@@ -584,7 +584,7 @@ def answer_from_permitted_records(
             "category": "general information",
             "text": (
                 "A repeated diary pattern can be useful to discuss, but timing alone does not "
-                "prove cause. MeMed keeps recorded facts separate from possible patterns and "
+                "prove cause. Gutsy keeps recorded facts separate from possible patterns and "
                 "lets you correct or exclude every source before sharing an observation."
             ),
             "sources": [_guidance_source("food"), _guidance_source("flare")],
@@ -601,7 +601,7 @@ def answer_from_permitted_records(
                 "Inflammatory bowel disease is the umbrella term for conditions including "
                 "Crohn’s disease and ulcerative colitis. They can affect people differently, so "
                 "diagnosis, monitoring and treatment are individual clinical decisions rather "
-                "than something Penny infers from a chat."
+                "than something Remi infers from a chat."
             ),
             "sources": [_guidance_source("ibd")],
         }
@@ -678,7 +678,7 @@ def answer_from_permitted_records(
                 "category": "general information",
                 "text": (
                     "No verified clinician-authored dose is available in the care record. Do "
-                    "not calculate or change a dose in MeMed."
+                    "not calculate or change a dose in Gutsy."
                 ),
             }
         today = _patient_today(state, instant).isoformat()

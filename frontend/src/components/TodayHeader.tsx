@@ -1,6 +1,5 @@
-import { ChevronRight, Info, Pill } from "lucide-react";
+import { Pill } from "lucide-react";
 import type { PhaseContent, PhaseId } from "../types";
-import { TrendChart } from "./TrendChart";
 
 type Props = {
   content: PhaseContent;
@@ -18,9 +17,7 @@ type Props = {
   onOpenTreatment?: () => void;
 };
 
-const PHASE_NAMES: Record<PhaseId, string> = { stable: "Steady", watch: "Watchful", flare: "Flare", recovery: "Recovery" };
-
-export function TodayHeader({ content, phase, pendingPhase, phaseConfirmed, firstName, onReviewEvidence, treatmentFocus, onOpenTreatment }: Props) {
+export function TodayHeader({ content, firstName, treatmentFocus, onOpenTreatment }: Props) {
   return (
     <section className="today-head" aria-labelledby="today-heading">
       <div className="pagehead-row">
@@ -29,13 +26,6 @@ export function TodayHeader({ content, phase, pendingPhase, phaseConfirmed, firs
           <h1 id="today-heading">Good morning, {firstName}</h1>
           <p className="sub">{content.sub}</p>
         </div>
-        {(pendingPhase || phase !== "stable") && (
-          <button className="evidence-link" onClick={onReviewEvidence}>
-            <Info aria-hidden="true" />
-            <span><b>{pendingPhase ? `Review proposed ${PHASE_NAMES[pendingPhase]} view` : phaseConfirmed ? "See why this changed" : "Review this change"}</b><small>{pendingPhase ? "Nothing changes until you confirm" : "Exact records · correct or exclude"}</small></span>
-            <ChevronRight aria-hidden="true" />
-          </button>
-        )}
       </div>
 
       {treatmentFocus && (
@@ -63,11 +53,9 @@ export function TodayHeader({ content, phase, pendingPhase, phaseConfirmed, firs
           <div key={metric.k} className="card metric">
             <div className="k">{metric.k}</div>
             <div className="v">{metric.v}{metric.unit && <span className="unit">{metric.unit}</span>}</div>
-            <div className={`d ${metric.dClass}`}>{metric.d}</div>
           </div>
         ))}
       </div>
-      <TrendChart points={content.trend} compact />
     </section>
   );
 }

@@ -200,7 +200,7 @@ function candidateRationale(
       ? `Tracks the permitted patient goal with one ${target.outcome.toLowerCase()} check-in.`
       : `Uses one ${target.outcome.toLowerCase()} check-in, which is simple to compare with a recorded baseline.`,
   ];
-  if (context[template.key]) reasons.push("This option matches a pattern in the profile or journal context Penny is allowed to use.");
+  if (context[template.key]) reasons.push("This option matches a pattern in the profile or journal context Remi is allowed to use.");
   if (template.key === "milk") reasons.push("Changes one breakfast choice without proposing a broad food-group exclusion.");
   if (template.key === "hydration") reasons.push("Adds one consistent action and does not remove any food.");
   if (template.key === "breakfast") reasons.push("Keeps food choice open and changes timing only.");

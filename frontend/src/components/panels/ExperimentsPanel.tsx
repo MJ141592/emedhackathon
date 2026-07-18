@@ -131,7 +131,7 @@ export function ExperimentsPanel({ notify }: { notify: (message: string) => void
     const durationDays = Math.round(Number(candidate.durationDays));
     const draft = { ...candidate, durationDays };
     if (!isRecordedExperimentBaseline(draft.baseline)) {
-      notify("Enter an actual observation recorded before day 1. Penny leaves suggested baselines blank and cannot fill this evidence for you.");
+      notify("Enter an actual observation recorded before day 1. Remi leaves suggested baselines blank and cannot fill this evidence for you.");
       return;
     }
     if (!completeCandidate(draft)) {
@@ -241,7 +241,7 @@ export function ExperimentsPanel({ notify }: { notify: (message: string) => void
       {!editingCandidate ? <button className="btn" onClick={beginCandidate} disabled={experiment.status === "active"}>{experiment.status === "suggested" && experiment.day === 0 ? <><Pencil /> Edit candidate</> : <><Plus /> Create a new candidate</>}</button> : <>
         <section className="candidate-shortlist" aria-labelledby="ranked-candidates-heading">
           <div className="section-heading"><div><p className="eyebrow">Competing choices · nothing starts automatically</p><h4 id="ranked-candidates-heading">Ranked low-burden candidates</h4></div><Sprout /></div>
-          <p>Penny uses only the profile and journal context you permit, then weighs usefulness, safety, effort and measurability. Choosing an option fills the builder but leaves the evidence baseline for you to record.</p>
+          <p>Remi uses only the profile and journal context you permit, then weighs usefulness, safety, effort and measurability. Choosing an option fills the builder but leaves the evidence baseline for you to record.</p>
           <ol className="candidate-ranking" aria-label="Ranked low-burden candidates">
             {rankedCandidates.map((ranked, index) => <li key={ranked.experiment.title}>
               <article>
@@ -271,7 +271,7 @@ export function ExperimentsPanel({ notify }: { notify: (message: string) => void
       </>}
     </section>
 
-    <section className="feature-card"><div className="section-heading"><div><p className="eyebrow">Why Penny suggested this</p><h3>Usefulness, safety and effort</h3></div><Sprout /></div><div className="score-list"><div><b>Useful question</b><span>{experiment.goal || `A goal ${firstName} chooses before starting.`}</span><strong>{scores.usefulness}</strong></div><div><b>Easy to measure</b><span>{experiment.outcome ? `Daily check-in: ${experiment.outcome}.` : "Define the outcome before starting."}</span><strong>{scores.measurable}</strong></div><div><b>Burden</b><span>One variable, a limited duration and no calorie scoring.</span><strong>{scores.burden}</strong></div><div><b>Nutritional risk</b><span>Restrictive wording and prolonged plans are automatically held for clinical review.</span><strong>{scores.risk}</strong></div></div><p className="soft-signal"><Scale /> Correlation is never presented as proof. A result belongs to this person and this period only.</p></section>
+    <section className="feature-card"><div className="section-heading"><div><p className="eyebrow">Why Remi suggested this</p><h3>Usefulness, safety and effort</h3></div><Sprout /></div><div className="score-list"><div><b>Useful question</b><span>{experiment.goal || `A goal ${firstName} chooses before starting.`}</span><strong>{scores.usefulness}</strong></div><div><b>Easy to measure</b><span>{experiment.outcome ? `Daily check-in: ${experiment.outcome}.` : "Define the outcome before starting."}</span><strong>{scores.measurable}</strong></div><div><b>Burden</b><span>One variable, a limited duration and no calorie scoring.</span><strong>{scores.burden}</strong></div><div><b>Nutritional risk</b><span>Restrictive wording and prolonged plans are automatically held for clinical review.</span><strong>{scores.risk}</strong></div></div><p className="soft-signal"><Scale /> Correlation is never presented as proof. A result belongs to this person and this period only.</p></section>
 
     <section className="feature-card warning-card"><AlertCircle /><div><h3>Changes that always need clinical review</h3><p>Restrictive diets, significant weight-loss risk, removing a food group, or experimenting during a suspected flare. Prepare and send a team question, receive a simulated reply that explicitly supports proceeding, then record that approval against the unchanged candidate.</p><button className="btn" onClick={() => {
       if (state.teamMessage.status !== "draft") return notify("Your current team update has already been sent. Use the Care contacts to ask for dietitian review.");

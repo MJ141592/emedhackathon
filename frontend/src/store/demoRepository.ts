@@ -314,7 +314,7 @@ export const demoRepository = {
   },
 
   export(state: DemoState): string {
-    return JSON.stringify({ exportedAt: new Date().toISOString(), product: "MeMed demo", data: state }, null, 2);
+    return JSON.stringify({ exportedAt: new Date().toISOString(), product: "Gutsy demo", data: state }, null, 2);
   },
 };
 
