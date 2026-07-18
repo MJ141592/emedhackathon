@@ -310,6 +310,8 @@ export type DemoState = {
   phaseConfirmed: boolean;
   messages: ChatMessage[];
   profileProposals: ProfileProposal[];
+  chatHistories: Partial<Record<PhaseId, ChatMessage[]>>;
+  profileProposalsByPhase: Partial<Record<PhaseId, ProfileProposal[]>>;
   entries: JournalEntry[];
   profile: Profile;
   contacts: CareContact[];

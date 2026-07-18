@@ -640,6 +640,8 @@ class DemoState(StrictModel):
     phaseConfirmed: bool
     messages: list[ChatMessage]
     profileProposals: list[ProfileProposal] = Field(default_factory=list)
+    chatHistories: dict[PhaseId, list[ChatMessage]] = Field(default_factory=dict)
+    profileProposalsByPhase: dict[PhaseId, list[ProfileProposal]] = Field(default_factory=dict)
     entries: list[JournalEntry]
     profile: Profile
     contacts: list[CareContact]
@@ -675,6 +677,18 @@ class DemoState(StrictModel):
             raise ValueError(
                 "Every conversation-derived profile proposal must retain its patient source."
             )
+        for phase, messages in self.chatHistories.items():
+            if len({message.id for message in messages}) != len(messages):
+                raise ValueError(f"Chat message ids must be unique within the {phase} scenario.")
+            patient_ids = {message.id for message in messages if message.from_ == "me"}
+            if any(
+                proposal.sourceMessageId not in patient_ids
+                for proposal in self.profileProposalsByPhase.get(phase, [])
+            ):
+                raise ValueError(
+                    "Every stored conversation proposal must retain a patient source in its "
+                    "scenario."
+                )
         thread = [self.teamMessage, *self.teamMessageHistory]
         if len({message.id for message in thread}) != len(thread):
             raise ValueError("Clinician-message thread ids must be unique.")
