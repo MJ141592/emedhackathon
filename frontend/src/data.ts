@@ -164,6 +164,15 @@ export function storyChat(phase: PhaseId): ChatMessage[] {
   return INITIAL_CHAT_BY_PHASE[phase];
 }
 
+const PHASE_ORDER: PhaseId[] = ["stable", "watch", "flare", "recovery"];
+
+// Chapters strictly before the selected phase. The current phase's chapter lives in the
+// per-scenario conversation itself, so the thread reads as one continuous story while
+// typed messages still persist within their own scenario.
+export function storyBefore(phase: PhaseId): ChatMessage[] {
+  return PHASE_ORDER.slice(0, PHASE_ORDER.indexOf(phase)).flatMap((chapter) => INITIAL_CHAT_BY_PHASE[chapter]);
+}
+
 export const INITIAL_CHAT = INITIAL_CHAT_BY_PHASE.watch;
 
 function experimentHistory(): JournalEntry[] {
