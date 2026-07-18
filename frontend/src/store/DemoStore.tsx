@@ -455,7 +455,7 @@ export function DemoStoreProvider({ children, initialState }: { children: ReactN
       if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
       const notification = scheduledNotification(state);
       if (!notification) return;
-      const key = `memed.notification.${notification.key}`;
+      const key = `gutsy.notification.${notification.key}`;
       if (window.localStorage.getItem(key)) return;
       try {
         new Notification(notification.title, { body: notification.body, tag: notification.key });

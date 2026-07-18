@@ -10,7 +10,7 @@ function downloadExport(contents: string, date: string) {
   const url = URL.createObjectURL(new Blob([contents], { type: "application/json" }));
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = `memed-export-${date}.json`;
+  anchor.download = `gutsy-export-${date}.json`;
   anchor.click();
   URL.revokeObjectURL(url);
 }

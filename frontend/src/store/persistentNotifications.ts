@@ -1,11 +1,11 @@
-const PERIODIC_TAG = "memed-background-reminders";
-const REMINDER_DEDUPE_CACHE = "memed-reminder-dedupe-v2";
-const REMINDER_CONTROL_CACHE = "memed-reminder-control-v1";
-const REMINDER_SUSPENSION_PATH = "/__memed-reminders-suspended__";
+const PERIODIC_TAG = "gutsy-background-reminders";
+const REMINDER_DEDUPE_CACHE = "gutsy-reminder-dedupe-v2";
+const REMINDER_CONTROL_CACHE = "gutsy-reminder-control-v1";
+const REMINDER_SUSPENSION_PATH = "/__gutsy-reminders-suspended__";
 
-export const REMINDER_DELETE_PENDING_KEY = "memed.delete-pending.v2";
-export const REMINDER_DELETE_COMPLETE_KEY = "memed.delete-complete.v2";
-export const REMINDER_SUPPRESSION_COOKIE = "memed_reminders_suspended";
+export const REMINDER_DELETE_PENDING_KEY = "gutsy.delete-pending.v2";
+export const REMINDER_DELETE_COMPLETE_KEY = "gutsy.delete-complete.v2";
+export const REMINDER_SUPPRESSION_COOKIE = "gutsy_reminders_suspended";
 
 type PeriodicSyncRegistration = ServiceWorkerRegistration & {
   periodicSync?: {
@@ -110,14 +110,14 @@ export async function suspendPersistentReminders(): Promise<"suppressed"> {
   // carry the fail-closed cookie even if the API deletion itself is currently unreachable.
   setPersistentReminderSuppressionCookie(true);
   const container = serviceWorkers();
-  postToWorker(container?.controller, "SUSPEND_MEMED_REMINDERS");
+  postToWorker(container?.controller, "SUSPEND_GUTSY_REMINDERS");
   await persistSuppressionControl();
   if (!container) return "suppressed";
 
   const registration = await existingRegistration(container);
   if (!registration) return "suppressed";
   if (registration.active !== container.controller) {
-    postToWorker(registration.active, "SUSPEND_MEMED_REMINDERS");
+    postToWorker(registration.active, "SUSPEND_GUTSY_REMINDERS");
   }
   try {
     await registration.periodicSync?.unregister?.(PERIODIC_TAG);
@@ -140,10 +140,10 @@ export async function resumePersistentReminders(requestPeriodic = false): Promis
   const container = serviceWorkers();
   if (!container) return "unsupported";
 
-  const registered = await container.register("/memed-worker.js", { scope: "/" }) as PeriodicSyncRegistration;
+  const registered = await container.register("/gutsy-worker.js", { scope: "/" }) as PeriodicSyncRegistration;
   const ready = await container.ready as PeriodicSyncRegistration;
   const registration = ready.active ? ready : registered;
-  postToWorker(registration.active, "RESUME_MEMED_REMINDERS");
+  postToWorker(registration.active, "RESUME_GUTSY_REMINDERS");
   if (!requestPeriodic || !registration.periodicSync) return "page";
   try {
     await registration.periodicSync.register(PERIODIC_TAG, { minInterval: 6 * 60 * 60 * 1000 });

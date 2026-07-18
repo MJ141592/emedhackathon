@@ -26,7 +26,7 @@ export async function openFreshDemo(page: Page): Promise<void> {
   // React StrictMode performs two development hydration effects. Waiting for the
   // fetches to settle prevents a click racing the active (second) remote hydrate.
   await page.waitForLoadState("networkidle");
-  await expect(page.getByRole("heading", { name: "Good morning, Amara" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Good morning, Matthew" })).toBeVisible();
   await page.evaluate(() => new Promise<void>((resolve) => {
     requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
   }));

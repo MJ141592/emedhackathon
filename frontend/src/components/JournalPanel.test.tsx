@@ -354,7 +354,7 @@ test("quick meal camera is fire-and-forget while retaining a correctable image r
     photo: { purpose: "meal", retentionDays: 30, consented: true },
   });
   expect(screen.queryByRole("dialog", { name: "Meal or hydration" })).not.toBeInTheDocument();
-  expect(notify).toHaveBeenCalledWith(expect.stringMatching(/You can close MeMed or edit it later/i));
+  expect(notify).toHaveBeenCalledWith(expect.stringMatching(/You can close Gutsy or edit it later/i));
 });
 
 test("stages a meal photo until explicit save and preserves all meal fields", async () => {

@@ -5,7 +5,7 @@ test.beforeEach(async ({ request }) => {
   expect(response.ok(), await response.text()).toBeTruthy();
 });
 
-test("the full stack exposes a persisted Amara aggregate and server-only AI status", async ({ request }) => {
+test("the full stack exposes a persisted Matthew aggregate and server-only AI status", async ({ request }) => {
   const health = await request.get("/api/health");
   expect(health.ok()).toBeTruthy();
   await expect(health.json()).resolves.toMatchObject({ status: "healthy" });
@@ -17,7 +17,7 @@ test("the full stack exposes a persisted Amara aggregate and server-only AI stat
   expect(state).toMatchObject({
     version: 2,
     phase: "watch",
-    profile: { name: "Amara Okafor" },
+    profile: { name: "Matthew Johnson" },
     testOrder: { status: "prepared" },
     taper: { currentDay: 12, missedDays: [] },
   });
@@ -112,7 +112,7 @@ test("red-flag safety is deterministic and independent of the model provider", a
 test("browser changes survive local-storage loss by rehydrating from SQLite", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.clear());
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Good morning, Amara" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Good morning, Matthew" })).toBeVisible();
 
   await page.getByRole("button", { name: "Steady", exact: true }).click();
   await expect(page.getByText("Steady — at your baseline", { exact: true })).toBeVisible();
@@ -148,7 +148,7 @@ test("remote hydration removes an expired photo payload from SQLite", async ({ p
 
   await page.addInitScript(() => window.localStorage.clear());
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Good morning, Amara" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Good morning, Matthew" })).toBeVisible();
 
   await expect
     .poll(async () => {

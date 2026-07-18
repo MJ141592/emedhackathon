@@ -147,7 +147,7 @@ def test_bootstrap_is_canonical_and_persists(
     state, etag = _bootstrap(client)
 
     assert state["version"] == 2
-    assert state["profile"]["name"] == "Amara Okafor"
+    assert state["profile"]["name"] == "Matthew Johnson"
     assert state["profile"]["usualBowel"] == "2–3 formed bowel movements/day (2.8 average)"
     assert state["testOrder"]["status"] == "prepared"
     assert state["teamMessage"]["status"] == "draft"
@@ -195,15 +195,15 @@ def test_health_aggregate_is_encrypted_at_rest_and_reopens(
 
     with sqlite3.connect(store.path) as connection:
         stored = connection.execute(
-            "SELECT state_json FROM demo_snapshots WHERE patient_id = 'amara'"
+            "SELECT state_json FROM demo_snapshots WHERE patient_id = 'matthew'"
         ).fetchone()[0]
 
     assert stored.startswith("enc:v1:")
-    assert "Amara Okafor" not in stored
+    assert "Matthew Johnson" not in stored
     for artifact in _sqlite_artifacts(store.path):
-        assert b"Amara Okafor" not in artifact.read_bytes(), artifact.name
+        assert b"Matthew Johnson" not in artifact.read_bytes(), artifact.name
     assert "ulcerative colitis" not in stored.lower()
-    assert SQLiteDemoStore(store.path).get().profile.name == "Amara Okafor"
+    assert SQLiteDemoStore(store.path).get().profile.name == "Matthew Johnson"
 
 
 def test_revision_details_are_encrypted_and_sqlite_artifacts_are_private(
@@ -261,7 +261,7 @@ def test_plaintext_legacy_snapshot_is_transparently_migrated(tmp_path: Path) -> 
     plaintext = store.get().model_dump_json(by_alias=True)
     with sqlite3.connect(path) as connection:
         connection.execute(
-            "UPDATE demo_snapshots SET state_json = ? WHERE patient_id = 'amara'",
+            "UPDATE demo_snapshots SET state_json = ? WHERE patient_id = 'matthew'",
             (plaintext,),
         )
         connection.execute(
@@ -274,10 +274,10 @@ def test_plaintext_legacy_snapshot_is_transparently_migrated(tmp_path: Path) -> 
         )
 
     migrated = SQLiteDemoStore(path, encryption_key=key)
-    assert migrated.get().profile.name == "Amara Okafor"
+    assert migrated.get().profile.name == "Matthew Johnson"
     with sqlite3.connect(path) as connection:
         stored = connection.execute(
-            "SELECT state_json FROM demo_snapshots WHERE patient_id = 'amara'"
+            "SELECT state_json FROM demo_snapshots WHERE patient_id = 'matthew'"
         ).fetchone()[0]
         revision = connection.execute(
             "SELECT action, actor, metadata_json FROM domain_revisions LIMIT 1"
@@ -285,9 +285,9 @@ def test_plaintext_legacy_snapshot_is_transparently_migrated(tmp_path: Path) -> 
     assert stored.startswith("enc:v1:")
     assert revision is not None
     assert all(str(value).startswith("enc:v1:") for value in revision)
-    assert "Amara Okafor" not in stored
+    assert "Matthew Johnson" not in stored
     for artifact in _sqlite_artifacts(path):
-        assert b"Amara Okafor" not in artifact.read_bytes(), artifact.name
+        assert b"Matthew Johnson" not in artifact.read_bytes(), artifact.name
         assert b"Legacy plaintext audit" not in artifact.read_bytes(), artifact.name
 
 
@@ -310,7 +310,7 @@ def test_snapshot_sync_uses_monotonic_etag_and_rejects_stale_after_reset(
     pre_reset_etag = synced.headers["etag"]
     reset = client.post("/api/demo/reset")
     assert reset.status_code == 200
-    assert reset.json()["profile"]["name"] == "Amara Okafor"
+    assert reset.json()["profile"]["name"] == "Matthew Johnson"
     assert reset.headers["etag"] != pre_reset_etag
 
     stale = client.put("/api/demo", headers={"If-Match": pre_reset_etag}, json=synced.json())
@@ -662,8 +662,8 @@ def test_worker_reminder_endpoint_returns_only_a_minimal_consent_bound_payload(
     assert response.headers["cache-control"] == "no-store"
     assert set(response.json()) == {"marker", "title", "body"}
     assert response.json()["marker"].startswith("2026-07-18:daily-check-in:")
-    assert response.json()["title"] == "You have a MeMed check-in"
-    assert "Amara" not in response.text
+    assert response.json()["title"] == "You have a Gutsy check-in"
+    assert "Matthew" not in response.text
     assert "messages" not in response.text
     assert "entries" not in response.text
     assert "previewUrl" not in response.text
@@ -909,7 +909,7 @@ def test_lifecycle_and_dashboard_use_the_maintained_personal_baseline(
     signal_keys = {signal["key"] for signal in lifecycle["signals"]}
     assert "pain" not in signal_keys
     assert "resting_heart_rate" not in signal_keys
-    assert "Amara" not in lifecycle["explanation"]
+    assert "Matthew" not in lifecycle["explanation"]
 
     dashboard = client.get("/api/dashboard").json()
     comparisons = {metric["key"]: metric["comparison"] for metric in dashboard["metrics"]}
@@ -963,7 +963,7 @@ def test_trusted_supporter_requires_identity_and_explicit_scope(
         "/api/trusted-supporter",
         json={
             "enabled": True,
-            "name": "Nia Okafor",
+            "name": "Nia Johnson",
             "relationship": "Sister",
             "canViewSummary": True,
         },
@@ -1126,6 +1126,21 @@ def test_chat_conversation_retrieval_uses_its_independent_permission(
     assert refused.status_code == 200
     assert "access is off" in refused.json()["messages"][-1]["text"].lower()
     assert refused.json()["messages"][-1]["sources"] == []
+
+
+def test_chat_uses_a_varied_provider_reply_for_an_ordinary_question(
+    domain_client: tuple[TestClient, SQLiteDemoStore], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    client, _ = domain_client
+
+    async def varied_reply(*_args: object, **_kwargs: object) -> str:
+        return "I’m here with you — what would feel most useful to talk through?"
+
+    monkeypatch.setattr(domain_routes, "_varied_chat_reply", varied_reply)
+    response = client.post("/api/chat", json={"text": "Can we just talk for a moment?"})
+
+    assert response.status_code == 200
+    assert response.json()["messages"][-1]["text"].startswith("I’m here with you")
 
 
 def test_chat_uses_highest_safety_level_across_all_parsed_entries(
@@ -1545,7 +1560,7 @@ def test_toilet_photo_consent_withdrawal_deletes_attachment_but_keeps_health_rec
     assert client.patch("/api/privacy", json={"toiletPhotoConsent": True}).status_code == 200
     entry_id = _bootstrap(client)[0]["entries"][0]["id"]
     original_body = client.get(f"/api/journal/{entry_id}").json()["body"]
-    marker = "MEMED_WITHDRAWN_TOILET_MEDIA_7f32"
+    marker = "GUTSY_WITHDRAWN_TOILET_MEDIA_7f32"
     attached = client.patch(
         f"/api/journal/{entry_id}",
         json={
@@ -1577,7 +1592,7 @@ def test_media_retention_removes_payload_not_health_entry(
     domain_client: tuple[TestClient, SQLiteDemoStore],
 ) -> None:
     client, store = domain_client
-    marker = "MEMED_RETENTION_PURGE_PROBE_4df91"
+    marker = "GUTSY_RETENTION_PURGE_PROBE_4df91"
     created = client.post(
         "/api/journal",
         json={
@@ -3820,7 +3835,7 @@ def test_export_delete_and_reset_are_private_and_recoverable(
     client, _ = domain_client
     exported = client.get("/api/export")
     assert exported.status_code == 200
-    assert exported.json()["data"]["profile"]["name"] == "Amara Okafor"
+    assert exported.json()["data"]["profile"]["name"] == "Matthew Johnson"
     assert "attachment" in exported.headers["content-disposition"]
 
     client.patch("/api/profile", json={"conditions": "Private pre-delete note"})
@@ -3835,7 +3850,7 @@ def test_export_delete_and_reset_are_private_and_recoverable(
     assert empty["prescription"]["rescuePlanEligible"] is False
 
     after_export = client.get("/api/export").json()
-    assert "Amara" not in str(after_export)
+    assert "Matthew" not in str(after_export)
     assert "Private pre-delete note" not in str(after_export)
     assert len(after_export["domainRevisions"]) == 1
 
@@ -3848,7 +3863,7 @@ def test_export_delete_and_reset_are_private_and_recoverable(
 
     reset = client.post("/api/demo/reset")
     assert reset.status_code == 200
-    assert reset.json()["profile"]["name"] == "Amara Okafor"
+    assert reset.json()["profile"]["name"] == "Matthew Johnson"
     assert len(client.get("/api/export").json()["domainRevisions"]) == 1
 
 
@@ -3856,8 +3871,8 @@ def test_sensitive_bytes_never_reach_sqlite_artifacts_and_delete_compacts_wal(
     domain_client: tuple[TestClient, SQLiteDemoStore],
 ) -> None:
     client, store = domain_client
-    marker = "MEMED_PHYSICAL_DELETE_PROBE_7c13e9b4"
-    marker_fragments = (b"MEMED_PHYSICAL", b"e9b4")
+    marker = "GUTSY_PHYSICAL_DELETE_PROBE_7c13e9b4"
+    marker_fragments = (b"GUTSY_PHYSICAL", b"e9b4")
 
     saved = client.patch("/api/profile", json={"conditions": marker})
     assert saved.status_code == 200

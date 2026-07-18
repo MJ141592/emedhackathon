@@ -39,13 +39,13 @@ test("natural-language capture creates a correctable journal record", async ({ p
   await expect(editor).toBeVisible();
   await editor
     .getByRole("textbox", { name: "What should the record say?" })
-    .fill("Bristol type 6, urgency, trace blood — corrected by Amara");
+    .fill("Bristol type 6, urgency, trace blood — corrected by Matthew");
   await editor.getByRole("button", { name: "Save correction" }).click();
 
-  await expect(page.getByText("Bristol type 6, urgency, trace blood — corrected by Amara", { exact: true })).toBeVisible();
+  await expect(page.getByText("Bristol type 6, urgency, trace blood — corrected by Matthew", { exact: true })).toBeVisible();
   await expect.poll(async () => {
     const state = await (await page.request.get("/api/demo")).json();
-    return state.entries.find((entry: { body: string }) => entry.body === "Bristol type 6, urgency, trace blood — corrected by Amara")?.structured;
+    return state.entries.find((entry: { body: string }) => entry.body === "Bristol type 6, urgency, trace blood — corrected by Matthew")?.structured;
   }).toMatchObject({ bristol: 6, urgency: true, blood: "trace" });
 });
 

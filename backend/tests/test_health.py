@@ -13,7 +13,7 @@ def test_health_endpoint() -> None:
     response = client.get("/api/health")
 
     assert response.status_code == 200
-    assert response.json() == {"status": "healthy", "service": "MeMed API"}
+    assert response.json() == {"status": "healthy", "service": "Gutsy API"}
 
 
 def test_api_process_runs_consent_bound_background_agent(monkeypatch) -> None:

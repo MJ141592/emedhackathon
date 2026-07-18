@@ -1,8 +1,8 @@
-# MeMed
+# Gutsy
 
-MeMed is a safety-first IBD companion demo. It combines low-effort symptom capture, a personal evidence ledger, an adaptive four-phase home screen, bounded support from Penny, and explicit patient-confirmed care workflows.
+Gutsy is a safety-first IBD companion demo. It combines low-effort symptom capture, a personal evidence ledger, an adaptive four-phase home screen, bounded support from Penny, and explicit patient-confirmed care workflows.
 
-The seeded scenario follows Amara on 17 July 2026 as several symptoms move away from her baseline. Every external action in the demo is simulated. MeMed does not diagnose a flare, prescribe or change medicine, place a real order, message a real clinician, or replace a personal care plan.
+The seeded scenario follows Matthew Johnson on 17 July 2026 as several symptoms move away from his baseline. Every external action in the demo is simulated. Gutsy does not diagnose a flare, prescribe or change medicine, place a real order, message a real clinician, or replace a personal care plan.
 
 ## What is implemented
 
@@ -64,7 +64,7 @@ Set `FRONTEND_PORT` or `BACKEND_PORT` to override the development ports. Set `EM
 
 ## Demo walkthrough
 
-The reset fixture opens in Watchful mode with Amara's journal, baseline, wearable context, prepared test order, clinician-message draft, clinician-owned prescription pathway, paused oat-milk experiment, and a clinician-authored taper available for review. No taper dose is recorded as taken or missed.
+The reset fixture opens in Watchful mode with Matthew's journal, baseline, wearable context, prepared test order, clinician-message draft, clinician-owned prescription pathway, paused oat-milk experiment, and a clinician-authored taper available for review. No taper dose is recorded as taken or missed.
 
 1. Use the four **Demo** phase buttons to inspect how the home screen adapts. These buttons simulate state and never make a clinical determination.
 2. Tell Penny, "Loose stool with urgency and a small amount of blood this morning." The structured record appears in the journal and can be edited, excluded, or deleted.
@@ -79,11 +79,11 @@ Buttons that advance delivery, lab, clinician, pharmacy, wearable, or message st
 
 ## Runware-disabled behavior
 
-Without a Runware key, `/api/ai/status` reports `configured: false` and inference endpoints return a structured service-unavailable response. The rest of MeMed remains functional:
+Without a Runware key, `/api/ai/status` reports `configured: false` and inference endpoints return a structured service-unavailable response. The rest of Gutsy remains functional:
 
 - typed capture, journal structuring, red-flag screening, evidence, trends, care workflows, taper support, experiments, persistence, privacy, and export are deterministic;
 - a voice note can still be recorded and reviewed manually, but automatic transcription explains that Runware is unavailable;
-- photos remain editable demo records (live session memory plus encrypted local-development SQLite) with unconfirmed placeholder observations. The optional **Describe with Runware** button checks configuration first; without a key it keeps the image inside MeMed and never fabricates a model result;
+- photos remain editable demo records (live session memory plus encrypted local-development SQLite) with unconfirmed placeholder observations. The optional **Describe with Runware** button checks configuration first; without a key it keeps the image inside Gutsy and never fabricates a model result;
 - optional spoken Penny replies stay as written text and explain that Runware text-to-speech is unavailable;
 - external care and fulfilment steps remain explicit simulations.
 

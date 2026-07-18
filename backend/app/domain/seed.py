@@ -261,7 +261,7 @@ def build_demo_state() -> DemoState:
                 {
                     "id": "jade",
                     "initials": "JO",
-                    "name": "Jade Okafor",
+                    "name": "Jade Johnson",
                     "role": "IBD Clinical Nurse Specialist",
                     "organisation": "St Mary’s IBD service",
                     "phone": "020 7946 0000",

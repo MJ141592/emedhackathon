@@ -6,8 +6,8 @@ import {
   REMINDER_DELETE_PENDING_KEY as DELETE_PENDING_KEY,
 } from "./persistentNotifications";
 
-const STORAGE_KEY = "memed.persisted-demo.v2";
-const NOTIFICATION_KEY_PREFIX = "memed.notification.";
+const STORAGE_KEY = "gutsy.persisted-demo.v2";
+const NOTIFICATION_KEY_PREFIX = "gutsy.notification.";
 
 export interface DemoSyncAdapter {
   hydrate(localState: DemoState): Promise<DemoState | null>;

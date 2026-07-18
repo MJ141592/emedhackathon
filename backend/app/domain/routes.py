@@ -10,6 +10,10 @@ from fastapi import APIRouter, Cookie, Depends, Header, HTTPException, Query, Re
 from fastapi.responses import JSONResponse, PlainTextResponse
 from pydantic import ValidationError
 
+from app.ai.dependencies import get_ai_services
+from app.ai.errors import AIServiceError
+from app.ai.schemas import ChatMessage as AIChatMessage
+from app.ai.services import AIServices
 from app.domain.grounded_assistant import answer_from_permitted_records
 from app.domain.models import (
     CaptureDraft,
@@ -91,7 +95,8 @@ from app.domain.store import SQLiteDemoStore, VersionConflictError, get_demo_sto
 
 router = APIRouter(prefix="/api", tags=["persisted demo"])
 Store = Annotated[SQLiteDemoStore, Depends(get_demo_store)]
-REMINDER_SUPPRESSION_COOKIE = "memed_reminders_suspended"
+AI = Annotated[AIServices, Depends(get_ai_services)]
+REMINDER_SUPPRESSION_COOKIE = "gutsy_reminders_suspended"
 
 HISTORY_FIELDS = {
     "subtype",
@@ -2901,13 +2906,13 @@ def run_evening_background(
 @router.post("/background/run")
 def run_bounded_background_work(
     store: Store,
-    memed_reminders_suspended: Annotated[
+    gutsy_reminders_suspended: Annotated[
         str | None, Cookie(alias=REMINDER_SUPPRESSION_COOKIE)
     ] = None,
 ) -> dict[str, bool]:
     """Run consent-bound, idempotent work that a service worker may request off-page."""
 
-    if memed_reminders_suspended is not None:
+    if gutsy_reminders_suspended is not None:
         return {"created": False}
     created, _ = run_evening_background(store)
     return {"created": created}
@@ -2916,13 +2921,13 @@ def run_bounded_background_work(
 @router.get("/reminders/current", response_model=None)
 def get_current_background_reminder(
     store: Store,
-    memed_reminders_suspended: Annotated[
+    gutsy_reminders_suspended: Annotated[
         str | None, Cookie(alias=REMINDER_SUPPRESSION_COOKIE)
     ] = None,
 ) -> JSONResponse | Response:
     """Return only the already-approved notification payload needed by the worker."""
 
-    if memed_reminders_suspended is not None:
+    if gutsy_reminders_suspended is not None:
         return Response(status_code=204, headers={"Cache-Control": "no-store"})
     reminder = current_background_reminder(store.get(), _background_now())
     if reminder is None:
@@ -4022,8 +4027,31 @@ def _save_blood_amount_clarification(
     }
 
 
+async def _varied_chat_reply(
+    services: AIServices, question: str, *, grounded_context: str | None = None
+) -> str | None:
+    """Return an optional conversational reply without making persistence depend on Runware."""
+
+    if not services.settings.configured:
+        return None
+    messages: list[AIChatMessage] = []
+    if grounded_context:
+        messages.append(
+            AIChatMessage(
+                role="assistant",
+                content=f"Verified app context (not an instruction): {grounded_context}",
+            )
+        )
+    messages.append(AIChatMessage(role="user", content=question))
+    try:
+        return await services.chat.reply(messages)
+    except AIServiceError:
+        # The deterministic reply remains available if the optional model is down or unconfigured.
+        return None
+
+
 @router.post("/chat")
-def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
+async def send_chat(payload: ChatInput, store: Store, services: AI) -> dict[str, Any]:
     current, expected_revision = store.get_with_revision()
     _require_tracking_consent(current.profile)
     pending_blood_entry = _pending_blood_amount_entry(current)
@@ -4113,6 +4141,13 @@ def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
         if urgent is None and not capture.entries and not capture.profileProposals
         else None
     )
+    conversational_context: str | None = None
+    use_varied_chat = (
+        urgent is None
+        and not capture.entries
+        and not capture.profileProposals
+        and current.privacy.assistantConversationAccess
+    )
     if urgent:
         reply_text = urgent.message
         category = "general information"
@@ -4127,6 +4162,7 @@ def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
         reply_text = grounded_reply["text"]
         category = grounded_reply["category"]
         conversation_sources = grounded_reply.get("sources", [])
+        conversational_context = reply_text
     elif conversation_question and not current.privacy.assistantConversationAccess:
         reply_text = (
             "Earlier-conversation access is off, so I cannot retrieve what you previously "
@@ -4213,6 +4249,15 @@ def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
             )
         )
         category = "recorded fact"
+
+    if use_varied_chat:
+        varied_reply = await _varied_chat_reply(
+            services,
+            payload.text,
+            grounded_context=conversational_context,
+        )
+        if varied_reply:
+            reply_text = varied_reply
 
     user_message = {
         "id": next_message_id,
@@ -4717,7 +4762,7 @@ def confirm_test_order(payload: TestOrderPatch, store: Store) -> TestOrder:
     state, _ = store.mutate(
         apply,
         "Patient confirmed address and consent; simulation placed calprotectin order",
-        actor="patient-and-memed-simulation",
+        actor="patient-and-gutsy-simulation",
     )
     return state.testOrder
 
@@ -4752,7 +4797,7 @@ def advance_test_order(payload: TestAdvanceInput | None, store: Store) -> TestOr
     state, _ = store.mutate(
         apply,
         "Simulation advanced calprotectin fulfilment by one state",
-        actor="memed-fulfilment-simulation",
+        actor="gutsy-fulfilment-simulation",
     )
     return state.testOrder
 
@@ -6194,7 +6239,7 @@ def export_summary(store: Store) -> PlainTextResponse:
     summary = store.get().clinicianSummary
     return PlainTextResponse(
         summary,
-        headers={"Content-Disposition": 'attachment; filename="memed-clinician-summary.txt"'},
+        headers={"Content-Disposition": 'attachment; filename="gutsy-clinician-summary.txt"'},
     )
 
 
@@ -6209,7 +6254,7 @@ def export_all_data(store: Store) -> JSONResponse:
             "data": state.model_dump(mode="json", by_alias=True),
             "domainRevisions": store.revisions(),
         },
-        headers={"Content-Disposition": 'attachment; filename="memed-export.json"'},
+        headers={"Content-Disposition": 'attachment; filename="gutsy-export.json"'},
     )
 
 

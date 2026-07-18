@@ -28,13 +28,13 @@ describe("demo repository privacy behavior", () => {
   test("purges and ignores a legacy plaintext browser aggregate", () => {
     const state = structuredClone(INITIAL_STATE);
     state.profile.name = "Sensitive legacy name";
-    localStorage.setItem("memed.persisted-demo.v2", JSON.stringify(state));
+    localStorage.setItem("gutsy.persisted-demo.v2", JSON.stringify(state));
 
     const loaded = demoRepository.load();
     expect(loaded.profile.name).toBe(INITIAL_STATE.profile.name);
-    expect(localStorage.getItem("memed.persisted-demo.v2")).toBeNull();
+    expect(localStorage.getItem("gutsy.persisted-demo.v2")).toBeNull();
     demoRepository.save(state);
-    expect(localStorage.getItem("memed.persisted-demo.v2")).toBeNull();
+    expect(localStorage.getItem("gutsy.persisted-demo.v2")).toBeNull();
   });
 
   test("expired server-backed photos are removed during hydration without a browser copy", async () => {
@@ -48,7 +48,7 @@ describe("demo repository privacy behavior", () => {
 
     expect(hydrated?.entries[0].photo).toBeUndefined();
     expect(hydrated?.audit[0].action).toMatch(/expired photo/);
-    expect(localStorage.getItem("memed.persisted-demo.v2")).toBeNull();
+    expect(localStorage.getItem("gutsy.persisted-demo.v2")).toBeNull();
     expect(sync).toHaveBeenCalledTimes(1);
     expect(sync.mock.calls[0][0].entries[0].photo).toBeUndefined();
   });
@@ -138,23 +138,23 @@ describe("demo repository privacy behavior", () => {
     await expect(demoRepository.hydrateRemote(INITIAL_STATE)).rejects.toThrow(/temporary read failure/);
     expect(sync).not.toHaveBeenCalled();
 
-    localStorage.setItem("memed.notification.2026-07-17:taper:sensitive", "shown");
+    localStorage.setItem("gutsy.notification.2026-07-17:taper:sensitive", "shown");
     demoRepository.beginDeletion();
-    expect(localStorage.getItem("memed.notification.2026-07-17:taper:sensitive")).toBeNull();
-    expect(localStorage.getItem("memed.delete-pending.v2")).toBe("1");
+    expect(localStorage.getItem("gutsy.notification.2026-07-17:taper:sensitive")).toBeNull();
+    expect(localStorage.getItem("gutsy.delete-pending.v2")).toBe("1");
   });
 
   test("bounds opaque page-notification markers to the current patient day", () => {
-    localStorage.setItem("memed.notification.2026-07-16:daily-check-in:3", "shown");
-    localStorage.setItem("memed.notification.2026-07-17:daily-check-in:1", "shown");
-    localStorage.setItem("memed.notification.2026-07-17:daily-check-in:2", "shown");
+    localStorage.setItem("gutsy.notification.2026-07-16:daily-check-in:3", "shown");
+    localStorage.setItem("gutsy.notification.2026-07-17:daily-check-in:1", "shown");
+    localStorage.setItem("gutsy.notification.2026-07-17:daily-check-in:2", "shown");
     localStorage.setItem("unrelated.preference", "keep");
 
     demoRepository.pruneNotificationMarkers("2026-07-17");
 
-    expect(localStorage.getItem("memed.notification.2026-07-16:daily-check-in:3")).toBeNull();
-    expect(localStorage.getItem("memed.notification.2026-07-17:daily-check-in:1")).toBe("shown");
-    expect(localStorage.getItem("memed.notification.2026-07-17:daily-check-in:2")).toBe("shown");
+    expect(localStorage.getItem("gutsy.notification.2026-07-16:daily-check-in:3")).toBeNull();
+    expect(localStorage.getItem("gutsy.notification.2026-07-17:daily-check-in:1")).toBe("shown");
+    expect(localStorage.getItem("gutsy.notification.2026-07-17:daily-check-in:2")).toBe("shown");
     expect(localStorage.getItem("unrelated.preference")).toBe("keep");
   });
 });

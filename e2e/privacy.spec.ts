@@ -12,16 +12,16 @@ test("a patient can export readable data and delete conversation history separat
   const downloadPromise = page.waitForEvent("download");
   await privacy.getByRole("button", { name: "Export my data" }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toMatch(/^memed-export-\d{4}-\d{2}-\d{2}\.json$/);
+  expect(download.suggestedFilename()).toMatch(/^gutsy-export-\d{4}-\d{2}-\d{2}\.json$/);
   const path = await download.path();
   expect(path).not.toBeNull();
   const exported = JSON.parse(await readFile(path!, "utf8")) as {
     product: string;
     data: { version: number; profile: { name: string }; entries: unknown[] };
   };
-  expect(exported.product).toBe("MeMed demo");
+  expect(exported.product).toBe("Gutsy demo");
   expect(exported.data.version).toBe(2);
-  expect(exported.data.profile.name).toBe("Amara Okafor");
+  expect(exported.data.profile.name).toBe("Matthew Johnson");
   expect(exported.data.entries.length).toBeGreaterThan(0);
 
   await privacy.getByRole("button", { name: "Delete conversation" }).click();
@@ -72,7 +72,7 @@ test("deleting all local health data returns the patient to onboarding", async (
     return {
       name: persisted.profile.name,
       onboardingComplete: persisted.profile.onboardingComplete,
-      summaryUsesProfile: persisted.clinicianSummary.startsWith("Alex Morgan’s editable MeMed summary"),
+      summaryUsesProfile: persisted.clinicianSummary.startsWith("Alex Morgan’s editable Gutsy summary"),
     };
   }).toEqual({ name: "Alex Morgan", onboardingComplete: true, summaryUsesProfile: true });
 });

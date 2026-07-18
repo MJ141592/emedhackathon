@@ -171,7 +171,7 @@ export const INITIAL_STATE: DemoState = {
     name: "Matthew Johnson", timeZone: "Europe/London", dateOfBirth: "1992-03-18", diagnosis: "Crohn’s disease", subtype: "Ileocolonic", diagnosedYear: "2016", extent: "Terminal ileum and colon", surgeries: "Ileocecal resection, 2019", conditions: "Osteopenia; anxiety", allergies: "Penicillin — rash", immunosuppressed: true, familyHistory: "Maternal aunt with Crohn’s", usualBowel: "2–3 formed bowel movements/day (2.8 average)", usualPain: "1–2/10", usualHeartRate: "58 bpm resting", usualSleep: "7 hours", dietaryNeeds: "No formal exclusions; prefers oat milk", currentMedicines: "Azathioprine 100 mg daily", pastMedicines: "Mesalazine — stopped 2018, limited response", carePlan: "Contact St Mary’s IBD advice line if symptoms rise for 3 days, blood increases, or night waking begins.", address: "24 Marikina Road, London", postcode: "W2 1NY", adultEligibilityConfirmed: true, healthDataConsent: true, consentVersion: "demo-v1", consentRecordedAt: "2026-07-01T09:00:00.000Z", onboardingComplete: true,
   },
   contacts: [
-    { id: "jade", initials: "JO", name: "Jade Okafor", role: "IBD Clinical Nurse Specialist", organisation: "St Mary’s IBD service", phone: "020 7946 0000" },
+    { id: "jade", initials: "JO", name: "Jade Johnson", role: "IBD Clinical Nurse Specialist", organisation: "St Mary’s IBD service", phone: "020 7946 0000" },
     { id: "rui", initials: "RF", name: "Dr Rui Ferreira", role: "Consultant gastroenterologist", organisation: "St Mary’s Hospital", phone: "020 7946 0100" },
     { id: "pharmacy", initials: "WP", name: "Wellfield Pharmacy", role: "Nominated pharmacy", organisation: "Marikina Road", phone: "020 7946 0200" },
   ],

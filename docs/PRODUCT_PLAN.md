@@ -1,6 +1,6 @@
 # IBD Companion: High-Level Product Plan
 
-> See also [Effortless Tracking, Patient Context, and the Background Health Agent](EFFORTLESS_TRACKING_AND_BACKGROUND_AGENT.md), which develops the past medical history context, fire-and-forget capture, wearable signals, and closed-loop clinical actions in more detail, and [The MeMed flare journey](FLARE_JOURNEY_FLOW.md), which walks the full loop from steady monitoring through flare, treatment, and taper back to normal.
+> See also [Effortless Tracking, Patient Context, and the Background Health Agent](EFFORTLESS_TRACKING_AND_BACKGROUND_AGENT.md), which develops the past medical history context, fire-and-forget capture, wearable signals, and closed-loop clinical actions in more detail, and [The Gutsy flare journey](FLARE_JOURNEY_FLOW.md), which walks the full loop from steady monitoring through flare, treatment, and taper back to normal.
 
 ## Product goal
 
