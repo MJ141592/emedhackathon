@@ -8,6 +8,8 @@ type Props = {
   messages: ChatMessage[];
   suggestions: Suggestion[];
   suggestionsNote: string;
+  starterPrompts?: string[];
+  phaseLabel?: string;
   timeZone: string;
   trackingEnabled: boolean;
   journalInferenceEnabled: boolean;
@@ -38,7 +40,7 @@ export function formatChatTimestamp(value: string, timeZone: string): string {
   return `${date} · ${time}`;
 }
 
-export function PennyChat({ messages, timeZone, trackingEnabled, onSend, notify }: Props) {
+export function PennyChat({ messages, starterPrompts = [], phaseLabel = "Current", timeZone, trackingEnabled, onSend, notify }: Props) {
   const [input, setInput] = useState("");
   const [sendBusy, setSendBusy] = useState(false);
   const threadRef = useRef<HTMLDivElement | null>(null);
@@ -119,7 +121,7 @@ export function PennyChat({ messages, timeZone, trackingEnabled, onSend, notify 
   return (
     <section className="chatwrap" aria-label="Chat with Penny">
       <div className="thread" ref={threadRef} role="log" aria-label="Conversation with Penny" aria-live="polite" aria-relevant="additions text">
-        {messages.length === 0 && <div className="empty-state"><b>Your conversation is private and empty.</b><span>Send Penny a message or a question in your own words.</span></div>}
+        {messages.length === 0 && <div className="empty-state"><b>Your {phaseLabel.toLowerCase()} conversation is private and empty.</b><span>Start with a question that fits this scenario, or write your own.</span><div className="chips" aria-label={`${phaseLabel} quick messages`}>{starterPrompts.map((prompt) => <button key={prompt} className="chip" type="button" disabled={!trackingEnabled || sendBusy} onClick={() => void send(prompt)}>{prompt}</button>)}</div></div>}
         {messages.map((message) => (
           <article id={`message-${message.id}`} key={message.id} className={message.from === "penny" ? "msg penny" : "msg me"}>
             <time className="message-time" dateTime={message.createdAt}>{formatChatTimestamp(message.createdAt, timeZone)}</time>

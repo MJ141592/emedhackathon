@@ -1133,7 +1133,13 @@ def test_chat_uses_a_varied_provider_reply_for_an_ordinary_question(
 ) -> None:
     client, _ = domain_client
 
-    async def varied_reply(*_args: object, **_kwargs: object) -> str:
+    context: dict[str, str | None] = {}
+
+    async def varied_reply(*_args: object, **kwargs: object) -> str:
+        grounded_context = kwargs.get("grounded_context")
+        context["grounded_context"] = (
+            grounded_context if isinstance(grounded_context, str) else None
+        )
         return "I’m here with you — what would feel most useful to talk through?"
 
     monkeypatch.setattr(domain_routes, "_varied_chat_reply", varied_reply)
@@ -1141,6 +1147,7 @@ def test_chat_uses_a_varied_provider_reply_for_an_ordinary_question(
 
     assert response.status_code == 200
     assert response.json()["messages"][-1]["text"].startswith("I’m here with you")
+    assert "Watchful demo scenario" in context["grounded_context"]
 
 
 def test_chat_uses_highest_safety_level_across_all_parsed_entries(

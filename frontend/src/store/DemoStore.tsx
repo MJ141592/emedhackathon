@@ -499,14 +499,23 @@ export function DemoStoreProvider({ children, initialState }: { children: ReactN
       setSyncError(undefined);
     },
     setDemoPhase(phase: PhaseId) {
-      setState((current) => ({
-        ...current,
-        phase,
-        pendingPhase: undefined,
-        phaseConfirmed: false,
-        experiment: phase === "stable" ? current.experiment : { ...current.experiment, status: current.experiment.status === "active" ? "paused" : current.experiment.status },
-        audit: audit(current, `Demo state changed to ${phase}; this explicit demo control is not a clinical decision.`),
-      }));
+      setState((current) => {
+        const changedScenario = phase !== current.phase;
+        return {
+          ...current,
+          phase,
+          pendingPhase: undefined,
+          phaseConfirmed: false,
+          // Demo scenarios are separate conversations: never carry a patient message or a
+          // pending conversation-derived proposal from one clinical context into another.
+          messages: changedScenario ? [] : current.messages,
+          profileProposals: changedScenario ? [] : current.profileProposals,
+          experiment: phase === "stable" ? current.experiment : { ...current.experiment, status: current.experiment.status === "active" ? "paused" : current.experiment.status },
+          audit: audit(current, changedScenario
+            ? `Demo state changed to ${phase}; Penny conversation history was cleared for the separate scenario.`
+            : `Demo state changed to ${phase}; this explicit demo control is not a clinical decision.`),
+        };
+      });
     },
     proposePhase(phase: PhaseId) {
       setState((current) => ({ ...current, pendingPhase: phase, phaseConfirmed: false, audit: audit(current, `A ${phase} phase transition was proposed for patient review.`) }));

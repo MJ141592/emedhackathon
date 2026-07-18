@@ -16,6 +16,25 @@ export const PHASE_LABELS: { id: PhaseId; label: string }[] = [
   { id: "recovery", label: "Recovery" },
 ];
 
+export const PHASE_CHAT_PROMPTS: Record<PhaseId, string[]> = {
+  stable: [
+    "What is useful to keep an eye on when I feel well?",
+    "Help me log a normal day without overthinking it.",
+  ],
+  watch: [
+    "What in my record looks different from my usual?",
+    "What should I review before I contact my IBD team?",
+  ],
+  flare: [
+    "Which symptoms mean I should use urgent help today?",
+    "Help me prepare a clear update for my IBD team.",
+  ],
+  recovery: [
+    "What can I record while I am recovering?",
+    "Help me understand the care plan without changing it.",
+  ],
+};
+
 const DAYS = ["4 Jul", "5", "6", "7", "8", "9", "10 Jul", "11", "12", "13", "14", "15", "16", "17 Jul"];
 
 function trend(symptoms: number[], heartRates: number[], bowel: number[]): TrendPoint[] {

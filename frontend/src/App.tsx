@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Activity, LockKeyhole, Menu, NotebookPen, Phone, UserRound } from "lucide-react";
 import type { EvidenceSource, SuggestionKind } from "./types";
-import { ONBOARDING_TODAY, PHASE_LABELS } from "./data";
+import { ONBOARDING_TODAY, PHASE_CHAT_PROMPTS, PHASE_LABELS } from "./data";
 import { useDemoStore } from "./store/DemoStore";
 import { deriveDashboard } from "./store/dashboardDerivations";
 import { TodayHeader } from "./components/TodayHeader";
@@ -234,7 +234,7 @@ function App() {
           <button disabled={!hasPatientRecord} onClick={() => openPanel("team")} aria-expanded={panel === "team"}><Phone /> Contact my team</button>
         </nav>
         <button ref={mobileMenuButtonRef} className="mobile-menu" onClick={() => setMobileMenu((value) => !value)} aria-expanded={mobileMenu} aria-label={`${mobileMenu ? "Close" : "Open"} menu`}><Menu /></button>
-        {trackingActive && <div className="demo" aria-label="Demo lifecycle state"><span>Demo</span>{PHASE_LABELS.map((candidate) => <button key={candidate.id} disabled={store.mutationsBlocked} className={candidate.id === state.phase ? "demo-btn selected" : "demo-btn"} aria-pressed={candidate.id === state.phase} onClick={() => { store.setDemoPhase(candidate.id); notify(`${candidate.label} demo view selected. This changes presentation only; evidence review remains separate.`); }}>{candidate.label}</button>)}</div>}
+        {trackingActive && <div className="demo" aria-label="Demo lifecycle state"><span>Demo</span>{PHASE_LABELS.map((candidate) => <button key={candidate.id} disabled={store.mutationsBlocked} className={candidate.id === state.phase ? "demo-btn selected" : "demo-btn"} aria-pressed={candidate.id === state.phase} onClick={() => { store.setDemoPhase(candidate.id); notify(candidate.id === state.phase ? `${candidate.label} demo view selected.` : `${candidate.label} demo view selected. Penny starts with a separate, empty conversation for this scenario.`); }}>{candidate.label}</button>)}</div>}
         <button className="me" onClick={() => openPanel("profile")} aria-label="Profile"><span className="avatar">{state.profile.name ? state.profile.name.split(" ").map((part) => part[0]).slice(0, 2).join("") : <UserRound />}</span><span><b>{state.profile.name || "Set up profile"}</b><small>{state.profile.diagnosis || "Onboarding needed"}</small></span></button>
       </header>
 
@@ -242,7 +242,7 @@ function App() {
         <main className="left">
           {!trackingActive && <section className="tracking-paused" role="status"><LockKeyhole /><div><b>Health-data tracking is paused</b><span>Existing records stay viewable and correctable. Re-enable consent in Profile to add new ones.</span></div><button className="btn" onClick={() => openPanel("profile")}>Review consent</button></section>}
           <TodayHeader content={content} phase={state.phase} pendingPhase={state.pendingPhase} phaseConfirmed={state.phaseConfirmed} firstName={displayName} onReviewEvidence={() => openPanel("trends")} treatmentFocus={treatmentFocus} onOpenTreatment={() => handleSuggestion("taper")} />
-          <PennyChat messages={state.messages} suggestions={pennySuggestions} suggestionsNote={content.suggestionsNote} timeZone={state.profile.timeZone} trackingEnabled={trackingActive} journalInferenceEnabled={trackingActive && state.privacy.assistantJournalAccess} onSend={store.sendChat} onCorrectMessage={store.correctChatMessage} onDeleteMessage={store.deleteChatMessage} onSuggestion={handleSuggestion} onSourceTarget={(target) => openPanel(target === "care" ? "care" : target === "profile" ? "profile" : target === "privacy" ? "privacy" : "trends")} notify={notify} />
+          <PennyChat messages={state.messages} suggestions={pennySuggestions} suggestionsNote={content.suggestionsNote} starterPrompts={PHASE_CHAT_PROMPTS[state.phase]} phaseLabel={PHASE_LABELS.find((candidate) => candidate.id === state.phase)?.label ?? "Current"} timeZone={state.profile.timeZone} trackingEnabled={trackingActive} journalInferenceEnabled={trackingActive && state.privacy.assistantJournalAccess} onSend={store.sendChat} onCorrectMessage={store.correctChatMessage} onDeleteMessage={store.deleteChatMessage} onSuggestion={handleSuggestion} onSourceTarget={(target) => openPanel(target === "care" ? "care" : target === "profile" ? "profile" : target === "privacy" ? "privacy" : "trends")} notify={notify} />
         </main>
         {journalOpen && <JournalPanel notify={notify} onClose={() => setJournalOpen(false)} onOpenCare={(focus = "taper") => handleSuggestion(focus)} onOpenSafetyCheck={() => { setCareFocus("urgent"); openPanel("care"); }} trackingEnabled={trackingActive} />}
       </div> : <main className="onboarding-gate" id="main-content" inert={Boolean(panel || urgentOpen || store.mutationsBlocked)} aria-hidden={panel || urgentOpen ? true : undefined}>
