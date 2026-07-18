@@ -4027,6 +4027,27 @@ def _save_blood_amount_clarification(
     }
 
 
+_PHASE_CHAT_CONTEXT = {
+    "stable": (
+        "This is the Steady demo scenario: focus on maintaining a personal baseline and "
+        "ordinary tracking; do not imply a problem."
+    ),
+    "watch": (
+        "This is the Watchful demo scenario: symptoms may differ from the recorded baseline; "
+        "distinguish reviewable observations from a diagnosis and point to the patient's care "
+        "pathway where appropriate."
+    ),
+    "flare": (
+        "This is the Flare demo scenario: support preparation for the IBD team and "
+        "urgent-symptom safety; do not diagnose, prescribe or change treatment."
+    ),
+    "recovery": (
+        "This is the Recovery demo scenario: focus on recovery observations and the "
+        "clinician-authored plan; never alter a prescribed dose or treatment plan."
+    ),
+}
+
+
 async def _varied_chat_reply(
     services: AIServices, question: str, *, grounded_context: str | None = None
 ) -> str | None:
@@ -4251,10 +4272,13 @@ async def send_chat(payload: ChatInput, store: Store, services: AI) -> dict[str,
         category = "recorded fact"
 
     if use_varied_chat:
+        context_blocks = [_PHASE_CHAT_CONTEXT[current.phase]]
+        if conversational_context:
+            context_blocks.append(conversational_context)
         varied_reply = await _varied_chat_reply(
             services,
             payload.text,
-            grounded_context=conversational_context,
+            grounded_context="\n\n".join(context_blocks),
         )
         if varied_reply:
             reply_text = varied_reply

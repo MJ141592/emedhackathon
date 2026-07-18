@@ -13,6 +13,14 @@ function CollectionHarness() {
   </>;
 }
 
+function PhaseChatHarness() {
+  const { state, setDemoPhase } = useDemoStore();
+  return <>
+    <button onClick={() => setDemoPhase("flare")}>Open flare scenario</button>
+    <output data-testid="phase-chat-state">{JSON.stringify(state)}</output>
+  </>;
+}
+
 test("collection reanchors the unchanged taper and clears unissued adherence for re-verification", () => {
   const ready: DemoState = structuredClone(INITIAL_STATE);
   ready.prescription.status = "ready";
@@ -44,4 +52,15 @@ test("collection reanchors the unchanged taper and clears unissued adherence for
     ready.taper.days.map(({ day, doseMg }) => ({ day, doseMg })),
   );
   expect(collected.audit[0].action).toMatch(/anchored to collection day/i);
+});
+
+test("switching demo scenarios starts a separate empty Penny conversation", () => {
+  render(<DemoStoreProvider initialState={INITIAL_STATE}><PhaseChatHarness /></DemoStoreProvider>);
+
+  fireEvent.click(screen.getByRole("button", { name: "Open flare scenario" }));
+
+  const switched = JSON.parse(screen.getByTestId("phase-chat-state").textContent ?? "{}") as DemoState;
+  expect(switched.phase).toBe("flare");
+  expect(switched.messages).toEqual([]);
+  expect(switched.profileProposals).toEqual([]);
 });
