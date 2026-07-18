@@ -111,7 +111,8 @@ legend span { font-weight: 400; color: var(--ink-faint); }
 .grid.metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 15px 17px; }
 .metric .k { color: var(--ink-soft); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.metric .v { font: 500 23px var(--mono); margin-top: 2px; }
+.metric .v { font: 500 23px var(--mono); margin-top: 2px; animation: metric-refresh .45s ease; }
+@keyframes metric-refresh { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 .metric .unit { font-size: 13px; color: var(--ink-faint); }
 .metric .d { font-size: 12.5px; font-weight: 600; margin-top: 1px; }
 .d.up { color: var(--flare); }.d.warn { color: var(--amber); }.d.flat { color: var(--ink-faint); }.d.ok { color: var(--calm-deep); }
@@ -198,6 +199,19 @@ legend span { font-weight: 400; color: var(--ink-faint); }
 .composer { display: flex; gap: 8px; border-top: 1px solid var(--line); padding-top: 8px; }.composer input { flex: 1; padding: 9px 12px; font-size: 15px; }
 .send { width: 46px; height: 46px; border: 0; border-radius: 12px; background: var(--calm); color: #fff; display: grid; place-items: center; }.send svg { width: 21px; }
 .composer .tool { width: 46px; height: 46px; border: 1px solid var(--calm); border-radius: 12px; background: var(--panel); color: var(--calm-deep); display: grid; place-items: center; flex-shrink: 0; }.composer .tool svg { width: 21px; }.composer .tool:hover { background: var(--calm-tint); }
+
+/* Voice call with Remi */
+.call-layer { background: rgba(30, 74, 60, .55); }
+.call-dialog { width: min(340px, 92vw); background: var(--panel); border-radius: 22px; box-shadow: var(--shadow); padding: 38px 25px 30px; display: grid; justify-items: center; gap: 8px; text-align: center; }
+.call-dialog h2 { font: 500 27px/1.2 var(--serif); }
+.call-avatar { width: 74px; height: 74px; border-radius: 50%; background: var(--calm-deep); color: #dff0e8; display: grid; place-items: center; }
+.call-avatar svg { width: 33px; height: 33px; }
+.call-avatar.pulsing { animation: call-pulse 1.4s ease-in-out infinite; }
+@keyframes call-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(46,107,88,.45); } 50% { box-shadow: 0 0 0 16px rgba(46,107,88,0); } }
+.call-status { color: var(--ink-soft); font: 500 15px var(--mono); min-height: 22px; }
+.call-end { margin-top: 14px; width: 56px; height: 56px; border: 0; border-radius: 50%; background: var(--flare); color: #fff; display: grid; place-items: center; }
+.call-end svg { width: 24px; height: 24px; }
+.call-end:hover { background: var(--flare-deep); }
 
 /* Contact my team */
 .contact-team { display: grid; gap: 10px; }

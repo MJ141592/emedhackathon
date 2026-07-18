@@ -658,7 +658,8 @@ export function deriveDashboard(state: DemoState): DerivedDashboard {
       sub: latestDate
         ? `${formatLongDate(patientToday)} · compared with your baseline`
         : `${formatLongDate(patientToday)} · no included health records yet`,
-      metrics: deriveMetrics(state),
+      // Demo phases carry their own illustrative numbers so switching modes visibly updates the stat boxes.
+      metrics: template.metrics,
       trend,
       suggestions,
     },

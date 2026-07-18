@@ -29,9 +29,9 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
     gauge: { percent: 14, label: "Remission" },
     metrics: [
       { k: "Bowel movements / day", v: "2.8", d: "at your 2–3 baseline", dClass: "ok" },
-      { k: "Average pain", v: "1", unit: "/10", d: "usual for you", dClass: "flat" },
-      { k: "Resting heart rate", v: "58", unit: " bpm", d: "right on baseline", dClass: "ok" },
-      { k: "Sleep & fatigue", v: "Good", d: "6h 55m average", dClass: "ok" },
+      { k: "Average pain", v: "0", unit: "/10", d: "usual for you", dClass: "flat" },
+      { k: "Heart rate · resting / max", v: "58 / 96", unit: " bpm", d: "right on baseline", dClass: "ok" },
+      { k: "Sleep", v: "8h 30m", d: "at your usual", dClass: "ok" },
     ],
     suggestions: [
       { kind: "experiment", icon: "note", title: "Oat milk experiment — day 9 of 14", desc: "No clear change so far — an observation, not proof.", cta: "Open experiment" },
@@ -47,8 +47,8 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
     metrics: [
       { k: "Bowel movements / day", v: "5.1", d: "↑ from 2.8 baseline", dClass: "up" },
       { k: "Average pain", v: "4", unit: "/10", d: "↑ from 2", dClass: "up" },
-      { k: "Resting heart rate", v: "64", unit: " bpm", d: "↑ 6 above baseline", dClass: "warn" },
-      { k: "Sleep & fatigue", v: "High", d: "5h 10m · 4 difficult days", dClass: "warn" },
+      { k: "Heart rate · resting / max", v: "64 / 104", unit: " bpm", d: "↑ 6 above baseline", dClass: "warn" },
+      { k: "Sleep", v: "6h 30m", d: "below your usual", dClass: "warn" },
     ],
     suggestions: [
       { kind: "test", icon: "flask", title: "Order a calprotectin home test", desc: "Changes across two recorded days met the rule. Confirm the sources and delivery first.", cta: "Review test order" },
@@ -64,8 +64,8 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
     metrics: [
       { k: "Bowel movements / day", v: "7.4", d: "↑ from 2.8 baseline", dClass: "up" },
       { k: "Average pain", v: "6", unit: "/10", d: "↑ from 2", dClass: "up" },
-      { k: "Resting heart rate", v: "67", unit: " bpm", d: "↑ 9 above baseline", dClass: "up" },
-      { k: "Sleep & fatigue", v: "Poor", d: "night waking · high fatigue", dClass: "up" },
+      { k: "Heart rate · resting / max", v: "67 / 146", unit: " bpm", d: "↑ 9 above baseline", dClass: "up" },
+      { k: "Sleep", v: "5h 00m", d: "night waking · high fatigue", dClass: "up" },
     ],
     suggestions: [
       { kind: "urgent", icon: "phone", title: "Run today’s safety check", desc: "Heavy bleeding, severe pain, fever or faintness need urgent care.", cta: "Check symptoms" },
@@ -81,8 +81,8 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
     metrics: [
       { k: "Bowel movements / day", v: "3.0", d: "↓ from 7.4 last week", dClass: "ok" },
       { k: "Average pain", v: "2", unit: "/10", d: "↓ from 6", dClass: "ok" },
-      { k: "Resting heart rate", v: "60", unit: " bpm", d: "nearly back to 58", dClass: "flat" },
-      { k: "Sleep & fatigue", v: "6h 10m", d: "still below your usual", dClass: "warn" },
+      { k: "Heart rate · resting / max", v: "60 / 99", unit: " bpm", d: "nearly back to 58", dClass: "flat" },
+      { k: "Sleep", v: "7h 45m", d: "climbing back to usual", dClass: "ok" },
     ],
     suggestions: [
       { kind: "taper", icon: "note", title: "Today’s prescribed dose: 25 mg", desc: "5 × 5 mg prednisolone with breakfast. Next step: 20 mg on Monday.", cta: "Open taper" },
@@ -100,8 +100,8 @@ export const ONBOARDING_TODAY: PhaseContent = {
   metrics: [
     { k: "Bowel baseline", v: "—", d: "Add what is usual for you", dClass: "flat" },
     { k: "Pain baseline", v: "—", d: "Not recorded", dClass: "flat" },
-    { k: "Resting heart rate", v: "—", d: "Optional", dClass: "flat" },
-    { k: "Sleep & fatigue", v: "—", d: "Not recorded", dClass: "flat" },
+    { k: "Heart rate · resting / max", v: "—", d: "Optional", dClass: "flat" },
+    { k: "Sleep", v: "—", d: "Not recorded", dClass: "flat" },
   ],
   suggestions: [],
   suggestionsNote: "Remi and health tracking remain off until onboarding and consent are complete.",
@@ -120,6 +120,12 @@ export const INITIAL_CHAT: ChatMessage[] = [
     { entryId: 6, label: "Bowel log", date: "16 Jul, 21:10", detail: "Bristol type 6 with urgency", type: "fact" },
     { entryId: 2, label: "Watch sync", date: "17 Jul, 08:00", detail: "Resting heart rate 64 bpm and sleep 5 h 10 m", type: "fact" },
   ] },
+  { id: 4, from: "me", createdAt: "2026-07-17T08:15:30.000Z", text: "There was a bit of blood again this morning. Should I be worried?" },
+  { id: 5, from: "penny", createdAt: "2026-07-17T08:16:00.000Z", category: "general information", text: "A small amount of blood alongside looser stools is common during a bump like this, and on its own it isn’t an emergency. If bleeding becomes heavy or continuous, or you feel faint or feverish, that needs urgent care today. Given two days of change, this is exactly what your calprotectin home test is for — I’ve prepared the order for you to review." },
+  { id: 6, from: "me", createdAt: "2026-07-17T08:18:00.000Z", text: "Ok, I’ll do the test. Anything else I should do today?" },
+  { id: 7, from: "penny", createdAt: "2026-07-17T08:18:40.000Z", category: "general information", text: "Keep it gentle today: plenty of fluids, smaller and simpler meals, and log anything you notice — it all sharpens the picture. I’ve also drafted a short summary of your week for Jade, your IBD nurse. Nothing is sent until you’ve read and approved every word." },
+  { id: 8, from: "me", createdAt: "2026-07-17T08:20:00.000Z", text: "Thanks. Porridge and a peppermint tea for breakfast, by the way." },
+  { id: 9, from: "penny", createdAt: "2026-07-17T08:20:20.000Z", category: "recorded fact", text: "Logged: porridge and peppermint tea, 17 July. That’s a kind choice on a crampy morning. I’ll check in with you this evening — and if anything changes before then, just message me." },
 ];
 
 function experimentHistory(): JournalEntry[] {

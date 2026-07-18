@@ -107,6 +107,60 @@ def build_demo_state() -> DemoState:
                         },
                     ],
                 },
+                {
+                    "id": 4,
+                    "from": "me",
+                    "createdAt": "2026-07-17T08:15:30.000Z",
+                    "text": "There was a bit of blood again this morning. Should I be worried?",
+                },
+                {
+                    "id": 5,
+                    "from": "penny",
+                    "createdAt": "2026-07-17T08:16:00.000Z",
+                    "category": "general information",
+                    "text": (
+                        "A small amount of blood alongside looser stools is common during a bump "
+                        "like this, and on its own it isn’t an emergency. If bleeding becomes "
+                        "heavy or continuous, or you feel faint or feverish, that needs urgent "
+                        "care today. Given two days of change, this is exactly what your "
+                        "calprotectin home test is for — I’ve prepared the order for you to review."
+                    ),
+                },
+                {
+                    "id": 6,
+                    "from": "me",
+                    "createdAt": "2026-07-17T08:18:00.000Z",
+                    "text": "Ok, I’ll do the test. Anything else I should do today?",
+                },
+                {
+                    "id": 7,
+                    "from": "penny",
+                    "createdAt": "2026-07-17T08:18:40.000Z",
+                    "category": "general information",
+                    "text": (
+                        "Keep it gentle today: plenty of fluids, smaller and simpler meals, and "
+                        "log anything you notice — it all sharpens the picture. I’ve also drafted "
+                        "a short summary of your week for Jade, your IBD nurse. Nothing is sent "
+                        "until you’ve read and approved every word."
+                    ),
+                },
+                {
+                    "id": 8,
+                    "from": "me",
+                    "createdAt": "2026-07-17T08:20:00.000Z",
+                    "text": "Thanks. Porridge and a peppermint tea for breakfast, by the way.",
+                },
+                {
+                    "id": 9,
+                    "from": "penny",
+                    "createdAt": "2026-07-17T08:20:20.000Z",
+                    "category": "recorded fact",
+                    "text": (
+                        "Logged: porridge and peppermint tea, 17 July. That’s a kind choice on a "
+                        "crampy morning. I’ll check in with you this evening — and if anything "
+                        "changes before then, just message me."
+                    ),
+                },
             ],
             "profileProposals": [],
             "entries": [

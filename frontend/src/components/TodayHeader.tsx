@@ -52,7 +52,7 @@ export function TodayHeader({ content, firstName, treatmentFocus, onOpenTreatmen
         {content.metrics.map((metric) => (
           <div key={metric.k} className="card metric">
             <div className="k">{metric.k}</div>
-            <div className="v">{metric.v}{metric.unit && <span className="unit">{metric.unit}</span>}</div>
+            <div key={`${metric.v}${metric.unit ?? ""}`} className="v">{metric.v}{metric.unit && <span className="unit">{metric.unit}</span>}</div>
           </div>
         ))}
       </div>
