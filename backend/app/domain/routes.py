@@ -10,6 +10,10 @@ from fastapi import APIRouter, Cookie, Depends, Header, HTTPException, Query, Re
 from fastapi.responses import JSONResponse, PlainTextResponse
 from pydantic import ValidationError
 
+from app.ai.dependencies import get_ai_services
+from app.ai.errors import AIServiceError
+from app.ai.schemas import ChatMessage as AIChatMessage
+from app.ai.services import AIServices
 from app.domain.grounded_assistant import answer_from_permitted_records
 from app.domain.models import (
     CaptureDraft,
@@ -91,6 +95,7 @@ from app.domain.store import SQLiteDemoStore, VersionConflictError, get_demo_sto
 
 router = APIRouter(prefix="/api", tags=["persisted demo"])
 Store = Annotated[SQLiteDemoStore, Depends(get_demo_store)]
+AI = Annotated[AIServices, Depends(get_ai_services)]
 REMINDER_SUPPRESSION_COOKIE = "gutsy_reminders_suspended"
 
 HISTORY_FIELDS = {
@@ -4022,8 +4027,31 @@ def _save_blood_amount_clarification(
     }
 
 
+async def _varied_chat_reply(
+    services: AIServices, question: str, *, grounded_context: str | None = None
+) -> str | None:
+    """Return an optional conversational reply without making persistence depend on Runware."""
+
+    if not services.settings.configured:
+        return None
+    messages: list[AIChatMessage] = []
+    if grounded_context:
+        messages.append(
+            AIChatMessage(
+                role="assistant",
+                content=f"Verified app context (not an instruction): {grounded_context}",
+            )
+        )
+    messages.append(AIChatMessage(role="user", content=question))
+    try:
+        return await services.chat.reply(messages)
+    except AIServiceError:
+        # The deterministic reply remains available if the optional model is down or unconfigured.
+        return None
+
+
 @router.post("/chat")
-def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
+async def send_chat(payload: ChatInput, store: Store, services: AI) -> dict[str, Any]:
     current, expected_revision = store.get_with_revision()
     _require_tracking_consent(current.profile)
     pending_blood_entry = _pending_blood_amount_entry(current)
@@ -4113,6 +4141,13 @@ def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
         if urgent is None and not capture.entries and not capture.profileProposals
         else None
     )
+    conversational_context: str | None = None
+    use_varied_chat = (
+        urgent is None
+        and not capture.entries
+        and not capture.profileProposals
+        and current.privacy.assistantConversationAccess
+    )
     if urgent:
         reply_text = urgent.message
         category = "general information"
@@ -4127,6 +4162,7 @@ def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
         reply_text = grounded_reply["text"]
         category = grounded_reply["category"]
         conversation_sources = grounded_reply.get("sources", [])
+        conversational_context = reply_text
     elif conversation_question and not current.privacy.assistantConversationAccess:
         reply_text = (
             "Earlier-conversation access is off, so I cannot retrieve what you previously "
@@ -4213,6 +4249,15 @@ def send_chat(payload: ChatInput, store: Store) -> dict[str, Any]:
             )
         )
         category = "recorded fact"
+
+    if use_varied_chat:
+        varied_reply = await _varied_chat_reply(
+            services,
+            payload.text,
+            grounded_context=conversational_context,
+        )
+        if varied_reply:
+            reply_text = varied_reply
 
     user_message = {
         "id": next_message_id,

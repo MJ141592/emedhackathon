@@ -1128,6 +1128,21 @@ def test_chat_conversation_retrieval_uses_its_independent_permission(
     assert refused.json()["messages"][-1]["sources"] == []
 
 
+def test_chat_uses_a_varied_provider_reply_for_an_ordinary_question(
+    domain_client: tuple[TestClient, SQLiteDemoStore], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    client, _ = domain_client
+
+    async def varied_reply(*_args: object, **_kwargs: object) -> str:
+        return "I’m here with you — what would feel most useful to talk through?"
+
+    monkeypatch.setattr(domain_routes, "_varied_chat_reply", varied_reply)
+    response = client.post("/api/chat", json={"text": "Can we just talk for a moment?"})
+
+    assert response.status_code == 200
+    assert response.json()["messages"][-1]["text"].startswith("I’m here with you")
+
+
 def test_chat_uses_highest_safety_level_across_all_parsed_entries(
     domain_client: tuple[TestClient, SQLiteDemoStore],
 ) -> None:

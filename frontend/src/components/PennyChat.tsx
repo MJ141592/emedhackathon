@@ -4,6 +4,7 @@ import type { ChatMessage, EvidenceSource, Suggestion, SuggestionKind } from "..
 import { CHAT_CHIPS } from "../data";
 import { useAudioRecorder } from "../useAudioRecorder";
 import { aiClient } from "../api";
+import { prepareVoiceNoteForTranscription } from "../audioTranscription";
 import { normalizeTimeZone } from "../store/patientTime";
 import { ConfirmDialog } from "./ui/ConfirmDialog";
 
@@ -125,7 +126,7 @@ export function PennyChat({ messages, suggestions, suggestionsNote, timeZone, tr
         notify("Runware isn’t configured, so listen back and type only the words you want to add.");
         return;
       }
-      const result = await aiClient.transcribe(recorder.audio);
+      const result = await aiClient.transcribe(await prepareVoiceNoteForTranscription(recorder.audio));
       setVoiceReview(result.text);
     } catch {
       // Never turn instructional fallback copy into a confirmable patient health record.
