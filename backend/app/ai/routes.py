@@ -41,12 +41,12 @@ def _require_inference_consent(
     if journal and not state.privacy.assistantJournalAccess:
         raise HTTPException(
             status_code=403,
-            detail="Remi's Journal and photos inference permission is disabled.",
+            detail="Penny's Journal and photos inference permission is disabled.",
         )
     if conversation and not state.privacy.assistantConversationAccess:
         raise HTTPException(
             status_code=403,
-            detail="Remi's earlier-conversation inference permission is disabled.",
+            detail="Penny's earlier-conversation inference permission is disabled.",
         )
 
 

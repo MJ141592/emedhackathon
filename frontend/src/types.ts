@@ -10,7 +10,7 @@ export type EntryKind =
   | "MEDICATION"
   | "FROM YOUR WATCH"
   | "TEST RESULT"
-  | "Remi noticed";
+  | "Penny noticed";
 
 export type PhotoAttachment = {
   name: string;

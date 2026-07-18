@@ -204,7 +204,7 @@ def answer_from_permitted_records(
                 "category": "general information",
                 "text": (
                     "Earlier-conversation access is off, so I cannot retrieve what you "
-                    "previously told Remi. You can review the conversation yourself or enable "
+                    "previously told Penny. You can review the conversation yourself or enable "
                     "that separate permission in Privacy."
                 ),
             }
@@ -532,7 +532,7 @@ def answer_from_permitted_records(
             "text": (
                 "Steroids can be used for a limited clinician-prescribed course to control "
                 "inflammation. A prescribed course or taper should be followed exactly and not "
-                "stopped suddenly. Remi can display a verified schedule, but only the "
+                "stopped suddenly. Penny can display a verified schedule, but only the "
                 "authorised prescriber can start, stop or change it."
             ),
             "sources": [_guidance_source("steroids")],
@@ -601,7 +601,7 @@ def answer_from_permitted_records(
                 "Inflammatory bowel disease is the umbrella term for conditions including "
                 "Crohn’s disease and ulcerative colitis. They can affect people differently, so "
                 "diagnosis, monitoring and treatment are individual clinical decisions rather "
-                "than something Remi infers from a chat."
+                "than something Penny infers from a chat."
             ),
             "sources": [_guidance_source("ibd")],
         }

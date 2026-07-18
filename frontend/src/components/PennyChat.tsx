@@ -113,13 +113,13 @@ export function PennyChat({ messages, timeZone, trackingEnabled, onSend, notify 
   const attachPhoto = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     event.target.value = "";
-    if (file) notify("Photo added to your conversation with Remi.");
+    if (file) notify("Photo added to your conversation with Penny.");
   };
 
   return (
-    <section className="chatwrap" aria-label="Chat with Remi">
-      <div className="thread" ref={threadRef} role="log" aria-label="Conversation with Remi" aria-live="polite" aria-relevant="additions text">
-        {messages.length === 0 && <div className="empty-state"><b>Your conversation is private and empty.</b><span>Send Remi a message or a question in your own words.</span></div>}
+    <section className="chatwrap" aria-label="Chat with Penny">
+      <div className="thread" ref={threadRef} role="log" aria-label="Conversation with Penny" aria-live="polite" aria-relevant="additions text">
+        {messages.length === 0 && <div className="empty-state"><b>Your conversation is private and empty.</b><span>Send Penny a message or a question in your own words.</span></div>}
         {messages.map((message) => (
           <article id={`message-${message.id}`} key={message.id} className={message.from === "penny" ? "msg penny" : "msg me"}>
             <time className="message-time" dateTime={message.createdAt}>{formatChatTimestamp(message.createdAt, timeZone)}</time>
@@ -129,7 +129,7 @@ export function PennyChat({ messages, timeZone, trackingEnabled, onSend, notify 
       </div>
 
       <form className="composer" aria-busy={sendBusy} onSubmit={(event) => { event.preventDefault(); void send(input); }}>
-        <input ref={composerRef} value={input} disabled={!trackingEnabled} readOnly={sendBusy} aria-disabled={!trackingEnabled || undefined} onChange={(event) => setInput(event.target.value)} placeholder={trackingEnabled ? "Message Remi" : "Tracking paused — re-enable consent in Profile"} aria-label="Message Remi" />
+        <input ref={composerRef} value={input} disabled={!trackingEnabled} readOnly={sendBusy} aria-disabled={!trackingEnabled || undefined} onChange={(event) => setInput(event.target.value)} placeholder={trackingEnabled ? "Message Penny" : "Tracking paused — re-enable consent in Profile"} aria-label="Message Penny" />
         <button className="send" type="submit" disabled={!trackingEnabled || sendBusy} aria-label={sendBusy ? "Sending message…" : "Send message"} aria-describedby={sendBusy ? "remi-send-status" : undefined}><Send aria-hidden="true" /></button>
         <button className="tool" type="button" onClick={() => void startCall()} aria-label="Start a voice call with Remi"><Phone aria-hidden="true" /></button>
         <button className="tool" type="button" onClick={() => photoInputRef.current?.click()} aria-label="Take or add a photo"><Camera aria-hidden="true" /></button>

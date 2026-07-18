@@ -202,7 +202,7 @@ def build_demo_state() -> DemoState:
                     "id": 3,
                     "date": "2026-07-17",
                     "time": "08:05",
-                    "kind": "Remi noticed",
+                    "kind": "Penny noticed",
                     "body": (
                         "Several included records across 16–17 July differ from baseline: two "
                         "Bristol type 6 bowel logs with urgency, one with a small amount of blood, "
@@ -465,7 +465,7 @@ def build_demo_state() -> DemoState:
                     "id": 1,
                     "at": "17 Jul, 08:05",
                     "action": (
-                        "Remi surfaced several included records across two recorded days for "
+                        "Penny surfaced several included records across two recorded days for "
                         "patient review."
                     ),
                 }

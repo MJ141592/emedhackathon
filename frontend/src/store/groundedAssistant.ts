@@ -57,7 +57,7 @@ export function answerFromPermittedRecords(state: DemoState, question: string): 
       return {
         from: "penny",
         category: "general information",
-        text: "Earlier-conversation access is off, so I cannot retrieve what you previously told Remi. You can review the conversation yourself or enable that separate permission in Privacy.",
+        text: "Earlier-conversation access is off, so I cannot retrieve what you previously told Penny. You can review the conversation yourself or enable that separate permission in Privacy.",
       };
     }
     const priorMessages = state.messages
@@ -165,7 +165,7 @@ export function answerFromPermittedRecords(state: DemoState, question: string): 
     return {
       from: "penny",
       category: "general information",
-      text: "Steroids can be used for a limited clinician-prescribed course to control inflammation. A prescribed course or taper should be followed exactly and not stopped suddenly. Remi can display a verified schedule, but only the authorised prescriber can start, stop or change it.",
+      text: "Steroids can be used for a limited clinician-prescribed course to control inflammation. A prescribed course or taper should be followed exactly and not stopped suddenly. Penny can display a verified schedule, but only the authorised prescriber can start, stop or change it.",
       sources: [approvedSource("steroids")],
     };
   }
@@ -201,7 +201,7 @@ export function answerFromPermittedRecords(state: DemoState, question: string): 
     return {
       from: "penny",
       category: "general information",
-      text: "Inflammatory bowel disease is the umbrella term for conditions including Crohn’s disease and ulcerative colitis. They can affect people differently, so diagnosis, monitoring and treatment are individual clinical decisions rather than something Remi infers from a chat.",
+      text: "Inflammatory bowel disease is the umbrella term for conditions including Crohn’s disease and ulcerative colitis. They can affect people differently, so diagnosis, monitoring and treatment are individual clinical decisions rather than something Penny infers from a chat.",
       sources: [approvedSource("ibd")],
     };
   }

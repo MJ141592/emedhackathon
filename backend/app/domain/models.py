@@ -21,7 +21,7 @@ EntryKind = Literal[
     "MEDICATION",
     "FROM YOUR WATCH",
     "TEST RESULT",
-    "Remi noticed",
+    "Penny noticed",
 ]
 
 
@@ -109,6 +109,14 @@ class JournalEntry(StrictModel):
 
     _date_is_valid = field_validator("date")(_validate_journal_date)
     _time_is_valid = field_validator("time")(_validate_journal_time)
+
+    @field_validator("kind", mode="before")
+    @classmethod
+    def migrate_legacy_assistant_entry_kind(cls, value: object) -> object:
+        # Existing encrypted demo records may use the temporary Remi label. Normalize that
+        # historical display label during hydration so a harmless branding change cannot block
+        # the whole saved record from loading.
+        return "Penny noticed" if value == "Remi noticed" else value
 
 
 class JournalDraft(StrictModel):
