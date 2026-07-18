@@ -22,6 +22,7 @@ test("the adaptive home screen exposes all four supported phases", async ({ page
 });
 
 test("natural-language capture creates a correctable journal record", async ({ page }) => {
+  await page.getByRole("button", { name: "Journal" }).click();
   const editButtons = page.getByRole("button", { name: "Edit BOWEL MOVEMENT entry" });
   const originalCount = await editButtons.count();
 

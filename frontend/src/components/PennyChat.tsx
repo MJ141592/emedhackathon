@@ -197,7 +197,7 @@ export function PennyChat({ messages, suggestions, suggestionsNote, timeZone, tr
     <section className="chatwrap" aria-labelledby="penny-heading">
       <div className="chathead">
         <div className="penny-avatar" aria-hidden="true"><Sparkles /></div>
-        <div className="who"><h2 id="penny-heading">Penny</h2><small>Grounded in your records and approved guidance</small></div>
+        <div className="who"><h2 id="penny-heading">Penny</h2><small>Grounded in your records</small></div>
         {recorder.state === "recording" ? (
           <button className="btn callbtn recording" onClick={recorder.stop}><Pause aria-hidden="true" /> Stop recording</button>
         ) : (
@@ -262,11 +262,11 @@ export function PennyChat({ messages, suggestions, suggestionsNote, timeZone, tr
         {CHAT_CHIPS.map((chip) => <button key={chip} className="chip" disabled={!trackingEnabled || sendBusy} aria-label={sendBusy ? `${chip} — Sending message…` : chip} aria-describedby={sendBusy ? "penny-send-status" : undefined} onClick={() => void send(chip)}>{chip}</button>)}
       </div>
       <form className="composer" aria-busy={sendBusy} onSubmit={(event) => { event.preventDefault(); void send(input); }}>
-        <input ref={composerRef} value={input} disabled={!trackingEnabled} readOnly={sendBusy} aria-disabled={!trackingEnabled || undefined} onChange={(event) => setInput(event.target.value)} placeholder={trackingEnabled ? "Message Penny — say it however it comes out" : "Tracking paused — re-enable consent in Profile to message Penny"} aria-label="Message Penny" />
+        <input ref={composerRef} value={input} disabled={!trackingEnabled} readOnly={sendBusy} aria-disabled={!trackingEnabled || undefined} onChange={(event) => setInput(event.target.value)} placeholder={trackingEnabled ? "Message Penny" : "Tracking paused — re-enable consent in Profile"} aria-label="Message Penny" />
         <button className="send" type="submit" disabled={!trackingEnabled || sendBusy} aria-label={sendBusy ? "Sending message…" : "Send message"} aria-describedby={sendBusy ? "penny-send-status" : undefined}><Send aria-hidden="true" /></button>
         <span id="penny-send-status" className="sr-only" role="status" aria-live="polite">{sendBusy ? "Sending message…" : ""}</span>
       </form>
-      <p className="composer-safety">{trackingEnabled ? "A separate rules-based screen checks urgent wording before Penny replies." : "Existing conversation and sources remain viewable. Urgent help, correction, export and deletion remain available while tracking is paused."}</p>
+      <p className="composer-safety">{trackingEnabled ? "Urgent wording is safety-checked before Penny replies." : "Urgent help, correction, export and deletion stay available while tracking is paused."}</p>
       <ConfirmDialog open={deleteId != null} title={messages.find((message) => message.id === deleteId)?.from === "me" ? "Delete your message?" : "Delete this Penny reply?"} description={messages.find((message) => message.id === deleteId)?.from === "me" ? "The message and its PMH proposal records will be deleted. Journal entries created from it stay separately visible and correctable; the linked historical reply will be marked retracted." : "Only this Penny reply will be deleted. Linked journal records and your own messages will not be changed."} confirmLabel={messageBusy ? "Deleting…" : "Delete conversation record"} danger onCancel={() => { if (!messageBusy) setDeleteId(null); }} onConfirm={() => void confirmDelete()} />
     </section>
   );

@@ -11,6 +11,11 @@ function renderApp(initialState: DemoState = structuredClone(INITIAL_STATE)) {
   return render(<DemoStoreProvider initialState={initialState}><App /></DemoStoreProvider>);
 }
 
+// The journal panel is hidden until toggled from the top bar.
+function openJournal() {
+  fireEvent.click(screen.getByRole("button", { name: "Journal" }));
+}
+
 function deferred<T>() {
   let resolve!: (value: T) => void;
   let reject!: (reason?: unknown) => void;
@@ -131,6 +136,7 @@ test("shows save progress and a queued-error explanation inside an open locked d
 
 test("renders the canonical MeMed home with Penny, trends and journal", () => {
   renderApp();
+  openJournal();
   expect(screen.getByRole("button", { name: "MeMed home" })).toBeInTheDocument();
   expect(screen.getByRole("heading", { name: "Good morning, Amara" })).toBeInTheDocument();
   expect(screen.getByRole("heading", { name: "Penny" })).toBeInTheDocument();
@@ -174,6 +180,7 @@ test("puts the exact verified clinician-prescribed treatment first during an act
 
 test("all four demo phases update the supported home coherently", () => {
   renderApp();
+  openJournal();
   fireEvent.click(screen.getByRole("button", { name: "Steady" }));
   expect(screen.getByText("Steady — at your baseline")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Flare" }));
@@ -189,6 +196,7 @@ test("all four demo phases update the supported home coherently", () => {
 
 test("chat capture leaves unspecified blood amount and Bristol type unconfirmed", async () => {
   renderApp();
+  openJournal();
   const composer = screen.getByRole("textbox", { name: "Message Penny" });
   fireEvent.change(composer, { target: { value: "I had a loose stool with blood" } });
   fireEvent.click(screen.getByRole("button", { name: "Send message" }));
@@ -213,6 +221,7 @@ test("deterministic safety screening pre-empts an ordinary Penny response", asyn
 
 test("manual red-flag capture runs the same deterministic safety screen", async () => {
   renderApp();
+  openJournal();
   fireEvent.click(screen.getByRole("button", { name: /^Pain$/ }));
   const capture = screen.getByRole("dialog", { name: "Pain" });
   fireEvent.click(within(capture).getByRole("button", { name: "8" }));
@@ -224,6 +233,7 @@ test("manual red-flag capture runs the same deterministic safety screen", async 
 
 test("journal entries can be corrected, excluded and deleted", () => {
   renderApp();
+  openJournal();
   fireEvent.click(screen.getAllByRole("button", { name: "Edit BOWEL MOVEMENT entry" })[0]);
   const dialog = screen.getByRole("dialog", { name: "Edit journal entry" });
   const body = within(dialog).getByRole("textbox", { name: /^What should the record say\?/ });
@@ -295,6 +305,7 @@ test("lab-authored objective evidence can be excluded but not given a dead corre
 
 test("new included records refresh metrics and create a reviewable phase proposal", async () => {
   renderApp();
+  openJournal();
   fireEvent.click(screen.getByRole("button", { name: "Steady" }));
   fireEvent.click(screen.getByRole("button", { name: /^Pain$/ }));
   const capture = screen.getByRole("dialog", { name: "Pain" });
@@ -302,7 +313,7 @@ test("new included records refresh metrics and create a reviewable phase proposa
   fireEvent.click(within(capture).getByRole("button", { name: "Add to journal" }));
 
   await waitFor(() => expect(screen.queryByRole("dialog", { name: "Pain" })).not.toBeInTheDocument());
-  const painMetric = screen.getByText("Average recorded pain").closest(".metric");
+  const painMetric = screen.getByText("Average pain").closest(".metric");
   expect(painMetric).not.toBeNull();
   expect(within(painMetric as HTMLElement).getByText("5")).toBeInTheDocument();
   expect(screen.getByRole("button", { name: /Review proposed Watchful view/ })).toBeInTheDocument();
@@ -437,6 +448,7 @@ test("a mistaken taken-dose fact has an explicit audited correction confirmation
     structured: { doseMg: dose.doseMg, taken: true, taperDay: dose.day },
   });
   renderApp(state);
+  openJournal();
   fireEvent.click(screen.getByRole("button", { name: "Care" }));
   fireEvent.click(screen.getByText("Correct an adherence record"));
   fireEvent.click(screen.getByRole("button", { name: `Day ${dose.day} marked taken — I marked this by mistake` }));
@@ -470,6 +482,7 @@ test("a follow-up draft keeps the completed clinician exchange visible", () => {
 
 test("patient-edited Care summary survives new records until explicit regeneration", async () => {
   renderApp();
+  openJournal();
   fireEvent.click(screen.getByRole("button", { name: "Care" }));
   const careSummary = screen.getByRole("textbox", { name: "Edit recovery summary" });
   fireEvent.change(careSummary, { target: { value: "My reviewed appointment wording." } });
@@ -536,6 +549,7 @@ test("diet experiment cannot resume outside Steady", () => {
 
 test("diet experiment advances once per calendar day and holds completion until its duration", () => {
   renderApp(governedStableState());
+  openJournal();
   fireEvent.click(screen.getByRole("button", { name: "Experiments" }));
 
   fireEvent.click(screen.getByRole("button", { name: "Resume experiment" }));
@@ -611,6 +625,7 @@ test("restrictive diet ideas prepare an editable care-team question without send
 
 test("privacy controls delete chat separately from journal", () => {
   renderApp();
+  openJournal();
   fireEvent.click(screen.getByRole("button", { name: "Privacy" }));
   fireEvent.click(screen.getByRole("button", { name: "Delete conversation" }));
   const confirm = screen.getByRole("alertdialog", { name: "Delete your Penny conversation?" });
@@ -622,6 +637,7 @@ test("privacy controls delete chat separately from journal", () => {
 
 test("Penny cannot create journal entries when journal access is disabled", async () => {
   renderApp();
+  openJournal();
   const existing = screen.getAllByRole("button", { name: /Edit .* entry/ }).length;
   fireEvent.click(screen.getByRole("button", { name: "Privacy" }));
   fireEvent.click(screen.getByRole("checkbox", { name: /Journal and photos/ }));
@@ -662,6 +678,7 @@ test("Penny retrieves earlier messages only with the separate conversation permi
 
 test("withdrawing health-data consent pauses new capture but keeps correction and export controls", () => {
   renderApp();
+  openJournal();
   fireEvent.click(screen.getAllByRole("button", { name: "Profile" })[0]);
   const profile = screen.getByRole("dialog", { name: "Profile & past medical history" });
   fireEvent.click(within(profile).getByRole("checkbox", { name: /I consent to holding sensitive health information/i }));

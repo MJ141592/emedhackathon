@@ -34,8 +34,8 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
       { k: "Sleep & fatigue", v: "Good", d: "6h 55m average", dClass: "ok" },
     ],
     suggestions: [
-      { kind: "experiment", icon: "note", title: "Oat milk experiment — day 9 of 14", desc: "No clear symptom change so far. This is a personal observation, not proof.", cta: "Open experiment" },
-      { kind: "summary", icon: "message", title: "Prepare your August clinic summary", desc: "Penny drafts it from your journal — you edit before anything is shared.", cta: "Preview summary" },
+      { kind: "experiment", icon: "note", title: "Oat milk experiment — day 9 of 14", desc: "No clear change so far — an observation, not proof.", cta: "Open experiment" },
+      { kind: "summary", icon: "message", title: "Prepare your August clinic summary", desc: "Drafted from your journal — you edit before sharing.", cta: "Preview summary" },
     ],
     suggestionsNote: "When things are steady, Penny stays out of the way.",
     trend: trend([2, 2, 1, 2, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1], [58, 57, 58, 58, 57, 58, 58, 57, 58, 58, 57, 58, 58, 58], [2, 2, 1, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 2]),
@@ -51,10 +51,10 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
       { k: "Sleep & fatigue", v: "High", d: "5h 10m · 4 difficult days", dClass: "warn" },
     ],
     suggestions: [
-      { kind: "test", icon: "flask", title: "Order a calprotectin home test", desc: "A governed rule found several included changes across two recorded days. Confirm the source entries and delivery details first.", cta: "Review test order" },
-      { kind: "team", icon: "message", title: "Share this week with your IBD team", desc: "Review an editable draft with trends and flagged entries. The advice line remains the first action.", cta: "Review team message" },
+      { kind: "test", icon: "flask", title: "Order a calprotectin home test", desc: "Changes across two recorded days met the rule. Confirm the sources and delivery first.", cta: "Review test order" },
+      { kind: "team", icon: "message", title: "Share this week with your IBD team", desc: "An editable draft with trends and flagged entries.", cta: "Review team message" },
     ],
-    suggestionsNote: "Penny prepares — you decide. Nothing is sent or ordered until you confirm.",
+    suggestionsNote: "Nothing is sent or ordered until you confirm.",
     trend: trend([2, 2, 1, 2, 2, 2, 3, 3, 3, 4, 6, 7, 7, 8], [58, 58, 57, 59, 58, 58, 59, 58, 59, 60, 62, 63, 64, 64], [2, 2, 2, 2, 3, 2, 3, 3, 3, 4, 5, 5, 6, 6]),
   },
   flare: {
@@ -68,8 +68,8 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
       { k: "Sleep & fatigue", v: "Poor", d: "night waking · high fatigue", dClass: "up" },
     ],
     suggestions: [
-      { kind: "urgent", icon: "phone", title: "Run today’s safety check", desc: "Heavy bleeding, severe pain, fever, faintness or dehydration need urgent care, not an app message.", cta: "Check symptoms" },
-      { kind: "prescription", icon: "message", title: "Clinician-owned rescue pathway", desc: "A prescriber request can be prepared only under your documented plan. Dr Ferreira must approve it.", cta: "View prescription flow" },
+      { kind: "urgent", icon: "phone", title: "Run today’s safety check", desc: "Heavy bleeding, severe pain, fever or faintness need urgent care.", cta: "Check symptoms" },
+      { kind: "prescription", icon: "message", title: "Clinician-owned rescue pathway", desc: "Prepared only under your documented plan; Dr Ferreira must approve.", cta: "View prescription flow" },
     ],
     suggestionsNote: "Penny never prescribes or changes medicine. Contact your team first.",
     trend: trend([3, 3, 4, 4, 5, 5, 6, 7, 7, 8, 8, 9, 8, 8], [59, 60, 60, 61, 62, 62, 64, 65, 66, 67, 67, 68, 67, 67], [3, 3, 4, 4, 5, 5, 6, 6, 7, 8, 8, 8, 7, 7]),
@@ -85,10 +85,10 @@ export const TODAY: Record<PhaseId, PhaseContent> = {
       { k: "Sleep & fatigue", v: "6h 10m", d: "still below your usual", dClass: "warn" },
     ],
     suggestions: [
-      { kind: "taper", icon: "note", title: "Today’s prescribed dose: 25 mg", desc: "5 × 5 mg prednisolone with breakfast. Next clinician-authored step is 20 mg on Monday.", cta: "Open taper" },
-      { kind: "summary", icon: "message", title: "Preview your recovery summary", desc: "Adherence, symptoms and side effects are reconciled into an editable follow-up draft.", cta: "Preview summary" },
+      { kind: "taper", icon: "note", title: "Today’s prescribed dose: 25 mg", desc: "5 × 5 mg prednisolone with breakfast. Next step: 20 mg on Monday.", cta: "Open taper" },
+      { kind: "summary", icon: "message", title: "Preview your recovery summary", desc: "An editable follow-up draft from your records.", cta: "Preview summary" },
     ],
-    suggestionsNote: "MeMed displays the verified prescription. It cannot create, pause or change the taper.",
+    suggestionsNote: "MeMed shows the verified prescription and cannot change it.",
     trend: trend([8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 3, 2], [67, 66, 66, 65, 64, 64, 63, 62, 62, 61, 61, 60, 60, 60], [7, 7, 6, 6, 5, 5, 5, 4, 4, 4, 3, 3, 3, 3]),
   },
 };

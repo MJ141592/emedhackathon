@@ -193,6 +193,7 @@ test("diet experiments run from stable start through daily check-in and reviewed
   await expect(experiments.getByText("complete", { exact: true })).toBeVisible();
 
   await experiments.getByRole("button", { name: "Close Experiments" }).click();
+  await page.getByRole("button", { name: "Journal" }).click();
   await expect(page.getByText(/Diet experiment check-in — day 1 of 1: Morning wellbeing was unchanged today/)).toBeVisible();
   await expect(page.getByText(/Diet experiment completed: Consistent morning hydration/)).toBeVisible();
   await expect.poll(async () => {

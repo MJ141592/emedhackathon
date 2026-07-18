@@ -42,7 +42,7 @@ describe("record-derived dashboard", () => {
     const dashboard = deriveDashboard(state());
 
     expect(dashboard.content.metrics.map((metric) => metric.v)).toEqual(["1", "4.5", "64", "5h 10m"]);
-    expect(dashboard.content.metrics[0].d).toContain("2 included logs across 2 recorded days");
+    expect(dashboard.content.metrics[0].d).toContain("2 logs over 2 days");
     expect(dashboard.content.trend).toHaveLength(14);
     expect(dashboard.content.trend[0].day).toBe("4 Jul");
     expect(dashboard.content.trend.at(-1)?.day).toBe("17 Jul");

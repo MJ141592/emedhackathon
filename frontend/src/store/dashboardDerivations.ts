@@ -431,39 +431,39 @@ function deriveMetrics(state: DemoState): Metric[] {
   const highFatigue = entries.some((entry) => ["high", "severe"].includes(String(entry.structured?.fatigue ?? "").toLowerCase()));
 
   const heartComparison = latestHeartRate == null
-    ? "No included wearable reading"
+    ? "No wearable reading"
     : heartRateBaseline == null
-      ? "Personal resting baseline not recorded"
-      : `${round(Math.abs(latestHeartRate - heartRateBaseline), 0)} bpm ${latestHeartRate >= heartRateBaseline ? "above" : "below"} your ${heartRateBaseline} bpm baseline`;
+      ? "Baseline not recorded"
+      : `${round(Math.abs(latestHeartRate - heartRateBaseline), 0)} bpm ${latestHeartRate >= heartRateBaseline ? "above" : "below"} your ${heartRateBaseline} baseline`;
   const sleepValue = latestSleep == null ? (highFatigue ? "High" : "—") : `${Math.floor(latestSleep)}h ${String(Math.round((latestSleep % 1) * 60)).padStart(2, "0")}m`;
 
   return [
     {
-      k: "Bowel movements / recorded day",
+      k: "Bowel movements / day",
       v: bowelAverage == null ? "—" : round(bowelAverage),
-      d: bowelAverage == null ? "No included bowel logs" : `${bowel.length} included ${bowel.length === 1 ? "log" : "logs"} across ${bowelCounts.length} recorded ${bowelCounts.length === 1 ? "day" : "days"} · baseline ${state.profile.usualBowel || "not set"}`,
+      d: bowelAverage == null ? "No included bowel logs" : `${bowel.length} ${bowel.length === 1 ? "log" : "logs"} over ${bowelCounts.length} ${bowelCounts.length === 1 ? "day" : "days"} · baseline ${bowelBaseline == null ? "not set" : `${round(bowelBaseline)}/day`}`,
       dClass: compareClass(bowelAverage, bowelBaseline),
     },
     {
-      k: "Average recorded pain",
+      k: "Average pain",
       v: painAverage == null ? "—" : round(painAverage),
       unit: painAverage == null ? undefined : "/10",
-      d: painAverage == null ? "No included pain rating" : `${painRatings.length} included ${painRatings.length === 1 ? "rating" : "ratings"} · usual ${state.profile.usualPain || "not set"}`,
+      d: painAverage == null ? "No included pain rating" : `${painRatings.length} ${painRatings.length === 1 ? "rating" : "ratings"} · usual ${state.profile.usualPain || "not set"}`,
       dClass: compareClass(painAverage, painBaseline),
     },
     {
-      k: "Latest resting heart rate",
+      k: "Resting heart rate",
       v: latestHeartRate == null ? "—" : round(latestHeartRate, 0),
       unit: latestHeartRate == null ? undefined : " bpm",
       d: heartComparison,
       dClass: compareClass(latestHeartRate, heartRateBaseline),
     },
     {
-      k: "Latest sleep & fatigue",
+      k: "Sleep & fatigue",
       v: sleepValue,
       d: latestSleep == null
-        ? (highFatigue ? "High fatigue is recorded; no included sleep reading" : "No included sleep or fatigue record")
-        : `${highFatigue ? "High fatigue recorded · " : ""}usual ${state.profile.usualSleep || "not set"}`,
+        ? (highFatigue ? "High fatigue · no sleep reading" : "No sleep or fatigue record")
+        : `${highFatigue ? "High fatigue · " : ""}usual ${state.profile.usualSleep || "not set"}`,
       dClass: latestSleep != null && sleepBaseline != null && latestSleep < sleepBaseline - 1 ? "warn" : highFatigue ? "warn" : "flat",
     },
   ];
@@ -589,12 +589,12 @@ function recoveryContent(state: DemoState, template: PhaseContent): Pick<PhaseCo
       ...suggestion,
       title: treatmentActive && current && state.taper.verified ? `Today’s prescribed dose: ${current.doseMg} mg` : "Dose support unavailable",
       desc: treatmentActive && current && state.taper.verified
-        ? `${state.taper.medicine}, exactly as prescribed by ${state.taper.prescribedBy}.${next ? ` Next clinician-authored change is ${next.doseMg} mg on taper day ${next.day}.` : " No further step-down is recorded."}`
+        ? `${state.taper.medicine}, as prescribed by ${state.taper.prescribedBy}.${next ? ` Next step: ${next.doseMg} mg on day ${next.day}.` : " No further step-down is recorded."}`
         : treatmentActive && state.taper.verified
-          ? "No clinician-authored dose falls on the patient’s current local calendar date. Review the imported schedule or contact the named care team if this is unexpected."
+          ? "No dose is scheduled for today. Review the imported schedule if this is unexpected."
         : treatmentActive
-          ? "A clinician-authored, verified schedule is required. MeMed never calculates or changes a dose."
-          : "The imported schedule remains reviewable, but dose actions start only after treatment is collected or Recovery is confirmed from governed evidence.",
+          ? "A clinician-authored, verified schedule is required first."
+          : "The imported schedule is reviewable; dose actions start once treatment is collected.",
     }),
   };
 }
@@ -603,30 +603,30 @@ function dynamicSuggestions(state: DemoState, template: PhaseContent): PhaseCont
   if (state.phase === "stable") {
     const experimentTitle = state.experiment.title || "a one-variable experiment";
     const experimentSuggestion = state.experiment.status === "active"
-      ? { kind: "experiment" as const, icon: "note" as const, title: `${experimentTitle} — day ${state.experiment.day} of ${state.experiment.durationDays}`, desc: "Add a neutral daily observation or pause whenever symptoms or treatment change.", cta: "Open experiment" }
+      ? { kind: "experiment" as const, icon: "note" as const, title: `${experimentTitle} — day ${state.experiment.day} of ${state.experiment.durationDays}`, desc: "Add a daily observation, or pause if symptoms change.", cta: "Open experiment" }
       : state.experiment.status === "complete"
-        ? { kind: "experiment" as const, icon: "note" as const, title: `Review completed experiment: ${experimentTitle}`, desc: "The result remains a personal observation, not proof of cause or treatment.", cta: "Review outcome" }
-        : { kind: "experiment" as const, icon: "note" as const, title: `${state.experiment.status === "paused" ? "Review before resuming" : "Review candidate"}: ${experimentTitle}`, desc: state.phaseConfirmed ? "Confirm one variable, outcome and burden before anything starts." : "The top-bar demo switch is presentation-only; a governed Stable confirmation is required before starting.", cta: "Open experiment" };
+        ? { kind: "experiment" as const, icon: "note" as const, title: `Review completed experiment: ${experimentTitle}`, desc: "The result is a personal observation, not proof.", cta: "Review outcome" }
+        : { kind: "experiment" as const, icon: "note" as const, title: `${state.experiment.status === "paused" ? "Review before resuming" : "Review candidate"}: ${experimentTitle}`, desc: state.phaseConfirmed ? "Confirm one variable, outcome and burden first." : "A governed Stable confirmation is required before starting.", cta: "Open experiment" };
     return [experimentSuggestion, template.suggestions.find((item) => item.kind === "summary")!];
   }
   if (state.phase === "watch") {
     const order = state.testOrder;
     const governedOrderReview = state.phaseConfirmed && !state.pendingPhase && hasGovernedWatchEvidence(state);
     const testSuggestion = order.status === "prepared"
-      ? { kind: "test" as const, icon: "flask" as const, title: governedOrderReview ? "Review prepared calprotectin home test" : "Confirm sustained source observations first", desc: "The governed rule requires included change records across more than one day, followed by your delivery and consent review.", cta: governedOrderReview ? "Review test order" : "Review evidence" }
+      ? { kind: "test" as const, icon: "flask" as const, title: governedOrderReview ? "Review prepared calprotectin home test" : "Confirm sustained source observations first", desc: "Changes across more than one day met the rule. Review delivery and consent.", cta: governedOrderReview ? "Review test order" : "Review evidence" }
       : order.status === "result"
-        ? { kind: "test" as const, icon: "flask" as const, title: `Review calprotectin result${typeof order.result === "number" ? `: ${order.result} µg/g` : ""}`, desc: "Your IBD team must interpret the result with symptoms; sharing still needs your confirmation.", cta: "Review result" }
+        ? { kind: "test" as const, icon: "flask" as const, title: `Review calprotectin result${typeof order.result === "number" ? `: ${order.result} µg/g` : ""}`, desc: "Your IBD team interprets the result; sharing needs your confirmation.", cta: "Review result" }
         : order.status === "shared"
-          ? { kind: "test" as const, icon: "flask" as const, title: "Calprotectin result shared", desc: "The objective result is now in the simulated care pathway; it is not an emergency message.", cta: "View care loop" }
-          : { kind: "test" as const, icon: "flask" as const, title: `Home-test progress: ${order.status}`, desc: "Track delivery, collection, post-back and laboratory receipt without losing the symptom context.", cta: "Track home test" };
-    const teamSuggestion = { kind: "team" as const, icon: "message" as const, title: state.teamMessage.status === "draft" ? "Review an update to your IBD team" : `IBD-team message: ${state.teamMessage.status}`, desc: state.teamMessage.status === "replied" ? "A reply is in the thread; prepare a new editable follow-up only if useful." : "The named advice line remains the first route, and every outgoing message is patient-approved.", cta: "Open message thread" };
+          ? { kind: "test" as const, icon: "flask" as const, title: "Calprotectin result shared", desc: "The result is now in the care pathway.", cta: "View care loop" }
+          : { kind: "test" as const, icon: "flask" as const, title: `Home-test progress: ${order.status}`, desc: "Track delivery, collection and laboratory receipt.", cta: "Track home test" };
+    const teamSuggestion = { kind: "team" as const, icon: "message" as const, title: state.teamMessage.status === "draft" ? "Review an update to your IBD team" : `IBD-team message: ${state.teamMessage.status}`, desc: state.teamMessage.status === "replied" ? "A reply is in the thread." : "You approve every message before it is sent.", cta: "Open message thread" };
     // Contact and the personal care pathway lead; home testing remains a guarded follow-on.
     return [teamSuggestion, testSuggestion];
   }
   if (state.phase === "flare") {
     const prescription = state.prescription;
     const prescriber = prescription.prescriber || "your named prescriber";
-    const prescriptionSuggestion = { kind: "prescription" as const, icon: "message" as const, title: prescription.status === "ready" ? `Prescription ready at ${prescription.pharmacy || "your pharmacy"}` : `Prescriber pathway: ${prescription.status.replace("-", " ")}`, desc: `${prescriber} owns any medicine decision. A presentation-only demo switch cannot authorise a request or dose.`, cta: "View prescription flow" };
+    const prescriptionSuggestion = { kind: "prescription" as const, icon: "message" as const, title: prescription.status === "ready" ? `Prescription ready at ${prescription.pharmacy || "your pharmacy"}` : `Prescriber pathway: ${prescription.status.replace("-", " ")}`, desc: `${prescriber} owns any medicine decision.`, cta: "View prescription flow" };
     return [template.suggestions.find((item) => item.kind === "urgent")!, prescriptionSuggestion];
   }
   return template.suggestions;
@@ -656,7 +656,7 @@ export function deriveDashboard(state: DemoState): DerivedDashboard {
       ...template,
       pill: recovery.pill,
       sub: latestDate
-        ? `${formatLongDate(patientToday)} · latest included records (${formatLongDate(latestDate)}) compared with your baseline`
+        ? `${formatLongDate(patientToday)} · compared with your baseline`
         : `${formatLongDate(patientToday)} · no included health records yet`,
       metrics: deriveMetrics(state),
       trend,

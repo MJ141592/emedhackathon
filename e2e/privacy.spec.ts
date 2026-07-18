@@ -30,6 +30,7 @@ test("a patient can export readable data and delete conversation history separat
   await privacy.getByRole("button", { name: "Close Privacy" }).click();
 
   await expect(page.getByText("Your conversation is private and empty.", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Journal" }).click();
   await expect(page.getByRole("heading", { name: "Journal" })).toBeVisible();
   await expect.poll(async () => (await (await page.request.get("/api/demo")).json()).messages).toEqual([]);
 });

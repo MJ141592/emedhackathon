@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Activity, Beaker, ChevronDown, HeartHandshake, LockKeyhole, Settings, UserRound } from "lucide-react";
+import { Activity, Beaker, ChevronDown, HeartHandshake, LockKeyhole, NotebookPen, Settings, UserRound } from "lucide-react";
 import type { EvidenceSource, SuggestionKind } from "./types";
 import { ONBOARDING_TODAY, PHASE_LABELS } from "./data";
 import { useDemoStore } from "./store/DemoStore";
@@ -36,6 +36,7 @@ function App() {
   const store = useDemoStore();
   const { state } = store;
   const [panel, setPanel] = useState<PanelId>(null);
+  const [journalOpen, setJournalOpen] = useState(false);
   const [careFocus, setCareFocus] = useState<SuggestionKind>();
   const [urgentOpen, setUrgentOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -229,6 +230,7 @@ function App() {
         <nav ref={featureNavRef} className={mobileMenu ? "feature-nav open" : "feature-nav"} aria-label="MeMed features">
           <button disabled={!hasPatientRecord} onClick={() => openPanel("trends")} aria-expanded={panel === "trends"}><Activity /> Trends &amp; evidence</button>
           <button disabled={!hasPatientRecord} onClick={() => openPanel("care")} aria-expanded={panel === "care"}><HeartHandshake /> Care</button>
+          <button disabled={!hasPatientRecord} onClick={() => { setJournalOpen((value) => !value); setMobileMenu(false); }} aria-pressed={journalOpen}><NotebookPen /> Journal</button>
           <button disabled={!trackingActive} onClick={() => openPanel("experiments")} aria-expanded={panel === "experiments"}><Beaker /> Experiments</button>
           <button onClick={() => openPanel("privacy")} aria-expanded={panel === "privacy"}><LockKeyhole /> Privacy</button>
           <button className="nav-profile" onClick={() => openPanel("profile")} aria-expanded={panel === "profile"}><UserRound /> Profile</button>
@@ -239,16 +241,16 @@ function App() {
         <button className="me" onClick={() => openPanel("profile")} aria-label="Profile"><span className="avatar">{state.profile.name ? state.profile.name.split(" ").map((part) => part[0]).slice(0, 2).join("") : <UserRound />}</span><span><b>{state.profile.name || "Set up profile"}</b><small>{state.profile.diagnosis || "Onboarding needed"}</small></span></button>
       </header>
 
-      {hasPatientRecord ? <div className="cols" id="main-content" inert={Boolean(panel || urgentOpen || store.mutationsBlocked)} aria-hidden={panel || urgentOpen ? true : undefined}>
+      {hasPatientRecord ? <div className={journalOpen ? "cols" : "cols solo"} id="main-content" inert={Boolean(panel || urgentOpen || store.mutationsBlocked)} aria-hidden={panel || urgentOpen ? true : undefined}>
         <main className="left">
-          {!trackingActive && <section className="tracking-paused" role="status"><LockKeyhole /><div><b>Health-data tracking is paused</b><span>Your existing records remain available to view, correct, exclude, export or delete. Re-enable adult eligibility and health-data consent in Profile before adding new records or continuing care workflows.</span></div><button className="btn" onClick={() => openPanel("profile")}>Review consent</button></section>}
+          {!trackingActive && <section className="tracking-paused" role="status"><LockKeyhole /><div><b>Health-data tracking is paused</b><span>Existing records stay viewable and correctable. Re-enable consent in Profile to add new ones.</span></div><button className="btn" onClick={() => openPanel("profile")}>Review consent</button></section>}
           <TodayHeader content={content} phase={state.phase} pendingPhase={state.pendingPhase} phaseConfirmed={state.phaseConfirmed} firstName={displayName} onReviewEvidence={() => openPanel("trends")} treatmentFocus={treatmentFocus} onOpenTreatment={() => handleSuggestion("taper")} />
           <PennyChat messages={state.messages} suggestions={pennySuggestions} suggestionsNote={content.suggestionsNote} timeZone={state.profile.timeZone} trackingEnabled={trackingActive} journalInferenceEnabled={trackingActive && state.privacy.assistantJournalAccess} onSend={store.sendChat} onCorrectMessage={store.correctChatMessage} onDeleteMessage={store.deleteChatMessage} onSuggestion={handleSuggestion} onSourceTarget={(target) => openPanel(target === "care" ? "care" : target === "profile" ? "profile" : target === "privacy" ? "privacy" : "trends")} notify={notify} />
         </main>
-        <JournalPanel notify={notify} onOpenCare={(focus = "taper") => handleSuggestion(focus)} onOpenSafetyCheck={() => { setCareFocus("urgent"); openPanel("care"); }} trackingEnabled={trackingActive} />
+        {journalOpen && <JournalPanel notify={notify} onClose={() => setJournalOpen(false)} onOpenCare={(focus = "taper") => handleSuggestion(focus)} onOpenSafetyCheck={() => { setCareFocus("urgent"); openPanel("care"); }} trackingEnabled={trackingActive} />}
       </div> : <main className="onboarding-gate" id="main-content" inert={Boolean(panel || urgentOpen || store.mutationsBlocked)} aria-hidden={panel || urgentOpen ? true : undefined}>
         <TodayHeader content={onboardingToday} phase="stable" phaseConfirmed={false} firstName={displayName} onReviewEvidence={() => undefined} />
-        <section className="feature-card onboarding-callout"><UserRound /><div><p className="eyebrow">Before health tracking starts</p><h2>Complete adult onboarding and choose what MeMed may store</h2><p>Tracking, Penny, care workflows and passive connections stay unavailable until identity, adult eligibility, diagnosis and health-data consent are recorded.</p><div className="button-row"><button className="btn primary" onClick={() => openPanel("profile")}>Start onboarding</button><button className="btn" onClick={() => openPanel("privacy")}>Review privacy controls</button></div></div></section>
+        <section className="feature-card onboarding-callout"><UserRound /><div><p className="eyebrow">Before health tracking starts</p><h2>Complete adult onboarding and choose what MeMed may store</h2><p>Tracking and care workflows stay off until identity, adult eligibility and consent are recorded.</p><div className="button-row"><button className="btn primary" onClick={() => openPanel("profile")}>Start onboarding</button><button className="btn" onClick={() => openPanel("privacy")}>Review privacy controls</button></div></div></section>
       </main>}
 
       {panel && <Drawer open title={PANEL_LABELS[panel].title} eyebrow={PANEL_LABELS[panel].eyebrow} wide={panel === "care" || panel === "trends" || panel === "profile"} contentInert={store.mutationsBlocked} contentStatus={store.mutationsBlocked ? store.syncStatus === "error" ? { tone: "error", text: "This change is queued but not saved. Close this panel to use Retry change; other controls remain paused." } : { tone: "saving", text: "Saving securely. Controls resume when the API confirms this change." } : undefined} returnFocusRef={panelReturnFocusRef} onClose={() => { setPanel(null); setCareFocus(undefined); }} onUrgent={openUrgentFromDrawer}>
