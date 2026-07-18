@@ -69,7 +69,7 @@ def test_chat_endpoint() -> None:
     assert response.status_code == 200
     assert response.json() == {
         "text": "Generated text",
-        "model": "google:gemini@3.1-flash-lite",
+        "model": "anthropic:claude@sonnet-4.6",
     }
 
 
