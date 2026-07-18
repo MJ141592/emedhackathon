@@ -44,8 +44,8 @@ export function scheduledNotification(state: DemoState, now = new Date()) {
     // Numeric stages allow bounded escalation and a stable post-snooze retry without putting
     // medicine names, doses, symptoms or reminder types into browser storage.
     key: `${date}:daily-check-in:${baseStage}${postSnoozeToken}`,
-    title: state.privacy.discreetNotifications ? "You have a MeMed check-in" : reminder.title,
-    body: state.privacy.discreetNotifications ? "Open MeMed when it suits you. Urgent help remains available." : reminder.detail,
+    title: state.privacy.discreetNotifications ? "You have a Gutsy check-in" : reminder.title,
+    body: state.privacy.discreetNotifications ? "Open Gutsy when it suits you. Urgent help remains available." : reminder.detail,
   };
 }
 
@@ -71,7 +71,7 @@ export function applyScheduledBackgroundWork(state: DemoState, now = new Date())
     teamMessageHistory: [aligned.teamMessage, ...aligned.teamMessageHistory],
     teamMessage: {
       id: `EVENING-${date}`,
-      subject: `Evening flare update from ${aligned.profile.name || "MeMed patient"}`,
+      subject: `Evening flare update from ${aligned.profile.name || "Gutsy patient"}`,
       body: buildClinicianSummary(aligned),
       status: "draft",
       statusUpdatedAt: now.toISOString(),

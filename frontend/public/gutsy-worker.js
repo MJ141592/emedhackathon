@@ -1,11 +1,11 @@
-const REMINDER_TAG = "memed-background-reminders";
-const REMINDER_CACHE = "memed-reminder-dedupe-v2";
-const REMINDER_CONTROL_CACHE = "memed-reminder-control-v1";
-const REMINDER_SUSPENSION_PATH = "/__memed-reminders-suspended__";
+const REMINDER_TAG = "gutsy-background-reminders";
+const REMINDER_CACHE = "gutsy-reminder-dedupe-v2";
+const REMINDER_CONTROL_CACHE = "gutsy-reminder-control-v1";
+const REMINDER_SUSPENSION_PATH = "/__gutsy-reminders-suspended__";
 const REMINDER_MARKER = /^\d{4}-\d{2}-\d{2}:daily-check-in:[a-z0-9]+$/;
 let reminderSuppressed = false;
 
-function isMeMedReminder(notification) {
+function isGutsyReminder(notification) {
   return typeof notification.tag === "string"
     && (notification.tag === REMINDER_TAG
       || notification.tag.startsWith(`${REMINDER_TAG}:`));
@@ -42,7 +42,7 @@ async function suspendReminders() {
   }
   try {
     const notifications = await self.registration.getNotifications();
-    notifications.filter(isMeMedReminder).forEach((notification) => notification.close());
+    notifications.filter(isGutsyReminder).forEach((notification) => notification.close());
   } catch {
     // Some browsers do not expose registration notifications outside an installed context.
   }
@@ -61,7 +61,7 @@ async function resumeReminders() {
 }
 
 function markerPath(marker) {
-  return `/__memed-reminder-marker__/${marker}`;
+  return `/__gutsy-reminder-marker__/${marker}`;
 }
 
 async function shownMarker(marker) {
@@ -161,14 +161,14 @@ async function checkForReminder() {
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => event.waitUntil(self.clients.claim()));
 self.addEventListener("message", (event) => {
-  if (event.data?.type === "SUSPEND_MEMED_REMINDERS") {
+  if (event.data?.type === "SUSPEND_GUTSY_REMINDERS") {
     reminderSuppressed = true;
     event.waitUntil(suspendReminders());
-  } else if (event.data?.type === "RESUME_MEMED_REMINDERS") {
+  } else if (event.data?.type === "RESUME_GUTSY_REMINDERS") {
     event.waitUntil((async () => {
       if (await resumeReminders()) await checkForReminder();
     })());
-  } else if (event.data?.type === "CHECK_MEMED_REMINDERS") {
+  } else if (event.data?.type === "CHECK_GUTSY_REMINDERS") {
     event.waitUntil(checkForReminder());
   }
 });

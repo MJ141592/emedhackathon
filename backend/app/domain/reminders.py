@@ -191,7 +191,7 @@ def current_background_reminder(
                 "Flare check-in: can you safely wait?",
                 "A short safety and symptom check is enough. Heavy bleeding, severe pain, "
                 "fever, faintness, dehydration or obstruction symptoms need the care route "
-                "shown in MeMed, not a routine team reply.",
+                "shown in Gutsy, not a routine team reply.",
             )
         )
 
@@ -209,7 +209,7 @@ def current_background_reminder(
                     "test-delivery",
                     "Your home test kit has arrived",
                     "Open Care for the fixed collection guide. Record collection only after "
-                    "it happens; MeMed will not infer a sample from delivery.",
+                    "it happens; Gutsy will not infer a sample from delivery.",
                 )
             )
         elif (
@@ -262,7 +262,7 @@ def current_background_reminder(
                 "Daily medicine record still unconfirmed" if hour >= 18 else "Daily medicine check",
                 f"{'; '.join(missing_regimens)} is recorded as a daily regimen in your "
                 "patient-maintained profile, with no matching taken record today. Record only "
-                "what you actually took; MeMed does not infer adherence."
+                "what you actually took; Gutsy does not infer adherence."
                 + (
                     " Check the medicine label or contact your pharmacist or IBD team if you "
                     "are unsure—do not take an extra dose based on this reminder."
@@ -335,6 +335,6 @@ def current_background_reminder(
             stage += f"r{_base36(int(snoozed_until.timestamp() // 60))}"
     marker = f"{day}:daily-check-in:{stage}"
     if state.privacy.discreetNotifications:
-        title = "You have a MeMed check-in"
-        body = "Open MeMed when it suits you. Urgent help remains available."
+        title = "You have a Gutsy check-in"
+        body = "Open Gutsy when it suits you. Urgent help remains available."
     return {"marker": marker, "title": title, "body": body}

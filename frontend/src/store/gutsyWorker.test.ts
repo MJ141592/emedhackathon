@@ -14,10 +14,10 @@ import {
   setPersistentReminderSuppressionCookie,
 } from "./persistentNotifications";
 
-const REMINDER_TAG = "memed-background-reminders";
-const DEDUPE_CACHE = "memed-reminder-dedupe-v2";
-const CONTROL_CACHE = "memed-reminder-control-v1";
-const SUSPENSION_PATH = "/__memed-reminders-suspended__";
+const REMINDER_TAG = "gutsy-background-reminders";
+const DEDUPE_CACHE = "gutsy-reminder-dedupe-v2";
+const CONTROL_CACHE = "gutsy-reminder-control-v1";
+const SUSPENSION_PATH = "/__gutsy-reminders-suspended__";
 
 type ReminderPayload = { marker: string; title: string; body: string };
 type Notice = { title: string; options: Record<string, unknown> };
@@ -44,7 +44,7 @@ function loadWorker(options: {
   backgroundGate?: Promise<void>;
   registrationNotifications?: string[];
 } = {}) {
-  const source = readFileSync(resolve(process.cwd(), "public/memed-worker.js"), "utf8");
+  const source = readFileSync(resolve(process.cwd(), "public/gutsy-worker.js"), "utf8");
   const fetches: Array<{ url: string; init?: RequestInit }> = [];
   const notices: Notice[] = [];
   const stores = new Map<string, Set<string>>();
@@ -63,11 +63,11 @@ function loadWorker(options: {
     return {
       async match(input: string | { url: string }) {
         const key = keyFor(input);
-        return entries.has(key) ? { url: `https://memed.test${key}` } : undefined;
+        return entries.has(key) ? { url: `https://gutsy.test${key}` } : undefined;
       },
       async put(input: string | { url: string }) { entries.add(keyFor(input)); },
       async keys() {
-        return [...entries].map((key) => ({ url: `https://memed.test${key}` }));
+        return [...entries].map((key) => ({ url: `https://gutsy.test${key}` }));
       },
       async delete(input: string | { url: string }) { return entries.delete(keyFor(input)); },
     };
@@ -167,8 +167,8 @@ function loadWorker(options: {
 describe("closed-page reminder delivery", () => {
   const payload: ReminderPayload = {
     marker: "2026-07-18:daily-check-in:0",
-    title: "You have a MeMed check-in",
-    body: "Open MeMed when it suits you. Urgent help remains available.",
+    title: "You have a Gutsy check-in",
+    body: "Open Gutsy when it suits you. Urgent help remains available.",
   };
 
   test("fetches and displays only the minimal server-authored payload", async () => {
@@ -182,7 +182,7 @@ describe("closed-page reminder delivery", () => {
     ]);
     expect(worker.fetches[1].init).toMatchObject({ cache: "no-store", credentials: "same-origin" });
     expect(worker.notices).toEqual([{ title: payload.title, options: expect.objectContaining({ body: payload.body }) }]);
-    expect(worker.cacheEntries(DEDUPE_CACHE)).toContain(`/__memed-reminder-marker__/${payload.marker}`);
+    expect(worker.cacheEntries(DEDUPE_CACHE)).toContain(`/__gutsy-reminder-marker__/${payload.marker}`);
   });
 
   test("contains no aggregate fetch or duplicate patient-state derivation", () => {
@@ -229,7 +229,7 @@ describe("closed-page reminder delivery", () => {
     const check = worker.checkForReminder();
     await vi.waitFor(() => expect(worker.fetches.map(({ url }) => url)).toEqual(["/api/background/run"]));
 
-    await worker.dispatchMessage({ type: "SUSPEND_MEMED_REMINDERS" });
+    await worker.dispatchMessage({ type: "SUSPEND_GUTSY_REMINDERS" });
     background.resolve();
     await check;
 
@@ -238,7 +238,7 @@ describe("closed-page reminder delivery", () => {
     expect(worker.cacheEntries(CONTROL_CACHE)).toContain(SUSPENSION_PATH);
   });
 
-  test("suspension clears opaque dedupe state and closes only MeMed notifications", async () => {
+  test("suspension clears opaque dedupe state and closes only Gutsy notifications", async () => {
     const ownTag = `${REMINDER_TAG}:2026-07-18:daily-check-in:0`;
     const unrelatedTag = `${REMINDER_TAG}-other-product`;
     const worker = loadWorker({
@@ -246,7 +246,7 @@ describe("closed-page reminder delivery", () => {
       registrationNotifications: [ownTag, unrelatedTag, "unrelated"],
     });
 
-    await worker.dispatchMessage({ type: "SUSPEND_MEMED_REMINDERS" });
+    await worker.dispatchMessage({ type: "SUSPEND_GUTSY_REMINDERS" });
 
     expect(worker.deletedCaches).toContain(DEDUPE_CACHE);
     expect(worker.registrationNotifications.find(({ tag }) => tag === ownTag)?.closed).toBe(true);
@@ -257,7 +257,7 @@ describe("closed-page reminder delivery", () => {
   test("an explicit resume removes the durable gate before checking again", async () => {
     const worker = loadWorker({ payload, suspended: true });
 
-    await worker.dispatchMessage({ type: "RESUME_MEMED_REMINDERS" });
+    await worker.dispatchMessage({ type: "RESUME_GUTSY_REMINDERS" });
 
     expect(worker.cacheEntries(CONTROL_CACHE)).not.toContain(SUSPENSION_PATH);
     expect(worker.fetches.map(({ url }) => url)).toEqual([
@@ -329,7 +329,7 @@ describe("persistent reminder startup control", () => {
     await expect(start).resolves.toBe("suppressed");
 
     expect(browser.container.register).not.toHaveBeenCalled();
-    expect(browser.worker.postMessage).toHaveBeenCalledWith({ type: "SUSPEND_MEMED_REMINDERS" });
+    expect(browser.worker.postMessage).toHaveBeenCalledWith({ type: "SUSPEND_GUTSY_REMINDERS" });
     expect(browser.periodicSync.unregister).toHaveBeenCalledWith(REMINDER_TAG);
     expect(browser.cache.put).toHaveBeenCalledWith(SUSPENSION_PATH, expect.any(Response));
     expect(browser.storage.delete).toHaveBeenCalledWith(DEDUPE_CACHE);
@@ -357,8 +357,8 @@ describe("persistent reminder startup control", () => {
 
     expect(browser.cache.delete).toHaveBeenCalledWith(SUSPENSION_PATH);
     expect(browser.cached).not.toContain(SUSPENSION_PATH);
-    expect(browser.container.register).toHaveBeenCalledWith("/memed-worker.js", { scope: "/" });
-    expect(browser.worker.postMessage).toHaveBeenCalledWith({ type: "RESUME_MEMED_REMINDERS" });
+    expect(browser.container.register).toHaveBeenCalledWith("/gutsy-worker.js", { scope: "/" });
+    expect(browser.worker.postMessage).toHaveBeenCalledWith({ type: "RESUME_GUTSY_REMINDERS" });
     expect(browser.periodicSync.register).toHaveBeenCalledWith(
       REMINDER_TAG,
       { minInterval: 6 * 60 * 60 * 1000 },

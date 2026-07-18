@@ -8,7 +8,7 @@ describe("source-ledger derivations", () => {
 
     const structured = applyExplicitRecordCorrections(
       entry,
-      "Bristol type 6, urgency, trace blood — corrected by Amara",
+      "Bristol type 6, urgency, trace blood — corrected by Matthew",
     );
 
     expect(structured).toMatchObject({ bristol: 6, urgency: true, blood: "trace" });

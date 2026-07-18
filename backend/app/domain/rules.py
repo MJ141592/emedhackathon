@@ -713,7 +713,7 @@ def evaluate_lifecycle(state: DemoState) -> LifecycleEvaluation:
     pain_baseline = _baseline_high(state.profile.usualPain, default=2, maximum=10)
     pain_signal_threshold = min(10, max(4, pain_baseline + 2))
     # A wearable signal is meaningful only against this patient's maintained
-    # baseline. Missing data must not silently inherit the seeded Amara fixture.
+    # baseline. Missing data must not silently inherit the seeded Matthew fixture.
     heart_rate_baseline = _baseline_high(
         state.profile.usualHeartRate, default=0, maximum=250
     )
@@ -987,7 +987,7 @@ def evaluate_lifecycle(state: DemoState) -> LifecycleEvaluation:
         proposed = "recovery"
         explanation = (
             "Clinician-authorised treatment was collected and a patient record says symptoms are "
-            "settling. The patient must confirm recovery mode; MeMed does not alter the "
+            "settling. The patient must confirm recovery mode; Gutsy does not alter the "
             "prescription."
         )
     elif state.phase == "recovery" and recovery_relapse_detected(
@@ -1467,7 +1467,7 @@ def build_clinician_summary(state: DemoState) -> str:
     )
     return "\n\n".join(
         (
-            f"{patient}’s editable MeMed summary, rebuilt from currently included records.",
+            f"{patient}’s editable Gutsy summary, rebuilt from currently included records.",
             f"Personal baseline: {baseline}."
             if baseline
             else "Personal baseline has not been completed.",
@@ -1484,7 +1484,7 @@ def build_clinician_summary(state: DemoState) -> str:
             else "No included journal records are available.",
             (
                 "This is a patient-reviewed record, not a diagnosis or medication instruction. "
-                "No medication change has been made by MeMed."
+                "No medication change has been made by Gutsy."
             ),
         )
     )

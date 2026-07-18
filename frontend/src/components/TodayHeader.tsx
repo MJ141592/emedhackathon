@@ -1,6 +1,5 @@
 import { ChevronRight, Info, Pill } from "lucide-react";
 import type { PhaseContent, PhaseId } from "../types";
-import { TrendChart } from "./TrendChart";
 
 type Props = {
   content: PhaseContent;
@@ -67,7 +66,6 @@ export function TodayHeader({ content, phase, pendingPhase, phaseConfirmed, firs
           </div>
         ))}
       </div>
-      <TrendChart points={content.trend} compact />
     </section>
   );
 }

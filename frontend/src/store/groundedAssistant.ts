@@ -192,7 +192,7 @@ export function answerFromPermittedRecords(state: DemoState, question: string): 
     return {
       from: "penny",
       category: "general information",
-      text: "A repeated diary pattern can be useful to discuss, but timing alone does not prove cause. MeMed keeps recorded facts separate from possible patterns and lets you correct or exclude every source before sharing an observation.",
+      text: "A repeated diary pattern can be useful to discuss, but timing alone does not prove cause. Gutsy keeps recorded facts separate from possible patterns and lets you correct or exclude every source before sharing an observation.",
       sources: [approvedSource("food"), approvedSource("flare")],
     };
   }
@@ -218,7 +218,7 @@ export function answerFromPermittedRecords(state: DemoState, question: string): 
     if (!taperTreatmentActive(state)) return { from: "penny", category: "general information", text: "Dose support is not active, so I cannot present a current dose or dose action. The imported clinician schedule remains available for review and verification in Care; use the medicine label or contact your pharmacist or IBD team if a dose is due." };
     const patientToday = dateInTimeZone(new Date(), state.profile.timeZone);
     const day = state.taper.days.find((candidate) => candidate.date === patientToday);
-    if (!state.taper.verified) return { from: "penny", category: "general information", text: "No verified clinician-authored dose is available in the care record. Do not calculate or change a dose in MeMed." };
+    if (!state.taper.verified) return { from: "penny", category: "general information", text: "No verified clinician-authored dose is available in the care record. Do not calculate or change a dose in Gutsy." };
     if (!day) return { from: "penny", category: "recorded fact", text: `The verified clinician-authored schedule has no dose dated ${patientToday} in your recorded home time zone. Check the dispensing label or contact your pharmacist or IBD team if that is unexpected.`, sources: [{ target: "care", label: "Verified prescribed taper", date: patientToday, detail: "No schedule row is recorded for this patient-local calendar date.", type: "fact" }] };
     const detail = `Verified ${state.taper.medicine} taper day ${day.day}: ${day.doseMg} mg, prescribed by ${state.taper.prescribedBy}; ${day.taken ? "recorded taken" : "not yet confirmed taken"}.`;
     return { from: "penny", category: "recorded fact", text: detail, sources: [{ target: "care", label: "Verified prescribed taper", date: day.date, detail, type: "fact" }] };

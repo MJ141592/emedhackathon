@@ -132,13 +132,13 @@ export function deriveReminders(state: DemoState, now = new Date()): DerivedRemi
     reminders.push({
       id: "phase-flare",
       title: "Flare check-in: can you safely wait?",
-      detail: "A short safety and symptom check is enough. Heavy bleeding, severe pain, fever, faintness, dehydration or obstruction symptoms need the care route shown in MeMed, not a routine team reply.",
+      detail: "A short safety and symptom check is enough. Heavy bleeding, severe pain, fever, faintness, dehydration or obstruction symptoms need the care route shown in Gutsy, not a routine team reply.",
     });
   }
 
   if (state.privacy.notificationBudget !== "low") {
     if (governedTestReminder(state) && state.testOrder.status === "delivered") {
-      reminders.push({ id: "test-delivery", title: "Your home test kit has arrived", detail: "Open Care for the fixed collection guide. Record collection only after it happens; MeMed will not infer a sample from delivery." });
+      reminders.push({ id: "test-delivery", title: "Your home test kit has arrived", detail: "Open Care for the fixed collection guide. Record collection only after it happens; Gutsy will not infer a sample from delivery." });
     } else if (governedTestReminder(state) && state.testOrder.status === "shipped" && state.privacy.notificationBudget === "supportive") {
       reminders.push({ id: "test-delivery", title: "Your home test kit is on its way", detail: "Delivery tracking is simulated in this demo. When it arrives, Care will guide the patient-confirmed collection step." });
     }
@@ -163,7 +163,7 @@ export function deriveReminders(state: DemoState, now = new Date()): DerivedRemi
     .filter((regimen) => !regimenRecordedToday(regimen, state, date));
   if (missingDailyMedicines.length) {
     const late = hour >= 18;
-    reminders.push({ id: "medicine", title: late ? "Daily medicine record still unconfirmed" : "Daily medicine check", detail: `${missingDailyMedicines.join("; ")} is recorded as a daily regimen in your patient-maintained profile, with no matching taken record today. Record only what you actually took; MeMed does not infer adherence.${late ? " Check the medicine label or contact your pharmacist if you are unsure—do not take an extra dose based on this reminder." : ""}` });
+    reminders.push({ id: "medicine", title: late ? "Daily medicine record still unconfirmed" : "Daily medicine check", detail: `${missingDailyMedicines.join("; ")} is recorded as a daily regimen in your patient-maintained profile, with no matching taken record today. Record only what you actually took; Gutsy does not infer adherence.${late ? " Check the medicine label or contact your pharmacist if you are unsure—do not take an extra dose based on this reminder." : ""}` });
   }
   if (!highFatigue && state.phase === "stable" && phaseConfirmed && state.privacy.notificationBudget !== "low" && !hasWellbeingToday) {
     reminders.push({ id: "wellbeing", title: "Optional one-tap check-in", detail: "Better, same or worse is enough. Missing it does not reset progress." });

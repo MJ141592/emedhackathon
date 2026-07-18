@@ -184,13 +184,13 @@ function App() {
       ? {
           eyebrow: `Clinician-authored treatment · taper day ${flareTreatmentDay.day}`,
           title: `Today: ${flareTreatmentDay.doseMg} mg ${state.taper.medicine}`,
-          detail: `Verified against the label from ${state.taper.prescribedBy}. MeMed displays this exact prescribed dose and cannot change it.`,
+          detail: `Verified against the label from ${state.taper.prescribedBy}. Gutsy displays this exact prescribed dose and cannot change it.`,
           status: flareTreatmentDay.taken ? "Recorded as taken" : "Not yet confirmed taken",
         }
       : {
           eyebrow: "Clinician-authored treatment collected",
           title: "Verify the prescription schedule before dose support",
-          detail: "Compare the imported schedule with the dispensing label in Care. MeMed will not calculate or expose a dose until that review is complete.",
+          detail: "Compare the imported schedule with the dispensing label in Care. Gutsy will not calculate or expose a dose until that review is complete.",
           status: "Verification needed",
         }
     : undefined;
@@ -199,7 +199,7 @@ function App() {
     return <div className="shell" aria-busy="true">
       <a href="#main-content" className="skip-link">Skip to loading status</a>
       <header className="topbar">
-        <span className="brand"><span className="name">MeMed</span><span className="tag">IBD companion</span></span>
+        <span className="brand"><span className="name">Gutsy</span><span className="tag">IBD companion</span></span>
         <button className="urgent" onClick={openUrgent}>Urgent help</button>
       </header>
       <main className="hydration-screen" id="main-content" role="status" aria-live="polite" aria-atomic="true">
@@ -226,8 +226,8 @@ function App() {
             : <span className="sync-next-step">Return to the open form and try again.</span>}
       </div>}
       <header className="topbar" inert={Boolean(panel || urgentOpen)} aria-hidden={panel || urgentOpen ? true : undefined}>
-        <button className="brand" onClick={() => setPanel(null)} aria-label="MeMed home"><span className="name">MeMed</span><span className="tag">IBD companion</span></button>
-        <nav ref={featureNavRef} className={mobileMenu ? "feature-nav open" : "feature-nav"} aria-label="MeMed features">
+        <button className="brand" onClick={() => setPanel(null)} aria-label="Gutsy home"><span className="name">Gutsy</span><span className="tag">IBD companion</span></button>
+        <nav ref={featureNavRef} className={mobileMenu ? "feature-nav open" : "feature-nav"} aria-label="Gutsy features">
           <button disabled={!hasPatientRecord} onClick={() => openPanel("trends")} aria-expanded={panel === "trends"}><Activity /> Trends &amp; evidence</button>
           <button disabled={!hasPatientRecord} onClick={() => openPanel("care")} aria-expanded={panel === "care"}><HeartHandshake /> Care</button>
           <button disabled={!hasPatientRecord} onClick={() => { setJournalOpen((value) => !value); setMobileMenu(false); }} aria-pressed={journalOpen}><NotebookPen /> Journal</button>
@@ -250,7 +250,7 @@ function App() {
         {journalOpen && <JournalPanel notify={notify} onClose={() => setJournalOpen(false)} onOpenCare={(focus = "taper") => handleSuggestion(focus)} onOpenSafetyCheck={() => { setCareFocus("urgent"); openPanel("care"); }} trackingEnabled={trackingActive} />}
       </div> : <main className="onboarding-gate" id="main-content" inert={Boolean(panel || urgentOpen || store.mutationsBlocked)} aria-hidden={panel || urgentOpen ? true : undefined}>
         <TodayHeader content={onboardingToday} phase="stable" phaseConfirmed={false} firstName={displayName} onReviewEvidence={() => undefined} />
-        <section className="feature-card onboarding-callout"><UserRound /><div><p className="eyebrow">Before health tracking starts</p><h2>Complete adult onboarding and choose what MeMed may store</h2><p>Tracking and care workflows stay off until identity, adult eligibility and consent are recorded.</p><div className="button-row"><button className="btn primary" onClick={() => openPanel("profile")}>Start onboarding</button><button className="btn" onClick={() => openPanel("privacy")}>Review privacy controls</button></div></div></section>
+        <section className="feature-card onboarding-callout"><UserRound /><div><p className="eyebrow">Before health tracking starts</p><h2>Complete adult onboarding and choose what Gutsy may store</h2><p>Tracking and care workflows stay off until identity, adult eligibility and consent are recorded.</p><div className="button-row"><button className="btn primary" onClick={() => openPanel("profile")}>Start onboarding</button><button className="btn" onClick={() => openPanel("privacy")}>Review privacy controls</button></div></div></section>
       </main>}
 
       {panel && <Drawer open title={PANEL_LABELS[panel].title} eyebrow={PANEL_LABELS[panel].eyebrow} wide={panel === "care" || panel === "trends" || panel === "profile"} contentInert={store.mutationsBlocked} contentStatus={store.mutationsBlocked ? store.syncStatus === "error" ? { tone: "error", text: "This change is queued but not saved. Close this panel to use Retry change; other controls remain paused." } : { tone: "saving", text: "Saving securely. Controls resume when the API confirms this change." } : undefined} returnFocusRef={panelReturnFocusRef} onClose={() => { setPanel(null); setCareFocus(undefined); }} onUrgent={openUrgentFromDrawer}>

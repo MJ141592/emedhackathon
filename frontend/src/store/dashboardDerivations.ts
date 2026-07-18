@@ -268,20 +268,20 @@ export function deriveLifecycleProposal(state: DemoState): LifecycleProposal {
 
   if (state.phase === "stable" && (sustainedChange || repeatedWorse)) {
     proposedPhase = "watch";
-    explanation = "Several patient-recorded signals differ from the personal baseline. MeMed proposes a watchful review; it does not diagnose a flare.";
+    explanation = "Several patient-recorded signals differ from the personal baseline. Gutsy proposes a watchful review; it does not diagnose a flare.";
   } else if (state.phase === "watch" && establishedTest) {
     proposedPhase = "flare";
-    explanation = "Objective test evidence is recorded. A clinician still establishes and treats a flare; MeMed only proposes changing its support mode.";
+    explanation = "Objective test evidence is recorded. A clinician still establishes and treats a flare; Gutsy only proposes changing its support mode.";
   } else if (state.phase === "watch" && !state.phaseConfirmed && (sustainedChange || repeatedWorse)) {
     proposedPhase = "watch";
     explanation = "The watchful support mode is awaiting patient review of the cited records.";
   } else if (state.phase === "flare" && settlingReady) {
     proposedPhase = "recovery";
     signals.push(signal("settling", "Symptoms settling toward baseline", `${settling.length} included patient records are at or moving toward the recorded baseline.`, settling));
-    explanation = "Clinician-authorised treatment is recorded as collected and included symptom records are settling. The patient must confirm recovery support; MeMed does not alter treatment.";
+    explanation = "Clinician-authorised treatment is recorded as collected and included symptom records are settling. The patient must confirm recovery support; Gutsy does not alter treatment.";
   } else if (state.phase === "recovery" && recoveryRelapseDetected(state, painThreshold, painBaselineUpper)) {
     proposedPhase = "flare";
-    explanation = "Several new symptom records moved away from baseline after the latest settling record. MeMed proposes renewed flare support and does not alter the prescribed taper.";
+    explanation = "Several new symptom records moved away from baseline after the latest settling record. Gutsy proposes renewed flare support and does not alter the prescribed taper.";
   } else if (state.phase === "recovery" && taperCourseComplete(state) && settlingReady) {
     proposedPhase = "stable";
     signals.push(signal("returned_to_baseline", "Return-to-baseline records", `${settling.length} included patient records are at or moving toward the recorded baseline.`, settling));

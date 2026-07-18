@@ -10,7 +10,7 @@ function downloadExport(contents: string, date: string) {
   const url = URL.createObjectURL(new Blob([contents], { type: "application/json" }));
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = `memed-export-${date}.json`;
+  anchor.download = `gutsy-export-${date}.json`;
   anchor.click();
   URL.revokeObjectURL(url);
 }
@@ -120,7 +120,7 @@ export function PrivacyPanel({ notify, onClose }: { notify: (message: string) =>
   };
 
   return <div className="panel-stack privacy-panel">
-    <section className="panel-intro"><span className="pill ok"><ShieldCheck /> Patient controlled</span><h3>Nothing consequential is hidden</h3><p>This development prototype keeps demo data in live session memory and the local MeMed API’s encrypted SQLite database; it does not write the health aggregate to browser storage. When Runware is configured, a photo the patient deliberately captures can be described in the background; toilet images additionally require explicit consent. Every observation remains visible, correctable and unable to trigger care.</p></section>
+    <section className="panel-intro"><span className="pill ok"><ShieldCheck /> Patient controlled</span><h3>Nothing consequential is hidden</h3><p>This development prototype keeps demo data in live session memory and the local Gutsy API’s encrypted SQLite database; it does not write the health aggregate to browser storage. When Runware is configured, a photo the patient deliberately captures can be described in the background; toilet images additionally require explicit consent. Every observation remains visible, correctable and unable to trigger care.</p></section>
 
     <section className="feature-card">
       <div className="section-heading"><div><p className="eyebrow">Penny’s permissioned context</p><h3>Choose which records Penny can use</h3></div><LockKeyhole /></div>
@@ -154,7 +154,7 @@ export function PrivacyPanel({ notify, onClose }: { notify: (message: string) =>
 
     <section className="feature-card">
       <div className="section-heading"><div><p className="eyebrow">Discreet support</p><h3>Notifications without nagging</h3></div><Bell /></div>
-      <label className="toggle-row"><span><b>Discreet lock-screen wording</b><small>“You have a MeMed check-in” without symptom details</small></span><input type="checkbox" checked={state.privacy.discreetNotifications} onChange={(e) => updatePrivacy({ discreetNotifications: e.target.checked })}/></label>
+      <label className="toggle-row"><span><b>Discreet lock-screen wording</b><small>“You have a Gutsy check-in” without symptom details</small></span><input type="checkbox" checked={state.privacy.discreetNotifications} onChange={(e) => updatePrivacy({ discreetNotifications: e.target.checked })}/></label>
       <label>Notification budget<select value={state.privacy.notificationBudget} onChange={(e) => updatePrivacy({ notificationBudget: e.target.value as typeof state.privacy.notificationBudget })}><option value="low">Low — safety and medicine only</option><option value="balanced">Balanced — recommended</option><option value="supportive">Supportive — more check-ins</option></select></label>
       <button className="btn" onClick={() => void enableDeviceNotifications()} disabled={notificationPermission === "granted" || notificationPermission === "unsupported"}>{notificationPermission === "granted" ? "Device check-ins enabled" : notificationPermission === "unsupported" ? "Device notifications unavailable" : "Enable device check-ins"}</button>
       <p className="soft-signal">No streaks and no guilt. Missing an entry reduces low-value prompts rather than resetting progress. Installed browsers that support periodic background sync can check while the page is closed; other browsers use page and in-app reminders.</p>
@@ -182,7 +182,7 @@ export function PrivacyPanel({ notify, onClose }: { notify: (message: string) =>
         <div className="supporter-scope" aria-label="Effective supporter permissions"><span className={supporterView.permissions.canViewSummary ? "status ok" : "status"}>Summary {supporterView.permissions.canViewSummary ? "visible" : "hidden"}</span><span className={supporterView.permissions.canSeeReminders ? "status ok" : "status"}>Reminders {supporterView.permissions.canSeeReminders ? "visible" : "hidden"}</span><span className={supporterView.permissions.canHelpLog ? "status ok" : "status"}>Logging {supporterView.permissions.canHelpLog ? "allowed" : "blocked"}</span></div>
         {supporterView.summary && <details><summary>Patient-approved summary</summary><p className="supporter-summary">{supporterView.summary}</p></details>}
         {supporterView.reminders && <div><b>Visible reminder status</b><ul>{supporterView.reminders.map((reminder) => <li key={reminder}>{reminder}</li>)}</ul></div>}
-        {supporterView.permissions.canHelpLog && <div className="supporter-log"><label htmlFor="supporter-observation">Create a patient-reviewable observation<textarea id="supporter-observation" value={supporterLog} onChange={(event) => setSupporterLog(event.target.value)} placeholder="Example: Amara had soup at lunch and felt crampy afterwards" /></label><button className="btn" disabled={supporterBusy || !supporterLog.trim()} onClick={() => void createSupporterLog()}>Add excluded reviewable log</button><small>This records the named supporter as the source. The patient must review and include it before trends or summaries can use it.</small></div>}
+        {supporterView.permissions.canHelpLog && <div className="supporter-log"><label htmlFor="supporter-observation">Create a patient-reviewable observation<textarea id="supporter-observation" value={supporterLog} onChange={(event) => setSupporterLog(event.target.value)} placeholder="Example: Matthew had soup at lunch and felt crampy afterwards" /></label><button className="btn" disabled={supporterBusy || !supporterLog.trim()} onClick={() => void createSupporterLog()}>Add excluded reviewable log</button><small>This records the named supporter as the source. The patient must review and include it before trends or summaries can use it.</small></div>}
         {supporterView.reviewableLogs && supporterView.reviewableLogs.length > 0 && <div><b>Recent supporter logs</b><ul>{supporterView.reviewableLogs.map((entry) => <li key={entry.id}><span className={entry.excluded ? "status watch" : "status ok"}>{entry.excluded ? "Awaiting patient review" : "Included by patient"}</span> {entry.body}</li>)}</ul></div>}
       </section>}
     </section>

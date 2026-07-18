@@ -128,7 +128,7 @@ test("delete-all invalidates a slow startup read and reasserts the empty state o
   await waitFor(() => expect(observedState.entries).toEqual([]));
   expect(observedState.profile.name).toBe("");
   expect(sync).not.toHaveBeenCalledWith(expect.objectContaining({
-    profile: expect.objectContaining({ name: "Amara Okafor" }),
+    profile: expect.objectContaining({ name: "Matthew Johnson" }),
   }));
 });
 

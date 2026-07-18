@@ -227,13 +227,13 @@ export function buildClinicianSummary(state: DemoState, entries = state.entries)
       ].join("\n")
     : "No diet experiment is recorded.";
   return [
-    `${patient}’s editable MeMed summary, rebuilt from currently included records.`,
+    `${patient}’s editable Gutsy summary, rebuilt from currently included records.`,
     baseline ? `Personal baseline: ${baseline}.` : "Personal baseline has not been completed.",
     state.profile.currentMedicines ? `Patient-recorded current medicines: ${state.profile.currentMedicines}.` : "No current medicine list is recorded.",
     result,
     taperSummary,
     experimentSummary,
     lines.length ? `Recent included records:\n${lines.join("\n")}` : "No included journal records are available.",
-    "This is a patient-reviewed record, not a diagnosis or medication instruction. No medication change has been made by MeMed.",
+    "This is a patient-reviewed record, not a diagnosis or medication instruction. No medication change has been made by Gutsy.",
   ].join("\n\n");
 }

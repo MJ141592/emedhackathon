@@ -1,4 +1,4 @@
-# The MeMed flare journey: one continuous loop
+# The Gutsy flare journey: one continuous loop
 
 This document walks the full end-to-end flow the product is built around — from quiet
 background monitoring, through recognising and confirming a flare, coordinating tests,
@@ -45,7 +45,7 @@ prepares a faecal calprotectin home test order — eligible under the patient's 
 triggered by AI inference alone. The patient confirms delivery details; the kit arrives at
 home in a day or two.
 
-MeMed then carries the whole loop: reminds the patient when the kit arrives, guides the sample
+Gutsy then carries the whole loop: reminds the patient when the kit arrives, guides the sample
 collection, tracks the post-back and the lab, and delivers the result with a plain-language
 explanation of what it means alongside the symptom picture. The result goes to the patient and
 their IBD team together — objective evidence of inflammation, not just "I feel worse".

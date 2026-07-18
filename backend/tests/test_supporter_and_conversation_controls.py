@@ -30,7 +30,7 @@ def _enable_supporter(client: TestClient, **permissions: bool) -> dict[str, Any]
         "/api/trusted-supporter",
         json={
             "enabled": True,
-            "name": "Maya Okafor",
+            "name": "Maya Johnson",
             "relationship": "Sister",
             "canViewSummary": permissions.get("canViewSummary", False),
             "canSeeReminders": permissions.get("canSeeReminders", False),
@@ -64,7 +64,7 @@ def test_supporter_code_is_revocable_and_view_omits_disallowed_scopes(
     assert access.status_code == 200
     scoped = access.json()
     assert scoped["simulation"] is True
-    assert scoped["supporterName"] == "Maya Okafor"
+    assert scoped["supporterName"] == "Maya Johnson"
     assert scoped["permissions"] == {
         "canViewSummary": False,
         "canSeeReminders": True,
@@ -76,7 +76,7 @@ def test_supporter_code_is_revocable_and_view_omits_disallowed_scopes(
 
     forbidden_log = client.post(
         "/api/trusted-supporter/log",
-        json={"accessCode": code, "text": "Amara had pain 5 out of 10 after lunch."},
+        json={"accessCode": code, "text": "Matthew had pain 5 out of 10 after lunch."},
     )
     assert forbidden_log.status_code == 403
 
@@ -100,14 +100,14 @@ def test_supporter_log_is_attributed_excluded_and_requires_patient_inclusion(
 
     logged = client.post(
         "/api/trusted-supporter/log",
-        json={"accessCode": code, "text": "Amara had cramping pain 5 out of 10 after lunch."},
+        json={"accessCode": code, "text": "Matthew had cramping pain 5 out of 10 after lunch."},
     )
     assert logged.status_code == 200, logged.text
     assert logged.headers["etag"]
     entry = logged.json()["entries"][0]
     assert entry["source"] == "supporter"
     assert entry["excluded"] is True
-    assert entry["structured"]["supporterName"] == "Maya Okafor"
+    assert entry["structured"]["supporterName"] == "Maya Johnson"
     assert entry["structured"]["supporterRelationship"] == "Sister"
     assert entry["structured"]["supporterReviewStatus"] == "needs patient review"
     assert any(
@@ -295,7 +295,7 @@ def test_snapshot_correction_regenerates_only_linked_evidence_display_fields(
     entry = next(item for item in state["entries"] if item["id"] == entry_id)
     entry.update(
         {
-            "body": "Bristol type 6, urgency, trace blood — corrected by Amara",
+            "body": "Bristol type 6, urgency, trace blood — corrected by Matthew",
             "structured": {"bristol": 6, "urgency": True, "blood": "trace"},
         }
     )

@@ -10,7 +10,7 @@ describe("bounded background agent", () => {
     expect(notification?.key).toMatch(/^2026-07-17:/);
     expect(notification?.key).toBe("2026-07-17:daily-check-in:0");
     expect(notification?.key).not.toMatch(/dose|medicine|symptom|taper/i);
-    expect(notification?.title).toBe("You have a MeMed check-in");
+    expect(notification?.title).toBe("You have a Gutsy check-in");
     expect(notification?.body).not.toMatch(/steroid|bowel|symptom/i);
   });
 
@@ -24,7 +24,7 @@ describe("bounded background agent", () => {
     const next = applyScheduledBackgroundWork(state, new Date("2026-07-17T19:00:00.000Z"));
     expect(next.teamMessage).toMatchObject({ id: "EVENING-2026-07-17", status: "draft" });
     expect(next.teamMessageHistory[0]).toMatchObject({ id: "MSG-104", status: "replied", reply: "Please keep us updated." });
-    expect(next.teamMessage.body).toContain("editable MeMed summary");
+    expect(next.teamMessage.body).toContain("editable Gutsy summary");
     expect(next.audit[0].action).toContain("nothing was sent");
   });
 

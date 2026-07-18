@@ -1,4 +1,4 @@
-# MeMed frontend UI plan
+# Gutsy frontend UI plan
 
 Direction agreed 17 July 2026, superseding the first phone-frame mock. The starting point is the
 static prototype dropped in by Rob (saved at `docs/prototype-sol/` for reference) — we keep its
@@ -8,7 +8,7 @@ calm editorial design language and rebuild it as a single-screen web app.
 
 - **Web app, not a phone app.** One main screen, no tab bar, desktop-first with a responsive
   fallback.
-- **Branding: MeMed** (both Ms capitalised).
+- **Branding: Gutsy** (both Ms capitalised).
 - **The assistant is called Penny** — one conversational presence the patient talks to, not a
   buried chatbot tab.
 

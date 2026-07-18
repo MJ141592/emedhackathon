@@ -145,20 +145,20 @@ class SQLiteDemoStore:
                 """
             )
             existing = connection.execute(
-                "SELECT 1 FROM demo_snapshots WHERE patient_id = 'amara'"
+                "SELECT 1 FROM demo_snapshots WHERE patient_id = 'matthew'"
             ).fetchone()
             if existing is None:
-                self._insert_state(connection, build_demo_state(), "Seeded Amara demo record")
+                self._insert_state(connection, build_demo_state(), "Seeded Matthew demo record")
             else:
                 # Transparently upgrade pre-encryption development databases. The same row and
                 # revision are retained; only its storage representation changes.
                 row = connection.execute(
-                    "SELECT state_json FROM demo_snapshots WHERE patient_id = 'amara'"
+                    "SELECT state_json FROM demo_snapshots WHERE patient_id = 'matthew'"
                 ).fetchone()
                 if row is not None and not str(row["state_json"]).startswith("enc:v1:"):
                     state = self._deserialize(str(row["state_json"]))
                     connection.execute(
-                        "UPDATE demo_snapshots SET state_json = ? WHERE patient_id = 'amara'",
+                        "UPDATE demo_snapshots SET state_json = ? WHERE patient_id = 'matthew'",
                         (self._serialize(state),),
                     )
                     migrated_plaintext = True
@@ -224,7 +224,7 @@ class SQLiteDemoStore:
         connection.execute(
             """
             INSERT INTO demo_snapshots(patient_id, version, state_json, created_at, updated_at)
-            VALUES ('amara', ?, ?, ?, ?)
+            VALUES ('matthew', ?, ?, ?, ?)
             """,
             (revision, self._serialize(state), now, now),
         )
@@ -232,7 +232,7 @@ class SQLiteDemoStore:
             """
             INSERT INTO domain_revisions(
                 patient_id, state_version, action, actor, occurred_at, metadata_json
-            ) VALUES ('amara', ?, ?, ?, ?, ?)
+            ) VALUES ('matthew', ?, ?, ?, ?, ?)
             """,
             (
                 revision,
@@ -249,11 +249,11 @@ class SQLiteDemoStore:
     def get_with_revision(self) -> tuple[DemoState, int]:
         with self._connect() as connection:
             row = connection.execute(
-                "SELECT version, state_json FROM demo_snapshots WHERE patient_id = 'amara'"
+                "SELECT version, state_json FROM demo_snapshots WHERE patient_id = 'matthew'"
             ).fetchone()
         if row is None:
             # A deleted/corrupt fixture is restored only through explicit reset, never silently.
-            raise RuntimeError("The Amara demo snapshot is unavailable. Call /api/demo/reset.")
+            raise RuntimeError("The Matthew demo snapshot is unavailable. Call /api/demo/reset.")
         return self._deserialize(row["state_json"]), int(row["version"])
 
     def revision(self) -> int:
@@ -306,10 +306,10 @@ class SQLiteDemoStore:
         with self._connect() as connection:
             connection.execute("BEGIN IMMEDIATE")
             row = connection.execute(
-                "SELECT version, state_json FROM demo_snapshots WHERE patient_id = 'amara'"
+                "SELECT version, state_json FROM demo_snapshots WHERE patient_id = 'matthew'"
             ).fetchone()
             if row is None:
-                raise RuntimeError("The Amara demo snapshot is unavailable. Call /api/demo/reset.")
+                raise RuntimeError("The Matthew demo snapshot is unavailable. Call /api/demo/reset.")
             current_version = int(row["version"])
             if expected_version is not None and expected_version != current_version:
                 raise VersionConflictError(
@@ -330,7 +330,7 @@ class SQLiteDemoStore:
                 """
                 UPDATE demo_snapshots
                 SET version = ?, state_json = ?, updated_at = ?
-                WHERE patient_id = 'amara' AND version = ?
+                WHERE patient_id = 'matthew' AND version = ?
                 """,
                 (next_version, self._serialize(validated), now, current_version),
             )
@@ -340,7 +340,7 @@ class SQLiteDemoStore:
                 """
                 INSERT INTO domain_revisions(
                     patient_id, state_version, action, actor, occurred_at, metadata_json
-                ) VALUES ('amara', ?, ?, ?, ?, ?)
+                ) VALUES ('matthew', ?, ?, ?, ?, ?)
                 """,
                 (
                     next_version,
@@ -383,17 +383,17 @@ class SQLiteDemoStore:
             connection.execute("BEGIN IMMEDIATE")
             now = utc_now()
             current = connection.execute(
-                "SELECT version FROM demo_snapshots WHERE patient_id = 'amara'"
+                "SELECT version FROM demo_snapshots WHERE patient_id = 'matthew'"
             ).fetchone()
             revision = int(current["version"]) + 1 if current is not None else 1
             if clear_history:
-                connection.execute("DELETE FROM domain_revisions WHERE patient_id = 'amara'")
+                connection.execute("DELETE FROM domain_revisions WHERE patient_id = 'matthew'")
                 connection.execute("DELETE FROM sqlite_sequence WHERE name = 'domain_revisions'")
-            connection.execute("DELETE FROM demo_snapshots WHERE patient_id = 'amara'")
+            connection.execute("DELETE FROM demo_snapshots WHERE patient_id = 'matthew'")
             connection.execute(
                 """
                 INSERT INTO demo_snapshots(patient_id, version, state_json, created_at, updated_at)
-                VALUES ('amara', ?, ?, ?, ?)
+                VALUES ('matthew', ?, ?, ?, ?)
                 """,
                 (revision, self._serialize(state), now, now),
             )
@@ -401,7 +401,7 @@ class SQLiteDemoStore:
                 """
             INSERT INTO domain_revisions(
                 patient_id, state_version, action, actor, occurred_at, metadata_json
-            ) VALUES ('amara', ?, ?, ?, ?, ?)
+            ) VALUES ('matthew', ?, ?, ?, ?, ?)
             """,
                 (
                     revision,
@@ -419,14 +419,14 @@ class SQLiteDemoStore:
     def reset(self) -> DemoState:
         return self.replace(
             build_demo_state(),
-            "Reset Amara demo record",
+            "Reset Matthew demo record",
             clear_history=True,
         )
 
     def reset_with_revision(self) -> tuple[DemoState, int]:
         return self._replace(
             build_demo_state(),
-            "Reset Amara demo record",
+            "Reset Matthew demo record",
             actor="system",
             clear_history=True,
         )
@@ -445,7 +445,7 @@ class SQLiteDemoStore:
                 """
                 SELECT id, state_version, action, actor, occurred_at, metadata_json
                 FROM domain_revisions
-                WHERE patient_id = 'amara'
+                WHERE patient_id = 'matthew'
                 ORDER BY id DESC
                 LIMIT ?
                 """,

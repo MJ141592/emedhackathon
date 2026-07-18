@@ -94,7 +94,7 @@ test("keeps private record data out of the DOM until remote hydration succeeds",
   render(<DemoStoreProvider><App /></DemoStoreProvider>);
 
   expect(screen.getByRole("heading", { name: "Loading your encrypted demo record…" })).toBeInTheDocument();
-  expect(document.body).not.toHaveTextContent("Amara Okafor");
+  expect(document.body).not.toHaveTextContent("Matthew Johnson");
   expect(document.body).not.toHaveTextContent(INITIAL_STATE.entries[0].body);
   expect(screen.queryByRole("heading", { name: "Penny" })).not.toBeInTheDocument();
 
@@ -134,14 +134,15 @@ test("shows save progress and a queued-error explanation inside an open locked d
   expect(drawer.querySelector(".drawer-body")).toHaveAttribute("inert");
 });
 
-test("renders the canonical MeMed home with Penny, trends and journal", () => {
+test("renders the canonical Gutsy home with Penny, trends and journal", () => {
   renderApp();
   openJournal();
-  expect(screen.getByRole("button", { name: "MeMed home" })).toBeInTheDocument();
-  expect(screen.getByRole("heading", { name: "Good morning, Amara" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Gutsy home" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Good morning, Matthew" })).toBeInTheDocument();
   expect(screen.getByRole("heading", { name: "Penny" })).toBeInTheDocument();
   expect(screen.getByRole("heading", { name: "Journal" })).toBeInTheDocument();
-  expect(screen.getByRole("img", { name: /Included pain, bowel and resting heart-rate records/ })).toBeInTheDocument();
+  expect(screen.getByRole("img", { name: /Flare gauge/ })).toBeInTheDocument();
+  expect(screen.queryByRole("img", { name: /Included pain, bowel and resting heart-rate records/ })).not.toBeInTheDocument();
 });
 
 test("offers an accessible daily and weekly trend timescale without imputing missing weeks", () => {
@@ -276,7 +277,7 @@ test("evidence-led change confirmation is explicit", () => {
   const drawer = screen.getByRole("dialog", { name: "Trends & evidence" });
   expect(within(drawer).getByText("4 included observations support this review across 2 recorded days")).toBeInTheDocument();
   fireEvent.click(within(drawer).getByRole("button", { name: "Confirm Watchful support mode" }));
-  expect(within(drawer).getByText("Confirmed by Amara")).toBeInTheDocument();
+  expect(within(drawer).getByText("Confirmed by Matthew")).toBeInTheDocument();
 });
 
 test("lab-authored objective evidence can be excluded but not given a dead correction action", () => {
@@ -321,7 +322,7 @@ test("new included records refresh metrics and create a reviewable phase proposa
   fireEvent.click(screen.getByRole("button", { name: /Review proposed Watchful view/ }));
   const drawer = screen.getByRole("dialog", { name: "Trends & evidence" });
   fireEvent.click(within(drawer).getByRole("button", { name: "Confirm Watchful support mode" }));
-  expect(within(drawer).getByText("Confirmed by Amara")).toBeInTheDocument();
+  expect(within(drawer).getByText("Confirmed by Matthew")).toBeInTheDocument();
 });
 
 test("calprotectin order requires evidence, address and consent confirmation", () => {
@@ -475,7 +476,7 @@ test("a follow-up draft keeps the completed clinician exchange visible", () => {
   fireEvent.click(screen.getByRole("button", { name: "Prepare next follow-up draft" }));
 
   const history = screen.getByLabelText("Earlier clinician-message thread");
-  expect(within(history).getByText("Recent recorded symptoms for Amara Okafor")).toBeInTheDocument();
+  expect(within(history).getByText("Recent recorded symptoms for Matthew Johnson")).toBeInTheDocument();
   expect(within(history).getByText(/please complete the calprotectin test/i)).toBeInTheDocument();
   expect(screen.getByRole("textbox", { name: "Patient-approved message" })).not.toBeDisabled();
 });
@@ -533,7 +534,7 @@ test("recovery side-effect check-ins refresh the clinician summary", async () =>
   fireEvent.click(screen.getByRole("button", { name: "Close Care" }));
   fireEvent.click(screen.getByRole("button", { name: "Trends & evidence" }));
   await waitFor(() => {
-    const summary = (screen.getByRole("textbox", { name: "Only your approved words leave MeMed" }) as HTMLTextAreaElement).value;
+    const summary = (screen.getByRole("textbox", { name: "Only your approved words leave Gutsy" }) as HTMLTextAreaElement).value;
     expect(summary).toContain("Patient-recorded recovery observations: Poor sleep, Mood change");
     expect(summary).toContain("latest recovery side-effect check-in is marked complete");
   });
@@ -572,7 +573,7 @@ test("diet experiment advances once per calendar day and holds completion until 
   expect(screen.getByText(/Diet experiment check-in — day 10 of 14: Morning urgency was unchanged today/)).toBeInTheDocument();
 
   fireEvent.click(screen.getByRole("button", { name: "Trends & evidence" }));
-  expect((screen.getByRole("textbox", { name: "Only your approved words leave MeMed" }) as HTMLTextAreaElement).value).toContain("Morning urgency was unchanged today");
+  expect((screen.getByRole("textbox", { name: "Only your approved words leave Gutsy" }) as HTMLTextAreaElement).value).toContain("Morning urgency was unchanged today");
 });
 
 test("a restrictive candidate starts only after a linked reviewed reply and explicit approval", () => {
@@ -706,7 +707,7 @@ test("trusted supporter access requires identity and an explicit scope before sa
   fireEvent.click(screen.getByRole("checkbox", { name: /Enable trusted supporter/ }));
   fireEvent.click(screen.getByRole("button", { name: "Save supporter access" }));
   expect(screen.getByRole("status")).toHaveTextContent(/name and relationship/i);
-  fireEvent.change(screen.getByRole("textbox", { name: "Supporter name" }), { target: { value: "Nia Okafor" } });
+  fireEvent.change(screen.getByRole("textbox", { name: "Supporter name" }), { target: { value: "Nia Johnson" } });
   fireEvent.change(screen.getByRole("textbox", { name: "Relationship" }), { target: { value: "Sister" } });
   fireEvent.click(screen.getByRole("checkbox", { name: /View patient-approved summaries/ }));
   fireEvent.click(screen.getByRole("button", { name: "Save supporter access" }));

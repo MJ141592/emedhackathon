@@ -58,7 +58,7 @@ export function ProfilePanel({ notify }: { notify: (message: string) => void }) 
       return;
     }
     if (keepingTrackingActive && !isAdultDate(profile.dateOfBirth, new Date(), profile.timeZone)) {
-      notify("MeMed onboarding is currently for adults aged 18 or older.");
+      notify("Gutsy onboarding is currently for adults aged 18 or older.");
       return;
     }
     if (!isValidTimeZone(profile.timeZone)) {
@@ -91,7 +91,7 @@ export function ProfilePanel({ notify }: { notify: (message: string) => void }) 
     if (profileSaved && withdrawsActiveConsent && contactsChanged) updateContacts(contacts);
     setSaving(false);
     if (!profileSaved) {
-      notify("Those consent changes were not saved. Tracking remains in its previous state; keep MeMed open and try again.");
+      notify("Those consent changes were not saved. Tracking remains in its previous state; keep Gutsy open and try again.");
       return;
     }
     notify(complete

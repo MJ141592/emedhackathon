@@ -1,7 +1,7 @@
 [project]
 name = "emed-backend"
 version = "0.1.0"
-description = "FastAPI backend for the MeMed IBD companion demo"
+description = "FastAPI backend for the Gutsy IBD companion demo"
 requires-python = ">=3.11"
 dependencies = [
     "cryptography>=48.0.1,<49.0.0",

@@ -91,7 +91,7 @@ from app.domain.store import SQLiteDemoStore, VersionConflictError, get_demo_sto
 
 router = APIRouter(prefix="/api", tags=["persisted demo"])
 Store = Annotated[SQLiteDemoStore, Depends(get_demo_store)]
-REMINDER_SUPPRESSION_COOKIE = "memed_reminders_suspended"
+REMINDER_SUPPRESSION_COOKIE = "gutsy_reminders_suspended"
 
 HISTORY_FIELDS = {
     "subtype",
@@ -2869,7 +2869,7 @@ def run_evening_background(
         state["teamMessage"] = {
             "id": local_draft_id,
             "subject": (
-                f"Evening flare update from {state['profile'].get('name') or 'MeMed patient'}"
+                f"Evening flare update from {state['profile'].get('name') or 'Gutsy patient'}"
             ),
             "body": regenerated_body,
             "status": "draft",
@@ -2901,13 +2901,13 @@ def run_evening_background(
 @router.post("/background/run")
 def run_bounded_background_work(
     store: Store,
-    memed_reminders_suspended: Annotated[
+    gutsy_reminders_suspended: Annotated[
         str | None, Cookie(alias=REMINDER_SUPPRESSION_COOKIE)
     ] = None,
 ) -> dict[str, bool]:
     """Run consent-bound, idempotent work that a service worker may request off-page."""
 
-    if memed_reminders_suspended is not None:
+    if gutsy_reminders_suspended is not None:
         return {"created": False}
     created, _ = run_evening_background(store)
     return {"created": created}
@@ -2916,13 +2916,13 @@ def run_bounded_background_work(
 @router.get("/reminders/current", response_model=None)
 def get_current_background_reminder(
     store: Store,
-    memed_reminders_suspended: Annotated[
+    gutsy_reminders_suspended: Annotated[
         str | None, Cookie(alias=REMINDER_SUPPRESSION_COOKIE)
     ] = None,
 ) -> JSONResponse | Response:
     """Return only the already-approved notification payload needed by the worker."""
 
-    if memed_reminders_suspended is not None:
+    if gutsy_reminders_suspended is not None:
         return Response(status_code=204, headers={"Cache-Control": "no-store"})
     reminder = current_background_reminder(store.get(), _background_now())
     if reminder is None:
@@ -4717,7 +4717,7 @@ def confirm_test_order(payload: TestOrderPatch, store: Store) -> TestOrder:
     state, _ = store.mutate(
         apply,
         "Patient confirmed address and consent; simulation placed calprotectin order",
-        actor="patient-and-memed-simulation",
+        actor="patient-and-gutsy-simulation",
     )
     return state.testOrder
 
@@ -4752,7 +4752,7 @@ def advance_test_order(payload: TestAdvanceInput | None, store: Store) -> TestOr
     state, _ = store.mutate(
         apply,
         "Simulation advanced calprotectin fulfilment by one state",
-        actor="memed-fulfilment-simulation",
+        actor="gutsy-fulfilment-simulation",
     )
     return state.testOrder
 
@@ -4856,7 +4856,7 @@ def prepare_next_team_message(store: Store) -> TeamMessage:
         previous.update(
             {
                 "id": f"MSG-{created_at}",
-                "subject": f"Follow-up from {state['profile']['name'] or 'MeMed patient'}",
+                "subject": f"Follow-up from {state['profile']['name'] or 'Gutsy patient'}",
                 "body": state["clinicianSummary"] or "Patient follow-up — review before sending",
                 "status": "draft",
                 "sentAt": None,
@@ -5095,7 +5095,7 @@ def simulate_clinician_plan_import(response: Response, store: Store) -> DemoStat
                 {
                     "subject": (
                         f"Patient-reviewed update from "
-                        f"{state['profile'].get('name') or 'MeMed patient'}"
+                        f"{state['profile'].get('name') or 'Gutsy patient'}"
                     ),
                     "body": state["clinicianSummary"] or "Review this draft before sending.",
                     "clinicalOwner": f"{owner} (simulated clinical owner)",
@@ -5608,7 +5608,7 @@ def missed_dose_guidance(store: Store) -> dict[str, str]:
     )
     return {
         "guidance": (
-            "MeMed does not calculate a replacement dose or change a taper. Follow the "
+            "Gutsy does not calculate a replacement dose or change a taper. Follow the "
             "dispensing label and prescriber's plan, and contact your pharmacist or IBD team "
             "for advice specific to this course."
         ),
@@ -6194,7 +6194,7 @@ def export_summary(store: Store) -> PlainTextResponse:
     summary = store.get().clinicianSummary
     return PlainTextResponse(
         summary,
-        headers={"Content-Disposition": 'attachment; filename="memed-clinician-summary.txt"'},
+        headers={"Content-Disposition": 'attachment; filename="gutsy-clinician-summary.txt"'},
     )
 
 
@@ -6204,12 +6204,12 @@ def export_all_data(store: Store) -> JSONResponse:
     return JSONResponse(
         content={
             "exportedAt": utc_now(),
-            "product": "MeMed persisted demo",
+            "product": "Gutsy persisted demo",
             "schemaVersion": state.version,
             "data": state.model_dump(mode="json", by_alias=True),
             "domainRevisions": store.revisions(),
         },
-        headers={"Content-Disposition": 'attachment; filename="memed-export.json"'},
+        headers={"Content-Disposition": 'attachment; filename="gutsy-export.json"'},
     )
 
 

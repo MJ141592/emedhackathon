@@ -584,7 +584,7 @@ def answer_from_permitted_records(
             "category": "general information",
             "text": (
                 "A repeated diary pattern can be useful to discuss, but timing alone does not "
-                "prove cause. MeMed keeps recorded facts separate from possible patterns and "
+                "prove cause. Gutsy keeps recorded facts separate from possible patterns and "
                 "lets you correct or exclude every source before sharing an observation."
             ),
             "sources": [_guidance_source("food"), _guidance_source("flare")],
@@ -678,7 +678,7 @@ def answer_from_permitted_records(
                 "category": "general information",
                 "text": (
                     "No verified clinician-authored dose is available in the care record. Do "
-                    "not calculate or change a dose in MeMed."
+                    "not calculate or change a dose in Gutsy."
                 ),
             }
         today = _patient_today(state, instant).isoformat()
