@@ -8,6 +8,11 @@ node_modules/
 frontend/dist/
 frontend/coverage/
 
+# Browser tests
+playwright-report/
+test-results/
+blob-report/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -17,8 +22,8 @@ __pycache__/
 backend/.venv/
 backend/htmlcov/
 backend/.coverage
+backend/data/
 
 # Editors
 .idea/
 .vscode/
-

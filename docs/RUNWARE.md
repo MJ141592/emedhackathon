@@ -59,8 +59,11 @@ The status endpoint reports whether a key is configured and which model identifi
 
 ## Current limitations
 
-- This is a prototype; conversations and media are not persisted as patient records.
-- Chat context comes from messages supplied in the current browser session. A consented patient-data retrieval layer is still required for full-context chat.
+- The AI gateway does not retain an additional application-side copy of inference requests. Confirmed demo chat, journal, and media records are nevertheless part of live browser-session memory and the encrypted local-development SQLite aggregate; this prototype is not suitable for real patient data.
+- The visible typed Penny conversation remains deterministic and permission-aware; it does not call a model for clinical or care answers. The reviewed voice-transcription flow, explicitly requested meal/toilet image description, and optional spoken Penny reply are connected to the corresponding Runware endpoints in the UI.
+- Every image description is shown as an editable, unconfirmed observation before journal save. It cannot set urgency, diagnose a flare, order a test, send a message, or alter medicine. Toilet-image analysis additionally requires the dedicated toilet-photo consent control.
+- Without an API key or credits, those three optional UI flows fail closed with a clear local/manual fallback. No provider result is invented, while all deterministic product workflows remain usable.
+- Runware chat context comes only from messages supplied in that request. A consented, least-privilege patient-data retrieval layer is still required before full-context model chat can be enabled.
 - Runware receives uploaded media for inference. Retention, consent, regional processing, and data-processing terms must be resolved before handling real patient data.
 - Model output is not a diagnosis or medication instruction. Consequential clinical workflows require deterministic safeguards and clinical governance outside the model.
 

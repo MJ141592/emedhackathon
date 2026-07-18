@@ -62,7 +62,7 @@ export class AIClient {
     return this.request<TextResult>("/speech-to-text", { method: "POST", body: form });
   }
 
-  describeImage(file: File, purpose: "meal_log" | "general", note: string): Promise<TextResult> {
+  describeImage(file: File, purpose: "meal_log" | "toilet_log" | "general", note: string): Promise<TextResult> {
     const form = new FormData();
     form.append("image", file);
     form.append("purpose", purpose);
@@ -80,4 +80,3 @@ export class AIClient {
 }
 
 export const aiClient = new AIClient();
-

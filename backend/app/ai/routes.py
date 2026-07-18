@@ -6,11 +6,48 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, s
 from app.ai.dependencies import get_ai_services
 from app.ai.schemas import AIStatus, AudioResult, ChatRequest, TextResult, TextToSpeechRequest
 from app.ai.services import AIServices
+from app.domain.store import SQLiteDemoStore, get_demo_store
 
 router = APIRouter(prefix="/api/ai", tags=["ai"])
 
 MAX_IMAGE_BYTES = 10 * 1024 * 1024
 MAX_AUDIO_BYTES = 20 * 1024 * 1024
+Store = Annotated[SQLiteDemoStore, Depends(get_demo_store)]
+
+
+def _require_inference_consent(
+    store: SQLiteDemoStore,
+    *,
+    journal: bool = False,
+    conversation: bool = False,
+    toilet_photo: bool = False,
+) -> None:
+    state = store.get()
+    profile = state.profile
+    if not (
+        profile.onboardingComplete
+        and profile.adultEligibilityConfirmed
+        and profile.healthDataConsent
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="Runware inference is paused because current health-data consent is absent.",
+        )
+    if toilet_photo and not state.privacy.toiletPhotoConsent:
+        raise HTTPException(
+            status_code=403,
+            detail="Enable and persist optional toilet-photo consent before image inference.",
+        )
+    if journal and not state.privacy.assistantJournalAccess:
+        raise HTTPException(
+            status_code=403,
+            detail="Penny's Journal and photos inference permission is disabled.",
+        )
+    if conversation and not state.privacy.assistantConversationAccess:
+        raise HTTPException(
+            status_code=403,
+            detail="Penny's earlier-conversation inference permission is disabled.",
+        )
 
 
 async def _read_upload(upload: UploadFile, limit: int, media_type: str) -> bytes:
@@ -44,8 +81,11 @@ async def ai_status(services: Annotated[AIServices, Depends(get_ai_services)]) -
 
 @router.post("/chat", response_model=TextResult)
 async def chat(
-    request: ChatRequest, services: Annotated[AIServices, Depends(get_ai_services)]
+    request: ChatRequest,
+    services: Annotated[AIServices, Depends(get_ai_services)],
+    store: Store,
 ) -> TextResult:
+    _require_inference_consent(store, conversation=True)
     text = await services.chat.reply(request.messages)
     return TextResult(text=text, model=services.chat.model)
 
@@ -54,9 +94,15 @@ async def chat(
 async def image_to_text(
     image: Annotated[UploadFile, File()],
     services: Annotated[AIServices, Depends(get_ai_services)],
-    purpose: Annotated[Literal["meal_log", "general"], Form()] = "meal_log",
+    store: Store,
+    purpose: Annotated[Literal["meal_log", "toilet_log", "general"], Form()] = "meal_log",
     note: Annotated[str | None, Form(max_length=500)] = None,
 ) -> TextResult:
+    _require_inference_consent(
+        store,
+        journal=True,
+        toilet_photo=purpose == "toilet_log",
+    )
     content = await _read_upload(image, MAX_IMAGE_BYTES, "image")
     encoded = base64.b64encode(content).decode("ascii")
     data_uri = f"data:{image.content_type};base64,{encoded}"
@@ -68,7 +114,9 @@ async def image_to_text(
 async def speech_to_text(
     audio: Annotated[UploadFile, File()],
     services: Annotated[AIServices, Depends(get_ai_services)],
+    store: Store,
 ) -> TextResult:
+    _require_inference_consent(store, journal=True)
     content = await _read_upload(audio, MAX_AUDIO_BYTES, "audio")
     encoded = base64.b64encode(content).decode("ascii")
     text = await services.speech_to_text.transcribe(encoded)
@@ -79,9 +127,10 @@ async def speech_to_text(
 async def text_to_speech(
     request: TextToSpeechRequest,
     services: Annotated[AIServices, Depends(get_ai_services)],
+    store: Store,
 ) -> AudioResult:
+    _require_inference_consent(store)
     audio_url = await services.text_to_speech.synthesize(
         request.text, request.voice, request.language
     )
     return AudioResult(audio_url=audio_url, model=services.text_to_speech.model)
-
