@@ -1150,6 +1150,41 @@ def test_chat_uses_a_varied_provider_reply_for_an_ordinary_question(
     assert "Watchful demo scenario" in context["grounded_context"]
 
 
+def test_chat_persists_only_the_active_scenario_thread(
+    domain_client: tuple[TestClient, SQLiteDemoStore], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    client, store = domain_client
+
+    def prepare_flare_scenario(state: dict[str, Any]) -> None:
+        state["phase"] = "flare"
+        state["messages"] = []
+        state["profileProposals"] = []
+        state["chatHistories"]["flare"] = []
+        state["profileProposalsByPhase"]["flare"] = []
+
+    store.mutate(prepare_flare_scenario, "Prepared independent flare chat", actor="test")
+    stable_before = [
+        message.model_dump(mode="json", by_alias=True)
+        for message in store.get().chatHistories["stable"]
+    ]
+
+    async def varied_reply(*_args: object, **_kwargs: object) -> str:
+        return "Let’s take this one step at a time."
+
+    monkeypatch.setattr(domain_routes, "_varied_chat_reply", varied_reply)
+    response = client.post("/api/chat", json={"text": "Can we talk about today?"})
+
+    assert response.status_code == 200
+    saved = store.get()
+    assert [
+        message.model_dump(mode="json", by_alias=True) for message in saved.chatHistories["stable"]
+    ] == stable_before
+    assert len(saved.chatHistories["flare"]) == 2
+    assert [message.id for message in saved.messages] == [
+        message.id for message in saved.chatHistories["flare"]
+    ]
+
+
 def test_chat_uses_highest_safety_level_across_all_parsed_entries(
     domain_client: tuple[TestClient, SQLiteDemoStore],
 ) -> None:

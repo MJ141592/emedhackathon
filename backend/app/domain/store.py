@@ -17,12 +17,33 @@ from app.domain.seed import build_demo_state, build_empty_state
 
 T = TypeVar("T")
 
+_DEMO_PHASES = {"stable", "watch", "flare", "recovery"}
+
 class VersionConflictError(RuntimeError):
     """Raised when optimistic concurrency detects a stale snapshot."""
 
 
 def utc_now() -> str:
     return datetime.now(UTC).replace(microsecond=0).isoformat()
+
+
+def synchronise_active_chat_scenario(state: dict[str, Any]) -> None:
+    """Keep the active chat projection and its scenario thread in lockstep.
+
+    Routes operate on ``messages`` and ``profileProposals`` for the currently selected
+    scenario. Persisting those projections back into the scenario maps here means every
+    mutation path (including Penny replies, corrections and clears) updates only its own
+    thread instead of relying on the browser to reconstruct that state later.
+    """
+
+    phase = state.get("phase")
+    if phase not in _DEMO_PHASES:
+        return
+
+    histories = state.setdefault("chatHistories", {})
+    histories[phase] = list(state.get("messages", []))
+    proposals_by_phase = state.setdefault("profileProposalsByPhase", {})
+    proposals_by_phase[phase] = list(state.get("profileProposals", []))
 
 
 class SQLiteDemoStore:
@@ -309,7 +330,9 @@ class SQLiteDemoStore:
                 "SELECT version, state_json FROM demo_snapshots WHERE patient_id = 'matthew'"
             ).fetchone()
             if row is None:
-                raise RuntimeError("The Matthew demo snapshot is unavailable. Call /api/demo/reset.")
+                raise RuntimeError(
+                    "The Matthew demo snapshot is unavailable. Call /api/demo/reset."
+                )
             current_version = int(row["version"])
             if expected_version is not None and expected_version != current_version:
                 raise VersionConflictError(
@@ -319,6 +342,7 @@ class SQLiteDemoStore:
 
             state = self._deserialize(row["state_json"]).model_dump(mode="json", by_alias=True)
             result = mutator(state)
+            synchronise_active_chat_scenario(state)
             next_version = current_version + 1
             audits = state.setdefault("audit", [])
             audit_id = max((int(item["id"]) for item in audits), default=0) + 1
