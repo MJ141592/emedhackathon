@@ -178,7 +178,7 @@ def test_gateway_requires_server_side_api_key() -> None:
 def test_default_models_are_runware_air_identifiers() -> None:
     settings = RunwareSettings.from_environment()
 
-    assert settings.chat_model == "google:gemini@3.1-flash-lite"
+    assert settings.chat_model == "anthropic:claude@sonnet-4.6"
     assert settings.vision_model == "google:gemini@3.1-flash-lite"
     assert settings.transcription_model == "google:gemini@3.1-flash-lite"
     assert settings.speech_model == "xai:tts@0"

@@ -10,7 +10,7 @@ ROOT_ENV_FILE = Path(__file__).parents[3] / ".env"
 @dataclass(frozen=True)
 class RunwareSettings:
     api_key: str | None
-    chat_model: str = "google:gemini@3.1-flash-lite"
+    chat_model: str = "anthropic:claude@sonnet-4.6"
     vision_model: str = "google:gemini@3.1-flash-lite"
     transcription_model: str = "google:gemini@3.1-flash-lite"
     speech_model: str = "xai:tts@0"
