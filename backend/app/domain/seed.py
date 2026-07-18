@@ -25,9 +25,8 @@ def _taper_days() -> list[dict[str, Any]]:
 
 
 def _demo_chat_histories() -> dict[str, list[dict[str, Any]]]:
-    # Mirrors the frontend's INITIAL_CHAT_BY_PHASE story chapters exactly. Each phase seeds
-    # its chapter of one continuous demo story; earlier chapters are prepended for display
-    # by the frontend so the thread reads as a single developing conversation.
+    """Return Rob's authored demo chapters as four independent conversations."""
+
     return {
         "stable": [
             {
@@ -89,7 +88,9 @@ def _demo_chat_histories() -> dict[str, list[dict[str, Any]]]:
                 "id": 9202,
                 "from": "me",
                 "createdAt": "2026-07-16T08:20:00.000Z",
-                "text": "A bit crampy actually, and I’ve had to rush to the loo twice already.",
+                "text": (
+                    "A bit crampy actually, and I’ve had to rush to the loo twice already."
+                ),
             },
             {
                 "id": 9203,
@@ -173,8 +174,8 @@ def _demo_chat_histories() -> dict[str, list[dict[str, Any]]]:
                 "createdAt": "2026-07-29T08:00:00.000Z",
                 "category": "recorded fact",
                 "text": (
-                    "Morning, Matthew — taper day 12. Today’s dose steps down to 25 mg "
-                    "(5 × 5 mg with breakfast). Next step: 20 mg on Monday."
+                    "Morning, Matthew — taper day 12. Today’s dose steps down to 25 mg (5 × 5 "
+                    "mg with breakfast). Next step: 20 mg on Monday."
                 ),
             },
             {

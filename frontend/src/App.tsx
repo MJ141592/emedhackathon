@@ -217,7 +217,6 @@ function App() {
   return (
     <div className="shell">
       <a href="#main-content" className="skip-link">Skip to today</a>
-      {store.syncStatus === "saving" && <div className="sync-banner saving" role="status" aria-atomic="true"><span><b>Saving securely…</b> Other changes pause until this one is confirmed.</span></div>}
       {store.syncStatus === "error" && <div className="sync-banner" role="alert" aria-atomic="true">
         <span><b>{store.syncError?.includes("[hydrate]") ? "Saved record unavailable." : store.retryAvailable ? "Change not saved yet; it remains queued." : "That action was not saved."}</b> {syncErrorCopy(store.syncError)}</span>
         {reloadRequired
