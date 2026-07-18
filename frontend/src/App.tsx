@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Activity, LockKeyhole, Menu, NotebookPen, Phone, UserRound } from "lucide-react";
+import { Activity, HeartPulse, LockKeyhole, Menu, NotebookPen, Phone, UserRound } from "lucide-react";
 import type { EvidenceSource, SuggestionKind } from "./types";
 import { ONBOARDING_TODAY, PHASE_CHAT_PROMPTS, PHASE_LABELS, storyChat } from "./data";
 import { useDemoStore } from "./store/DemoStore";
@@ -24,7 +24,7 @@ const PANEL_LABELS: Record<Exclude<PanelId, null>, { title: string; eyebrow: str
   care: { title: "Care", eyebrow: "Tests, team and prescribed treatment" },
   team: { title: "Contact my team", eyebrow: "Your IBD care team" },
   experiments: { title: "Experiments", eyebrow: "Careful personal learning" },
-  profile: { title: "Profile & past medical history", eyebrow: "Baseline and onboarding" },
+  profile: { title: "My health", eyebrow: "Profile, diagnosis, medicines and past medical history" },
   privacy: { title: "Privacy & settings", eyebrow: "Permissions, connections and data rights" },
 };
 
@@ -232,6 +232,7 @@ function App() {
           <button disabled={!hasPatientRecord} onClick={() => openPanel("trends")} aria-expanded={panel === "trends"}><Activity /> Trends &amp; evidence</button>
           <button disabled={!hasPatientRecord} onClick={() => { setJournalOpen((value) => !value); setMobileMenu(false); }} aria-pressed={journalOpen}><NotebookPen /> Journal</button>
           <button disabled={!hasPatientRecord} onClick={() => openPanel("team")} aria-expanded={panel === "team"}><Phone /> Contact my team</button>
+          <button onClick={() => openPanel("profile")} aria-expanded={panel === "profile"}><HeartPulse /> My health</button>
         </nav>
         <button ref={mobileMenuButtonRef} className="mobile-menu" onClick={() => setMobileMenu((value) => !value)} aria-expanded={mobileMenu} aria-label={`${mobileMenu ? "Close" : "Open"} menu`}><Menu /></button>
         {trackingActive && <div className="demo" aria-label="Demo lifecycle state"><span>Demo</span>{PHASE_LABELS.map((candidate) => <button key={candidate.id} disabled={store.mutationsBlocked} className={candidate.id === state.phase ? "demo-btn selected" : "demo-btn"} aria-pressed={candidate.id === state.phase} onClick={() => { store.setDemoPhase(candidate.id); notify(candidate.id === state.phase ? `${candidate.label} demo view selected.` : `${candidate.label} demo view selected. The conversation picks up the story at this stage.`); }}>{candidate.label}</button>)}</div>}
